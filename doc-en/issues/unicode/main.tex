@@ -1,0 +1,81 @@
+\documentclass{book}
+
+%% font settings
+\usepackage{fontspec}
+% \setmainfont{DejaVu Sans}
+\setsansfont{DejaVu Sans}[Scale=MatchLowercase, Ligatures=TeX]
+\setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
+\renewcommand{\familydefault}{\sfdefault}
+
+% CJK font
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK SC}
+\setCJKfallbackfamilyfont{\CJKrmdefault}{ 
+    {Noto Sans CJK KR},
+    {Noto Sans CJK JP},
+}
+\setCJKmonofont{Noto Sans Mono CJK SC}
+\setCJKfallbackfamilyfont{\CJKttdefault}{ 
+    {Noto Sans Mono CJK KR},
+    {Noto Sans Mono CJK JP},
+}
+%%
+
+%% listings
+\usepackage{listings, minted}
+
+\lstset{
+    basicstyle = \small\ttfamily,
+    breaklines = true,
+    columns = fullflexible,
+    frame = leftline,
+    keepspaces = true,
+    showstringspaces = false,
+    xleftmargin = 3pt,
+}
+
+\setminted{
+    breaklines = true,
+    fontsize = \small,
+    frame = leftline,
+}
+%
+
+%% 
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+% \setotherlanguage{korean}
+
+
+\begin{document}
+
+Julia provides an extremely flexible system for naming variables. Variable names are case-sensitive, and have no semantic meaning (that is, the language will not treat variables differently based on their names).
+
+\begin{minted}{jlcon}
+julia> x = 1.0
+1.0
+
+julia> y = -3
+-3
+
+julia> Z = "My string"
+"My string"
+
+julia> customary_phrase = "Hello world!"
+"Hello world!"
+
+julia> UniversalDeclarationOfHumanRightsStart = "人人生而自由，在尊严和权利上一律平等。"
+"人人生而自由，在尊严和权利上一律平等。"
+\end{minted}
+
+Unicode names (in UTF-8 encoding) are allowed:
+
+\begin{minted}{jlcon}
+julia> δ = 0.00001
+1.0e-5
+
+julia> 안녕하세요 = "Hello"
+"Hello"
+\end{minted}
+
+\end{document}

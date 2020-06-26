@@ -1,5 +1,5 @@
 # LaTex temp files
-_minted-TheJuliaLanguage/
+_minted-*/
 *.aux
 *_latexmk
 *.fls
