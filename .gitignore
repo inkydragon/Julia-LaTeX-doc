@@ -1,0 +1,10 @@
+# LaTex temp files
+_minted-TheJuliaLanguage/
+*.aux
+*_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+*.pyg
+*.toc

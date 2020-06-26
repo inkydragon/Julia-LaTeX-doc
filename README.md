@@ -103,3 +103,8 @@
     -rwxrwxrwx 1 woclass woclass    0 Jun 26 10:39 custom.sty*
     -rwxrwxrwx 1 woclass woclass 1.8K Jun 26 10:39 documenter.sty*
     ```
+
+5. make PDF: `latexmk -f -interaction=nonstopmode -view=none -lualatex -shell-escape  TheJuliaLanguage.tex`
+    + TeXLive 2020
+    + python3 + `pip install Pygments`
+    + font: `DejaVu Sans` + `DejaVu Sans Mono`
