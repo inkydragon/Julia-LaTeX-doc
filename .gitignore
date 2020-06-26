@@ -8,3 +8,8 @@ _minted-TheJuliaLanguage/
 *.pdf
 *.pyg
 *.toc
+*.synctex.gz
+
+# old tex files; for `diff -u`
+documenter-old.sty
+TheJuliaLanguage-old.tex

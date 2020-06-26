@@ -1,0 +1,49 @@
+%% Couple of improvements for generated PDF · Issue #1342 · JuliaDocs/Documenter.jl
+%% https://github.com/JuliaDocs/Documenter.jl/issues/1342
+%% -[ ] Slightly more space for the chapter and section numbers
+%% -[ ] Restricting TOC depth to just Chapter and Section
+\documentclass{book}
+\usepackage{lipsum} % random text
+\usepackage{tocloft}
+
+%% TOC setting; need {tocloft} pkg
+% 1. TOC chapter number *auto* width
+% [Table of Contents chapter number width - TeX - LaTeX Stack Exchange](https://tex.stackexchange.com/questions/64115/table-of-contents-chapter-number-width)
+\makeatletter
+\renewcommand{\numberline}[1]{%
+  \@cftbsnum #1\@cftasnum~\@cftasnumb%
+}
+\makeatother
+
+% 2. set TOC depth; only show section
+% \chapter = level 0
+% \section = level 1
+% \subsection = level 2
+% ...
+\setcounter{tocdepth}{1}
+%% TOC setting END
+
+% \titlecontents
+
+\begin{document}
+
+\tableofcontents
+
+\clearpage
+
+\chapter{chap 01}
+\section{A section}
+\lipsum
+
+\chapter{chap 02}
+\section{B section}
+\subsection{BA section}
+\lipsum
+
+\setcounter{chapter}{100}
+\chapter{Dummy chap}
+\section{C section}
+\subsection{CC section}
+\lipsum
+
+\end{document}
