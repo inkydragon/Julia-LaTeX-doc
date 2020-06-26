@@ -110,3 +110,24 @@
     + TeXLive 2020
     + python3 + `pip install Pygments`
     + font: `DejaVu Sans` + `DejaVu Sans Mono`
+
+
+## Change Notes
+
+> I made a mistake.   
+> I should have split the file first and then changed it. Now they're all in one commit.
+> So It's necessary to make some explanations.
+
+**`TheJuliaLanguage.tex`**
+
+1. I've splited these parts into separate files (`*.tex` in `doc-en/part/`) **without change them**.  
+    Then there is a lot of `\input` in `TheJuliaLanguage.tex`.
+    They simply copy the file contents to main `tex` file.
+2. remove `\usepackage{./custom.sty}`, it's empty.
+3. add `\cleardoublepage` before TOC.
+
+**`documenter.sty`**
+1. use `\documentclass{book}`: We need `{book}` class, because we need `\part{}`.
+2. use `{geometry}` to set page margin.
+3. use `{tocloft}` to make TOC looks better.
+
