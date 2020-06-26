@@ -1,4 +1,16 @@
+% page geometry
+\usepackage[
+    a4paper,
+    % left and right margin
+    inner=1.2in,
+    outer=1.2in,
+    % top and bottom margin
+    vmargin=1in, 
+]{geometry}
+% page geometry END
+
 % font settings
+
 \usepackage{fontspec, newunicodechar, polyglossia}
 
 \setsansfont{DejaVu Sans}[Scale=MatchLowercase, Ligatures=TeX]
@@ -66,7 +78,7 @@
 %
 
 % table of contents
-\maxtocdepth{subsection}
+% \maxtocdepth{section}
 %
 
 % paragraphs
@@ -75,13 +87,31 @@
 %
 
 % adjust margins
-\setulmarginsandblock{1.5in}{1in}{*}
-\setlrmarginsandblock{1.5in}{1in}{*}
-\setheaderspaces{1in}{*}{*}
-\checkandfixthelayout
+% \setulmarginsandblock{1.5in}{1in}{*}
+% \setlrmarginsandblock{1.5in}{1in}{*}
+% \setheaderspaces{1in}{*}{*}
+% \checkandfixthelayout
 %
 
 % images etc.
 \usepackage{graphicx}
 \usepackage[export]{adjustbox}
 %
+
+%% TOC setting; need {tocloft} pkg
+\usepackage{tocloft}
+% 1. TOC chapter number *auto* width
+% [Table of Contents chapter number width - TeX - LaTeX Stack Exchange](https://tex.stackexchange.com/questions/64115/table-of-contents-chapter-number-width)
+\makeatletter
+\renewcommand{\numberline}[1]{%
+  \@cftbsnum #1\@cftasnum~\@cftasnumb%
+}
+\makeatother
+
+% 2. set TOC depth; only show section
+% \chapter = level 0
+% \section = level 1
+% \subsection = level 2
+% ...
+\setcounter{tocdepth}{1}
+%% TOC setting END

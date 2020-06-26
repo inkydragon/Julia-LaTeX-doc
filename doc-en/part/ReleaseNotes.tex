@@ -1,0 +1,268 @@
+
+
+\part{Julia v1.6 Release Notes}
+
+
+
+\hypertarget{190991524886526400}{}
+
+
+\chapter{New language features}
+
+
+
+\begin{itemize}
+\item Types written with \texttt{where} syntax can now be used to define constructors, e.g. \texttt{(Foo\{T\} where T)(x) = ...}.
+
+\end{itemize}
+
+
+\hypertarget{3442424987907572838}{}
+
+
+\chapter{Language changes}
+
+
+
+\hypertarget{15772063917944537781}{}
+
+
+\chapter{Compiler/Runtime improvements}
+
+
+
+\begin{itemize}
+\item All platforms can now use \texttt{@executable\_path} within \texttt{jl\_load\_dynamic\_library()}. This allows executable-relative paths to be embedded within executables on all platforms, not just MacOS, which the syntax is borrowed from. (\href{https://github.com/JuliaLang/julia/issues/35627}{\#35627})
+
+
+\item Constant propogation now occurs through keyword arguments (\href{https://github.com/JuliaLang/julia/issues/35976}{\#35976})
+
+
+\item The precompilation cache is now created atomically (\href{https://github.com/JuliaLang/julia/issues/36416}{\#36416}). Invoking \emph{n} Julia processes simultaneously may create \emph{n} temporary caches.
+
+\end{itemize}
+
+
+\hypertarget{5697668691293835936}{}
+
+
+\chapter{Command-line option changes}
+
+
+
+\hypertarget{14570500277119829183}{}
+
+
+\chapter{Multi-threading changes}
+
+
+
+\hypertarget{2615165321246055486}{}
+
+
+\chapter{Build system changes}
+
+
+
+\hypertarget{11814740728129372900}{}
+
+
+\chapter{New library functions}
+
+
+
+\begin{itemize}
+\item New function \texttt{Base.kron!} and corresponding overloads for various matrix types for performing Kronecker product in-place. (\href{https://github.com/JuliaLang/julia/issues/31069}{\#31069}).
+
+
+\item New function \texttt{Base.Threads.foreach(f, channel::Channel)} for multithreaded \texttt{Channel} consumption. (\href{https://github.com/JuliaLang/julia/issues/34543}{\#34543}).
+
+
+\item \texttt{Iterators.map} is added. It provides another syntax \texttt{Iterators.map(f, iterators...)} for writing \texttt{(f(args...) for args in zip(iterators...))}, i.e. a lazy \texttt{map} (\href{https://github.com/JuliaLang/julia/issues/34352}{\#34352}).
+
+
+\item New function \texttt{sincospi} for simultaneously computing \texttt{sinpi(x)} and \texttt{cospi(x)} more efficiently (\href{https://github.com/JuliaLang/julia/issues/35816}{\#35816}).
+
+\end{itemize}
+
+
+\hypertarget{7948362685613917540}{}
+
+
+\chapter{New library features}
+
+
+
+\hypertarget{10359018140604250447}{}
+
+
+\chapter{Standard library changes}
+
+
+
+\begin{itemize}
+\item The \texttt{nextprod} function now accepts tuples and other array types for its first argument (\href{https://github.com/JuliaLang/julia/issues/35791}{\#35791}).
+
+
+\item The function \texttt{isapprox(x,y)} now accepts the \texttt{norm} keyword argument also for numeric (i.e., non-array) arguments \texttt{x} and \texttt{y} (\href{https://github.com/JuliaLang/julia/issues/35883}{\#35883}).
+
+
+\item \texttt{view}, \texttt{@view}, and \texttt{@views} now work on \texttt{AbstractString}s, returning a \texttt{SubString} when appropriate (\href{https://github.com/JuliaLang/julia/issues/35879}{\#35879}).
+
+
+\item All \texttt{AbstractUnitRange\{<:Integer\}}s now work with \texttt{SubString}, \texttt{view}, \texttt{@view} and \texttt{@views} on strings (\href{https://github.com/JuliaLang/julia/issues/35879}{\#35879}).
+
+
+\item \texttt{sum}, \texttt{prod}, \texttt{maximum}, and \texttt{minimum} now support \texttt{init} keyword argument (\href{https://github.com/JuliaLang/julia/issues/36188}{\#36188}, \href{https://github.com/JuliaLang/julia/issues/35839}{\#35839}).
+
+
+\item \texttt{unique(f, itr; seen=Set\{T\}())} now allows you to declare the container type used for keeping track of values returned by \texttt{f} on elements of \texttt{itr} (\href{https://github.com/JuliaLang/julia/issues/36280}{\#36280}).
+
+\end{itemize}
+
+
+\hypertarget{5352389965411431652}{}
+
+
+\subsection{LinearAlgebra}
+
+
+
+\begin{itemize}
+\item New method \texttt{LinearAlgebra.issuccess(::CholeskyPivoted)} for checking whether pivoted Cholesky factorization was successful (\href{https://github.com/JuliaLang/julia/issues/36002}{\#36002}).
+
+
+\item \texttt{UniformScaling} can now be indexed into using ranges to return dense matrices and vectors (\href{https://github.com/JuliaLang/julia/issues/24359}{\#24359}).
+
+\end{itemize}
+
+
+\hypertarget{1148945260684419988}{}
+
+
+\subsection{Markdown}
+
+
+
+\hypertarget{1261002482238112410}{}
+
+
+\subsection{Random}
+
+
+
+\hypertarget{2420424062759544635}{}
+
+
+\subsection{REPL}
+
+
+
+\begin{itemize}
+\item The \texttt{AbstractMenu} extension interface of \texttt{REPL.TerminalMenus} has been extensively overhauled. The new interface does not rely on global configuration variables, is more consistent in delegating printing of the navigation/selection markers, and provides improved support for dynamic menus.  These changes are compatible with the previous (deprecated) interface, so are non-breaking.
+
+The new API offers several enhancements:
+
+\begin{itemize}
+\item Menus are configured in their constructors via keyword arguments
+
+
+\item For custom menu types, the new \texttt{Config} and \texttt{MultiSelectConfig} replace the global \texttt{CONFIG} Dict
+
+
+\item \texttt{request(menu; cursor=1)} allows you to control the initial cursor position in the menu (defaults to first item)
+
+
+\item \texttt{MultiSelectMenu} allows you to pass a list of initially-selected items with the \texttt{selected} keyword argument
+
+
+\item \texttt{writeLine} was deprecated to \texttt{writeline}, and \texttt{writeline} methods are not expected to print the cursor indicator. The old \texttt{writeLine} continues to work, and any of its method extensions should print the cursor indicator as before.
+
+
+\item \texttt{printMenu} has been deprecated to \texttt{printmenu}, and it both accepts a state input and returns a state output that controls the number of terminal lines erased when the menu is next refreshed. This plus related changes makes \texttt{printmenu} work properly when the number of menu items might change depending on user choices.
+
+
+\item \texttt{numoptions}, returning the number of items in the menu, has been added as an alternative to implementing \texttt{options}
+
+
+\item \texttt{suppress\_output} (primarily a testing option) has been added as a keyword argument to \texttt{request}, rather than a configuration option
+
+\end{itemize}
+\end{itemize}
+
+
+\hypertarget{8318560296908757234}{}
+
+
+\subsection{SparseArrays}
+
+
+
+\begin{itemize}
+\item Display large sparse matrices with a Unicode {\textquotedbl}spy{\textquotedbl} plot of their nonzero patterns, and display small sparse matrices by an \texttt{Matrix}-like 2d layout of their contents.
+
+\end{itemize}
+
+
+\hypertarget{9507963728197011587}{}
+
+
+\subsection{Dates}
+
+
+
+\hypertarget{9437621938979276328}{}
+
+
+\subsection{Statistics}
+
+
+
+\hypertarget{3574674985174674746}{}
+
+
+\subsection{Sockets}
+
+
+
+\hypertarget{13830325491332105953}{}
+
+
+\subsection{Distributed}
+
+
+
+\hypertarget{2767829618755343548}{}
+
+
+\subsection{UUIDs}
+
+
+
+\begin{itemize}
+\item Change \texttt{uuid1} and \texttt{uuid4} to use \texttt{Random.RandomDevice()} as default random number generator (\href{https://github.com/JuliaLang/julia/issues/35872}{\#35872}).
+
+
+\item Added \texttt{parse(::Type\{UUID\}, ::AbstractString)} method
+
+\end{itemize}
+
+
+\hypertarget{4235524591664155207}{}
+
+
+\chapter{Deprecated or removed}
+
+
+
+\hypertarget{1328894012787811563}{}
+
+
+\chapter{External dependencies}
+
+
+
+\hypertarget{17774285514509357554}{}
+
+
+\chapter{Tooling Improvements}

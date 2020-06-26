@@ -9,6 +9,7 @@ _minted-TheJuliaLanguage/
 *.pyg
 *.toc
 *.synctex.gz
+*.xdv
 
 # old tex files; for `diff -u`
 documenter-old.sty
