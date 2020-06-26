@@ -1,6 +1,8 @@
 [submodule "julia"]
 	path = julia
 	url = https://github.com/JuliaLang/julia
+    ignore = dirty
 [submodule "JuliaZH.jl"]
 	path = JuliaZH.jl
 	url = https://github.com/JuliaCN/JuliaZH.jl
+    ignore = dirty
