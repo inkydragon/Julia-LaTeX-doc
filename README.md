@@ -1,6 +1,6 @@
 # Julia LaTeX doc
 
-Output: [[PDF] TheJuliaLanguage-en-[3 over 4]-cb3aa99](https://drive.google.com/file/d/1UAA04EVCNmApiuypIj_guDbcJUltZLCm/view?usp=sharing)
+Output: [[PDF] TheJuliaLanguage-en-[4 over 4]-1c28e22](https://drive.google.com/file/d/1XU1_phqFnThR7k408f8TX0FWoup_3m4y/view?usp=sharing)
 
 
 ## Build `tex` files
