@@ -1,3 +1,6 @@
 [submodule "julia"]
 	path = julia
 	url = https://github.com/JuliaLang/julia
+[submodule "JuliaZH.jl"]
+	path = JuliaZH.jl
+	url = https://github.com/JuliaCN/JuliaZH.jl
