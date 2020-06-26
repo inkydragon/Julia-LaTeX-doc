@@ -9,7 +9,7 @@ Output: [[PDF] TheJuliaLanguage-en-[3 over 4]-cb3aa99](https://drive.google.com/
 > If you don't need the latest version of the document, you can ignore the `Julia` submodule.
 
 **dependency**
-+ TeXLive 2020
++ TeXLive 2020 (older version is ok)
 + python3 + `pip install Pygments`
 + font: `DejaVu Sans` + `DejaVu Sans Mono`
 
@@ -18,6 +18,7 @@ Output: [[PDF] TheJuliaLanguage-en-[3 over 4]-cb3aa99](https://drive.google.com/
 + `cd ./Julia-LaTeX-doc/doc-en/`
 + `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape TheJuliaLanguage.tex`  
     You can also use `lualatex`, but it's a little bit slow.
++ You can comment some `\input` to speed up build process.
 
 
 ## Change Notes
@@ -28,8 +29,9 @@ Output: [[PDF] TheJuliaLanguage-en-[3 over 4]-cb3aa99](https://drive.google.com/
 
 **about those dir**
 + `doc-en/`: for `TheJuliaLanguage` document in English.
-    + `issues`: *standalone* test for specific issue.
+    + `issues/`: *standalone* test for specific issue.
     + `part/`: The `\part{}` of english document, used by `TheJuliaLanguage.tex`
+    + `titlepage/`: Front page, used by `TheJuliaLanguage.tex`
     + `TheJuliaLanguage.tex`: main TeX file.
     + `documenter.sty`: main style file.
 
@@ -39,12 +41,14 @@ Output: [[PDF] TheJuliaLanguage-en-[3 over 4]-cb3aa99](https://drive.google.com/
     Then there is a lot of `\input` in `TheJuliaLanguage.tex`.
     They simply copy the file contents to main `tex` file.
 2. remove `\usepackage{./custom.sty}`, it's empty.
-3. add `\cleardoublepage` before TOC.
+3. add `\input{titlepage/title.tex}` to use title page.
+4. add `\cleardoublepage` before TOC.
 
 **`documenter.sty`**
 1. use `\documentclass{book}`: We need `{book}` class, because we need `\part{}`.
 2. use `{geometry}` to set page margin.
-3. use `{tocloft}` to make TOC looks better.
+3. use `{background}` to make title page like https://julialang.org/.
+4. use `{tocloft}` to make TOC looks better.
 
 
 ## How to generate TeX files?
