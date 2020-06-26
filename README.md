@@ -1,8 +1,10 @@
 # Julia LaTeX doc
 
-> I'am using Windows 10 + Ubuntu 20 on WSL2, it's a mix of things.
+> I'm using Windows 10 + Ubuntu 20 on WSL2, it's a mix of things.
 > So, I can't give you a step by step instructions to reproduce.
 
+
+## How to generate TeX files?
 
 1. use git Submodules to clone julia Main repo
     - [Git - Submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
