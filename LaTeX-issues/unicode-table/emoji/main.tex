@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage{amsmath,emoji}
+\newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+\usepackage{longtable,booktabs}
+
+
+\begin{document}
+\emoji{eyeglasses} \emoji{nerd-face} \emoji{+1}
+$
+  \displaystyle
+    \int_{\partial\text{\emoji{hourglass}}} \text{\emoji{frog}}
+  = \int_\text{\emoji{hourglass}} \mathrm{d}\text{\emoji{frog}}
+$
+
+
+\begin{longtable}{p{0.1\linewidth}p{0.05\linewidth}p{0.22\linewidth}p{0.53\linewidth}}
+  \caption{Unicode 输入表} \\
+  %% 所有表格 表头
+  \toprule
+  \bf{码点} & \bf{字符} & \tt{TAB}\bf{补全序列} & \bf{Unicode 名称} \\
+  \hline \endhead
+  %% 所有表格 页脚
+  \multicolumn{4}{r}{下页待续} \\ 
+  \midrule \endfoot
+  %% 表格最后一页 页脚
+  \bottomrule \endlastfoot
+
+  %% 表格正文
+  \input{../unicode-table-item.tex}
+
+  \bottomrule
+\end{longtable}
+
+\end{document}
