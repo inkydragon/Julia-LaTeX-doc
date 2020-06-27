@@ -1,0 +1,92 @@
+\documentclass[
+  UTF8, % UTF-8 编码读入
+  a4paper,  % A4 纸大小
+  oneside,  % 单页模式，左右页边距相同
+]{ctexbook} % book 类：需要 `\part{}' 命令
+
+%% font settings
+\usepackage{fontspec}
+% \setmainfont{DejaVu Sans}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+
+% CJK font
+\usepackage{xeCJK}
+% \setCJKmainfont{Noto Sans CJK SC}
+% \setCJKfallbackfamilyfont{\CJKrmdefault}{ % \textrm 和 \rmfamily
+%   {Noto Sans Mono CJK SC},
+%   {Noto Sans Mono CJK KR},
+% }
+% \setCJKfallbackfamilyfont{\CJKsfdefault}{ % \textsf 和 \sffamily
+%   {Noto Sans Mono CJK SC},
+%   {Noto Sans Mono CJK KR},
+% }
+\setCJKmonofont{Noto Sans Mono CJK SC}
+\setCJKfallbackfamilyfont{\CJKttdefault}{ % \texttt 和 \ttfamily
+  {Noto Sans Mono CJK KR},
+}
+%%
+
+%% listings
+\usepackage{listings, minted}
+%% 保存中文缩进长度
+\newlength{\zhParIndent}
+\setlength{\zhParIndent}{\parindent + 2pt} % 保持视觉上的对齐
+\lstset{
+    basicstyle = \small\ttfamily,
+    breaklines = true,
+    columns = fullflexible,
+    frame = leftline,
+    keepspaces = true,
+    showstringspaces = false,
+    % 对齐段首缩进；listings 宏包的所及计算比较复杂
+    xleftmargin=\dimexpr\zhParIndent+\lst@frametextsep+\lst@framerulewidth\relax,
+}
+
+\setminted{
+    breaklines = true,
+    fontsize = \small,
+    frame = leftline,
+    xleftmargin = \zhParIndent, % 对齐段首缩进
+}
+%%
+
+%% 
+% \usepackage{polyglossia}
+% \setdefaultlanguage{english}
+% \setotherlanguage{korean}
+
+
+\begin{document}
+
+
+Julia 提供了非常灵活的变量命名策略。变量名是大小写敏感的，且不包含语义，意思是说，Julia 不会根据变量的名字来区别对待它们。 （译者注：Julia \textbf{不会}自动将全大写的变量识别为常量，也\textbf{不会}将有特定前后缀的变量自动识别为某种特定类型的变量，即不会根据变量名字，自动判断变量的任何属性。）
+
+\begin{minted}{jlcon}
+julia> x = 1.0
+1.0
+
+julia> y = -3
+-3
+
+julia> Z = "My string"
+"My string"
+
+julia> customary_phrase = "Hello world!"
+"Hello world!"
+
+julia> UniversalDeclarationOfHumanRightsStart = "人人生而自由，在尊严和权利上一律平等。"
+"人人生而自由，在尊严和权利上一律平等。"
+\end{minted}
+
+你还可以使用 UTF-8 编码的 Unicode 字符作为变量名：
+
+\begin{minted}{jlcon}
+julia> δ = 0.00001
+1.0e-5
+
+julia> 안녕하세요 = "Hello"
+"Hello"
+\end{minted}
+
+\end{document}
