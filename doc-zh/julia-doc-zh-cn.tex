@@ -1,11 +1,17 @@
-\documentclass{ctexbook}
-\usepackage{JuliaCNDoc}
+\documentclass[
+  UTF8, % UTF-8 编码读入
+  a4paper,  % A4 纸大小
+  oneside,  % 单页模式，左右页边距相同
+]{ctexbook} % book 类：需要 `\part{}' 命令
 
+\usepackage{JuliaCNDoc}
+%% TODO: 将 sty 封装成真正的文档类
 
 \begin{document} % 正文开始
 
 \frontmatter
 % \maketitle
+%% TODO: 制作封面
 \tableofcontents
 \mainmatter
 
