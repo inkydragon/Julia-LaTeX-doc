@@ -136,81 +136,81 @@ julia [switches] -- [programfile] [args...]
 \end{lstlisting}
 
 
+\input{table/t01}
 
+% \begin{table}[h]
 
-\begin{table}[h]
+% \begin{tabulary}{\linewidth}{|L|L|}
+% \hline
+% 选项 & 描述 \\
+% \hline
+% \texttt{-v}, \texttt{--version} & 显示版本信息 \\
+% \hline
+% \texttt{-h}, \texttt{--help} & Print command-line options (this message). \\
+% \hline
+% \texttt{--project[=\{<dir>|@.\}]} & 将 <dir> 设置为主项目/环境。默认的 @. 选项将搜索父目录，直至找到 Project.toml 或 JuliaProject.toml 文件。 \\
+% \hline
+% \texttt{-J}, \texttt{--sysimage <file>} & 用指定的镜像文件（system image file）启动 \\
+% \hline
+% \texttt{-H}, \texttt{--home <dir>} & 设置 \texttt{julia} 可执行文件的路径 \\
+% \hline
+% \texttt{--startup-file=\{yes|no\}} & 是否载入 \texttt{{\textasciitilde}/.julia/config/startup.jl} \\
+% \hline
+% \texttt{--handle-signals=\{yes|no\}} & 开启或关闭 Julia 默认的 signal handlers \\
+% \hline
+% \texttt{--sysimage-native-code=\{yes|no\}} & 在可能的情况下，使用系统镜像里的原生代码 \\
+% \hline
+% \texttt{--compiled-modules=\{yes|no\}} & 开启或关闭 module 的增量预编译功能 \\
+% \hline
+% \texttt{-e}, \texttt{--eval <expr>} & 执行 \texttt{<expr>} \\
+% \hline
+% \texttt{-E}, \texttt{--print <expr>} & 执行 \texttt{<expr>} 并显示结果 \\
+% \hline
+% \texttt{-L}, \texttt{--load <file>} & 立即在所有进程中载入 \texttt{<file>} \\
+% \hline
+% \texttt{-t}, \texttt{--threads \{N|auto\}} & Enable N threads; \texttt{auto} currently sets N to the number of local CPU threads but this might change in the future \\
+% \hline
+% \texttt{-p}, \texttt{--procs \{N|auto\}} & 这里的整数 N 表示启动 N 个额外的工作进程；\texttt{auto} 表示启动与 CPU 线程数目（logical cores）一样多的进程 \\
+% \hline
+% \texttt{--machine-file <file>} & 在 \texttt{<file>} 中列出的主机上运行进程 \\
+% \hline
+% \texttt{-i} & 交互式模式；REPL 运行且 \texttt{isinteractive()} 为 true \\
+% \hline
+% \texttt{-q}, \texttt{--quiet} & 安静的启动；REPL 启动时无横幅，不显示警告 \\
+% \hline
+% \texttt{--banner=\{yes|no|auto\}} & 开启或关闭 REPL 横幅 \\
+% \hline
+% \texttt{--color=\{yes|no|auto\}} & 开启或关闭文字颜色 \\
+% \hline
+% \texttt{--history-file=\{yes|no\}} & 载入或导出历史记录 \\
+% \hline
+% \texttt{--depwarn=\{yes|no|error\}} & 开启或关闭语法弃用警告，\texttt{error} 表示将弃用警告转换为错误。 \\
+% \hline
+% \texttt{--warn-overwrite=\{yes|no\}} & 开启或关闭“method overwrite”警告 \\
+% \hline
+% \texttt{-C}, \texttt{--cpu-target <target>} & 设置 \texttt{<target>} 来限制使用 CPU 的某些特性；设置为 \texttt{help} 可以查看可用的选项 \\
+% \hline
+% \texttt{-O}, \texttt{--optimize=\{0,1,2,3\}} & 设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。 \\
+% \hline
+% \texttt{-g}, \texttt{-g <level>} & 开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。 \\
+% \hline
+% \texttt{--inline=\{yes|no\}} & 控制是否允许函数内联，此选项会覆盖源文件中的 \texttt{@inline} 声明 \\
+% \hline
+% \texttt{--check-bounds=\{yes|no\}} & 设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明 \\
+% \hline
+% \texttt{--math-mode=\{ieee,fast\}} & 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 \texttt{@fastmath} 声明 \\
+% \hline
+% \texttt{--code-coverage=\{none|user|all\}} & 对源文件中每行代码执行的次数计数 \\
+% \hline
+% \texttt{--code-coverage} & 等价于 \texttt{--code-coverage=user} \\
+% \hline
+% \texttt{--track-allocation=\{none|user|all\}} & 对源文件中每行代码的内存分配计数，单位 byte \\
+% \hline
+% \texttt{--track-allocation} & 等价于 \texttt{--track-allocation=user} \\
+% \hline
+% \end{tabulary}
 
-\begin{tabulary}{\linewidth}{|L|L|}
-\hline
-选项 & 描述 \\
-\hline
-\texttt{-v}, \texttt{--version} & 显示版本信息 \\
-\hline
-\texttt{-h}, \texttt{--help} & Print command-line options (this message). \\
-\hline
-\texttt{--project[=\{<dir>|@.\}]} & 将 <dir> 设置为主项目/环境。默认的 @. 选项将搜索父目录，直至找到 Project.toml 或 JuliaProject.toml 文件。 \\
-\hline
-\texttt{-J}, \texttt{--sysimage <file>} & 用指定的镜像文件（system image file）启动 \\
-\hline
-\texttt{-H}, \texttt{--home <dir>} & 设置 \texttt{julia} 可执行文件的路径 \\
-\hline
-\texttt{--startup-file=\{yes|no\}} & 是否载入 \texttt{{\textasciitilde}/.julia/config/startup.jl} \\
-\hline
-\texttt{--handle-signals=\{yes|no\}} & 开启或关闭 Julia 默认的 signal handlers \\
-\hline
-\texttt{--sysimage-native-code=\{yes|no\}} & 在可能的情况下，使用系统镜像里的原生代码 \\
-\hline
-\texttt{--compiled-modules=\{yes|no\}} & 开启或关闭 module 的增量预编译功能 \\
-\hline
-\texttt{-e}, \texttt{--eval <expr>} & 执行 \texttt{<expr>} \\
-\hline
-\texttt{-E}, \texttt{--print <expr>} & 执行 \texttt{<expr>} 并显示结果 \\
-\hline
-\texttt{-L}, \texttt{--load <file>} & 立即在所有进程中载入 \texttt{<file>} \\
-\hline
-\texttt{-t}, \texttt{--threads \{N|auto\}} & Enable N threads; \texttt{auto} currently sets N to the number of local CPU threads but this might change in the future \\
-\hline
-\texttt{-p}, \texttt{--procs \{N|auto\}} & 这里的整数 N 表示启动 N 个额外的工作进程；\texttt{auto} 表示启动与 CPU 线程数目（logical cores）一样多的进程 \\
-\hline
-\texttt{--machine-file <file>} & 在 \texttt{<file>} 中列出的主机上运行进程 \\
-\hline
-\texttt{-i} & 交互式模式；REPL 运行且 \texttt{isinteractive()} 为 true \\
-\hline
-\texttt{-q}, \texttt{--quiet} & 安静的启动；REPL 启动时无横幅，不显示警告 \\
-\hline
-\texttt{--banner=\{yes|no|auto\}} & 开启或关闭 REPL 横幅 \\
-\hline
-\texttt{--color=\{yes|no|auto\}} & 开启或关闭文字颜色 \\
-\hline
-\texttt{--history-file=\{yes|no\}} & 载入或导出历史记录 \\
-\hline
-\texttt{--depwarn=\{yes|no|error\}} & 开启或关闭语法弃用警告，\texttt{error} 表示将弃用警告转换为错误。 \\
-\hline
-\texttt{--warn-overwrite=\{yes|no\}} & 开启或关闭“method overwrite”警告 \\
-\hline
-\texttt{-C}, \texttt{--cpu-target <target>} & 设置 \texttt{<target>} 来限制使用 CPU 的某些特性；设置为 \texttt{help} 可以查看可用的选项 \\
-\hline
-\texttt{-O}, \texttt{--optimize=\{0,1,2,3\}} & 设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。 \\
-\hline
-\texttt{-g}, \texttt{-g <level>} & 开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。 \\
-\hline
-\texttt{--inline=\{yes|no\}} & 控制是否允许函数内联，此选项会覆盖源文件中的 \texttt{@inline} 声明 \\
-\hline
-\texttt{--check-bounds=\{yes|no\}} & 设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明 \\
-\hline
-\texttt{--math-mode=\{ieee,fast\}} & 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 \texttt{@fastmath} 声明 \\
-\hline
-\texttt{--code-coverage=\{none|user|all\}} & 对源文件中每行代码执行的次数计数 \\
-\hline
-\texttt{--code-coverage} & 等价于 \texttt{--code-coverage=user} \\
-\hline
-\texttt{--track-allocation=\{none|user|all\}} & 对源文件中每行代码的内存分配计数，单位 byte \\
-\hline
-\texttt{--track-allocation} & 等价于 \texttt{--track-allocation=user} \\
-\hline
-\end{tabulary}
-
-\end{table}
+% \end{table}
 
 
 
@@ -435,67 +435,62 @@ Julia 提供了很丰富的原始数值类型，并基于它们定义了一整�
 
 \begin{itemize}
 \item \textbf{整数类型：}
-
 \end{itemize}
+\input{table/t04-Integer.tex}
 
 
+% \begin{table}[h]
 
-\begin{table}[h]
-
-\begin{tabulary}{\linewidth}{|L|L|L|L|L|}
-\hline
-类型 & 带符号？ & 比特数 & 最小值 & 最大值 \\
-\hline
-\hyperlink{5857518405103968275}{\texttt{Int8}} & ✓ & 8 & -2{\textasciicircum}7 & 2{\textasciicircum}7 - 1 \\
-\hline
-\hyperlink{6609065134969660118}{\texttt{UInt8}} &  & 8 & 0 & 2{\textasciicircum}8 - 1 \\
-\hline
-\hyperlink{6667287249103968645}{\texttt{Int16}} & ✓ & 16 & -2{\textasciicircum}15 & 2{\textasciicircum}15 - 1 \\
-\hline
-\hyperlink{7018610346698168012}{\texttt{UInt16}} &  & 16 & 0 & 2{\textasciicircum}16 - 1 \\
-\hline
-\hyperlink{10103694114785108551}{\texttt{Int32}} & ✓ & 32 & -2{\textasciicircum}31 & 2{\textasciicircum}31 - 1 \\
-\hline
-\hyperlink{8690996847580776341}{\texttt{UInt32}} &  & 32 & 0 & 2{\textasciicircum}32 - 1 \\
-\hline
-\hyperlink{7720564657383125058}{\texttt{Int64}} & ✓ & 64 & -2{\textasciicircum}63 & 2{\textasciicircum}63 - 1 \\
-\hline
-\hyperlink{5500998675195555601}{\texttt{UInt64}} &  & 64 & 0 & 2{\textasciicircum}64 - 1 \\
-\hline
-\hyperlink{8012327724714767060}{\texttt{Int128}} & ✓ & 128 & -2{\textasciicircum}127 & 2{\textasciicircum}127 - 1 \\
-\hline
-\hyperlink{14811222188335428522}{\texttt{UInt128}} &  & 128 & 0 & 2{\textasciicircum}128 - 1 \\
-\hline
-\hyperlink{46725311238864537}{\texttt{Bool}} & N/A & 8 & \texttt{false} (0) & \texttt{true} (1) \\
-\hline
-\end{tabulary}
-
-\end{table}
+% \begin{tabulary}{\linewidth}{|L|L|L|L|L|}
+% \hline
+% 类型 & 带符号？ & 比特数 & 最小值 & 最大值 \\
+% \hline
+% \hyperlink{5857518405103968275}{\texttt{Int8}} & ✓ & 8 & -2{\textasciicircum}7 & 2{\textasciicircum}7 - 1 \\
+% \hline
+% \hyperlink{6609065134969660118}{\texttt{UInt8}} &  & 8 & 0 & 2{\textasciicircum}8 - 1 \\
+% \hline
+% \hyperlink{6667287249103968645}{\texttt{Int16}} & ✓ & 16 & -2{\textasciicircum}15 & 2{\textasciicircum}15 - 1 \\
+% \hline
+% \hyperlink{7018610346698168012}{\texttt{UInt16}} &  & 16 & 0 & 2{\textasciicircum}16 - 1 \\
+% \hline
+% \hyperlink{10103694114785108551}{\texttt{Int32}} & ✓ & 32 & -2{\textasciicircum}31 & 2{\textasciicircum}31 - 1 \\
+% \hline
+% \hyperlink{8690996847580776341}{\texttt{UInt32}} &  & 32 & 0 & 2{\textasciicircum}32 - 1 \\
+% \hline
+% \hyperlink{7720564657383125058}{\texttt{Int64}} & ✓ & 64 & -2{\textasciicircum}63 & 2{\textasciicircum}63 - 1 \\
+% \hline
+% \hyperlink{5500998675195555601}{\texttt{UInt64}} &  & 64 & 0 & 2{\textasciicircum}64 - 1 \\
+% \hline
+% \hyperlink{8012327724714767060}{\texttt{Int128}} & ✓ & 128 & -2{\textasciicircum}127 & 2{\textasciicircum}127 - 1 \\
+% \hline
+% \hyperlink{14811222188335428522}{\texttt{UInt128}} &  & 128 & 0 & 2{\textasciicircum}128 - 1 \\
+% \hline
+% \hyperlink{46725311238864537}{\texttt{Bool}} & N/A & 8 & \texttt{false} (0) & \texttt{true} (1) \\
+% \hline
+% \end{tabulary}
+% \end{table}
 
 
 
 \begin{itemize}
 \item \textbf{浮点类型:}
-
 \end{itemize}
+\input{table/t03-Float.tex}
 
 
-
-\begin{table}[h]
-
-\begin{tabulary}{\linewidth}{|L|L|L|}
-\hline
-类型 & 精度 & 比特数 \\
-\hline
-\hyperlink{2727296760866702904}{\texttt{Float16}} & \href{https://en.wikipedia.org/wiki/Half-precision\_floating-point\_format}{half} & 16 \\
-\hline
-\hyperlink{8101639384272933082}{\texttt{Float32}} & \href{https://en.wikipedia.org/wiki/Single\_precision\_floating-point\_format}{single} & 32 \\
-\hline
-\hyperlink{5027751419500983000}{\texttt{Float64}} & \href{https://en.wikipedia.org/wiki/Double\_precision\_floating-point\_format}{double} & 64 \\
-\hline
-\end{tabulary}
-
-\end{table}
+% \begin{table}[h]
+% \begin{tabulary}{\linewidth}{|L|L|L|}
+% \hline
+% 类型 & 精度 & 比特数 \\
+% \hline
+% \hyperlink{2727296760866702904}{\texttt{Float16}} & \href{https://en.wikipedia.org/wiki/Half-precision\_floating-point\_format}{half} & 16 \\
+% \hline
+% \hyperlink{8101639384272933082}{\texttt{Float32}} & \href{https://en.wikipedia.org/wiki/Single\_precision\_floating-point\_format}{single} & 32 \\
+% \hline
+% \hyperlink{5027751419500983000}{\texttt{Float64}} & \href{https://en.wikipedia.org/wiki/Double\_precision\_floating-point\_format}{double} & 64 \\
+% \hline
+% \end{tabulary}
+% \end{table}
 
 
 
@@ -923,24 +918,24 @@ julia> bitstring(-0.0)
 
 有三种特定的标准浮点值不和实数轴上任何一点对应：
 
+\input{table/t04-Float-Inf-NaN.tex}
 
 
+% \begin{table}[h]
 
-\begin{table}[h]
+% \begin{tabulary}{\linewidth}{|L|L|L|L|L|}
+% \hline
+% \texttt{Float16} & \texttt{Float32} & \texttt{Float64} & 名称 & 描述 \\
+% \hline
+% \texttt{Inf16} & \texttt{Inf32} & \texttt{Inf} & 正无穷 & 一个大于所有有限浮点数的数 \\
+% \hline
+% \texttt{-Inf16} & \texttt{-Inf32} & \texttt{-Inf} & 负无穷 & 一个小于所有有限浮点数的数 \\
+% \hline
+% \texttt{NaN16} & \texttt{NaN32} & \texttt{NaN} & 不是数（Not a Number） & 一个不和任何浮点值（包括自己）相等（\texttt{==}）的值 \\
+% \hline
+% \end{tabulary}
 
-\begin{tabulary}{\linewidth}{|L|L|L|L|L|}
-\hline
-\texttt{Float16} & \texttt{Float32} & \texttt{Float64} & 名称 & 描述 \\
-\hline
-\texttt{Inf16} & \texttt{Inf32} & \texttt{Inf} & 正无穷 & 一个大于所有有限浮点数的数 \\
-\hline
-\texttt{-Inf16} & \texttt{-Inf32} & \texttt{-Inf} & 负无穷 & 一个小于所有有限浮点数的数 \\
-\hline
-\texttt{NaN16} & \texttt{NaN32} & \texttt{NaN} & 不是数（Not a Number） & 一个不和任何浮点值（包括自己）相等（\texttt{==}）的值 \\
-\hline
-\end{tabulary}
-
-\end{table}
+% \end{table}
 
 
 
@@ -11487,33 +11482,33 @@ Julia 的很多能力和扩展性都来自于一些非正式的接口。通过�
 \section{迭代}
 
 
+\input{table/t20-Iterator.tex}
 
+% \begin{table}[h]
 
-\begin{table}[h]
+% \begin{tabulary}{\linewidth}{|L|L|L|}
+% \hline
+% 必需方法 &  & 简短描述 \\
+% \hline
+% \texttt{iterate(iter)} &  & 通常返回由第一项及其初始状态组成的元组，但如果为空，则返回 \hyperlink{9331422207248206047}{\texttt{nothing}} \\
+% \hline
+% \texttt{iterate(iter, state)} &  & 通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回 \texttt{nothing}。 \\
+% \hline
+% \textbf{重要可选方法} & \textbf{默认定义} & \textbf{简短描述} \\
+% \hline
+% \texttt{IteratorSize(IterType)} & \texttt{HasLength()} & \texttt{HasLength()}，\texttt{HasShape\{N\}()}，\texttt{IsInfinite()} 或者 \texttt{SizeUnknown()} 中合适的一个 \\
+% \hline
+% \texttt{IteratorEltype(IterType)} & \texttt{HasEltype()} & \texttt{EltypeUnknown()} 或 \texttt{HasEltype()} 中合适的一个 \\
+% \hline
+% \texttt{eltype(IterType)} & \texttt{Any} & 由 \texttt{iterate()} 返回元组中第一项的类型。 \\
+% \hline
+% \texttt{length(iter)} & (\emph{未定义}) & 项数，如果已知 \\
+% \hline
+% \texttt{size(iter, [dim])} & (\emph{未定义}) & 在各个维度上项数，如果已知 \\
+% \hline
+% \end{tabulary}
 
-\begin{tabulary}{\linewidth}{|L|L|L|}
-\hline
-必需方法 &  & 简短描述 \\
-\hline
-\texttt{iterate(iter)} &  & 通常返回由第一项及其初始状态组成的元组，但如果为空，则返回 \hyperlink{9331422207248206047}{\texttt{nothing}} \\
-\hline
-\texttt{iterate(iter, state)} &  & 通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回 \texttt{nothing}。 \\
-\hline
-\textbf{重要可选方法} & \textbf{默认定义} & \textbf{简短描述} \\
-\hline
-\texttt{IteratorSize(IterType)} & \texttt{HasLength()} & \texttt{HasLength()}，\texttt{HasShape\{N\}()}，\texttt{IsInfinite()} 或者 \texttt{SizeUnknown()} 中合适的一个 \\
-\hline
-\texttt{IteratorEltype(IterType)} & \texttt{HasEltype()} & \texttt{EltypeUnknown()} 或 \texttt{HasEltype()} 中合适的一个 \\
-\hline
-\texttt{eltype(IterType)} & \texttt{Any} & 由 \texttt{iterate()} 返回元组中第一项的类型。 \\
-\hline
-\texttt{length(iter)} & (\emph{未定义}) & 项数，如果已知 \\
-\hline
-\texttt{size(iter, [dim])} & (\emph{未定义}) & 在各个维度上项数，如果已知 \\
-\hline
-\end{tabulary}
-
-\end{table}
+% \end{table}
 
 
 
@@ -11798,55 +11793,55 @@ julia> Squares(10)[[3,4.,5]]
 \section{抽象数组}
 
 
+\input{table/t15.3-AbstractArray.tex}
 
+% \begin{table}[h]
 
-\begin{table}[h]
+% \begin{tabulary}{\linewidth}{|L|L|L|}
+% \hline
+% 需要实现的方法 &  & 简短描述 \\
+% \hline
+% \texttt{size(A)} &  & 返回包含 \texttt{A} 各维度大小的元组 \\
+% \hline
+% \texttt{getindex(A, i::Int)} &  & （若为 \texttt{IndexLinear}）线性标量索引 \\
+% \hline
+% \texttt{getindex(A, I::Vararg\{Int, N\})} &  & （若为 \texttt{IndexCartesian}，其中 \texttt{N = ndims(A)}）N 维标量索引 \\
+% \hline
+% \texttt{setindex!(A, v, i::Int)} &  & （若为 \texttt{IndexLinear}）线性索引元素赋值 \\
+% \hline
+% \texttt{setindex!(A, v, I::Vararg\{Int, N\})} &  & （若为 \texttt{IndexCartesian}，其中 \texttt{N = ndims(A)}）N 维标量索引元素赋值 \\
+% \hline
+% \textbf{可选方法} & \textbf{默认定义} & \textbf{简短描述} \\
+% \hline
+% \texttt{IndexStyle(::Type)} & \texttt{IndexCartesian()} & 返回 \texttt{IndexLinear()} 或 \texttt{IndexCartesian()}。请参阅下文描述。 \\
+% \hline
+% \texttt{getindex(A, I...)} & 基于标量 \texttt{getindex} 定义 & \hyperlink{16717190941363337071}{多维非标量索引} \\
+% \hline
+% \texttt{setindex!(A, X, I...)} & 基于标量 \texttt{setindex!} 定义 & \hyperlink{16717190941363337071}{多维非标量索引元素赋值} \\
+% \hline
+% \texttt{iterate} & 基于标量 \texttt{getindex} 定义 & Iteration \\
+% \hline
+% \texttt{length(A)} & \texttt{prod(size(A))} & 元素数 \\
+% \hline
+% \texttt{similar(A)} & \texttt{similar(A, eltype(A), size(A))} & 返回具有相同形状和元素类型的可变数组 \\
+% \hline
+% \texttt{similar(A, ::Type\{S\})} & \texttt{similar(A, S, size(A))} & 返回具有相同形状和指定元素类型的可变数组 \\
+% \hline
+% \texttt{similar(A, dims::Dims)} & \texttt{similar(A, eltype(A), dims)} & 返回具有相同元素类型和大小为 \emph{dims} 的可变数组 \\
+% \hline
+% \texttt{similar(A, ::Type\{S\}, dims::Dims)} & \texttt{Array\{S\}(undef, dims)} & 返回具有指定元素类型及大小的可变数组 \\
+% \hline
+% \textbf{不遵循惯例的索引} & \textbf{默认定义} & \textbf{简短描述} \\
+% \hline
+% \texttt{axes(A)} & \texttt{map(OneTo, size(A))} & 返回有效索引的 \texttt{AbstractUnitRange} \\
+% \hline
+% \texttt{similar(A, ::Type\{S\}, inds)} & \texttt{similar(A, S, Base.to\_shape(inds))} & 返回使用特殊索引 \texttt{inds} 的可变数组（详见下文） \\
+% \hline
+% \texttt{similar(T::Union\{Type,Function\}, inds)} & \texttt{T(Base.to\_shape(inds))} & 返回类似于 \texttt{T} 的使用特殊索引 \texttt{inds} 的数组（详见下文） \\
+% \hline
+% \end{tabulary}
 
-\begin{tabulary}{\linewidth}{|L|L|L|}
-\hline
-需要实现的方法 &  & 简短描述 \\
-\hline
-\texttt{size(A)} &  & 返回包含 \texttt{A} 各维度大小的元组 \\
-\hline
-\texttt{getindex(A, i::Int)} &  & （若为 \texttt{IndexLinear}）线性标量索引 \\
-\hline
-\texttt{getindex(A, I::Vararg\{Int, N\})} &  & （若为 \texttt{IndexCartesian}，其中 \texttt{N = ndims(A)}）N 维标量索引 \\
-\hline
-\texttt{setindex!(A, v, i::Int)} &  & （若为 \texttt{IndexLinear}）线性索引元素赋值 \\
-\hline
-\texttt{setindex!(A, v, I::Vararg\{Int, N\})} &  & （若为 \texttt{IndexCartesian}，其中 \texttt{N = ndims(A)}）N 维标量索引元素赋值 \\
-\hline
-\textbf{可选方法} & \textbf{默认定义} & \textbf{简短描述} \\
-\hline
-\texttt{IndexStyle(::Type)} & \texttt{IndexCartesian()} & 返回 \texttt{IndexLinear()} 或 \texttt{IndexCartesian()}。请参阅下文描述。 \\
-\hline
-\texttt{getindex(A, I...)} & 基于标量 \texttt{getindex} 定义 & \hyperlink{16717190941363337071}{多维非标量索引} \\
-\hline
-\texttt{setindex!(A, X, I...)} & 基于标量 \texttt{setindex!} 定义 & \hyperlink{16717190941363337071}{多维非标量索引元素赋值} \\
-\hline
-\texttt{iterate} & 基于标量 \texttt{getindex} 定义 & Iteration \\
-\hline
-\texttt{length(A)} & \texttt{prod(size(A))} & 元素数 \\
-\hline
-\texttt{similar(A)} & \texttt{similar(A, eltype(A), size(A))} & 返回具有相同形状和元素类型的可变数组 \\
-\hline
-\texttt{similar(A, ::Type\{S\})} & \texttt{similar(A, S, size(A))} & 返回具有相同形状和指定元素类型的可变数组 \\
-\hline
-\texttt{similar(A, dims::Dims)} & \texttt{similar(A, eltype(A), dims)} & 返回具有相同元素类型和大小为 \emph{dims} 的可变数组 \\
-\hline
-\texttt{similar(A, ::Type\{S\}, dims::Dims)} & \texttt{Array\{S\}(undef, dims)} & 返回具有指定元素类型及大小的可变数组 \\
-\hline
-\textbf{不遵循惯例的索引} & \textbf{默认定义} & \textbf{简短描述} \\
-\hline
-\texttt{axes(A)} & \texttt{map(OneTo, size(A))} & 返回有效索引的 \texttt{AbstractUnitRange} \\
-\hline
-\texttt{similar(A, ::Type\{S\}, inds)} & \texttt{similar(A, S, Base.to\_shape(inds))} & 返回使用特殊索引 \texttt{inds} 的可变数组（详见下文） \\
-\hline
-\texttt{similar(T::Union\{Type,Function\}, inds)} & \texttt{T(Base.to\_shape(inds))} & 返回类似于 \texttt{T} 的使用特殊索引 \texttt{inds} 的数组（详见下文） \\
-\hline
-\end{tabulary}
-
-\end{table}
+% \end{table}
 
 
 
@@ -27358,6 +27353,6 @@ reversed in Julia relative to C/C++ (see \hyperlink{11239800376478112527}{releva
 \end{quote}
 
 
-\input{unicode-table.tex}
+\input{part/unicode-table.tex}
 
 

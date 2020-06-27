@@ -1,0 +1,47 @@
+\begin{longtable}{lp{0.55\linewidth}}
+    \caption{julia 命令行参数} \label{julia_cmd_arg} \\
+    %% 所有表格 表头
+    \toprule
+    \bf{选项} & \bf{描述} \\ 
+    \hline \endhead
+    %% 所有表格 页脚
+    \multicolumn{2}{r}{下页待续} \\ 
+    \midrule \endfoot
+    %% 表格最后一页 页脚
+    \bottomrule \endlastfoot
+
+    %% 表格正文
+    \texttt{-v}, \texttt{--version} & 显示版本信息 \\ \hline
+    \texttt{-h}, \texttt{--help} & Print command-line options (this message). \\ \hline
+    \texttt{--project[=\{<dir>|@.\}]} & 将 <dir> 设置为主项目/环境。默认的 @. 选项将搜索父目录，直至找到 Project.toml 或 JuliaProject.toml 文件。 \\ \hline
+    \texttt{-J}, \texttt{--sysimage <file>} & 用指定的镜像文件（system image file）启动 \\ \hline
+    \texttt{-H}, \texttt{--home <dir>} & 设置 \texttt{julia} 可执行文件的路径 \\ \hline
+    \texttt{--startup-file=\{yes|no\}} & 是否载入 \texttt{{\textasciitilde}/.julia/config/startup.jl} \\ \hline
+    \texttt{--handle-signals=\{yes|no\}} & 开启或关闭 Julia 默认的 signal handlers \\ \hline
+    \texttt{--sysimage-native-code=\{yes|no\}} & 在可能的情况下，使用系统镜像里的原生代码 \\ \hline
+    \texttt{--compiled-modules=\{yes|no\}} & 开启或关闭 module 的增量预编译功能 \\ \hline
+    \texttt{-e}, \texttt{--eval <expr>} & 执行 \texttt{<expr>} \\ \hline
+    \texttt{-E}, \texttt{--print <expr>} & 执行 \texttt{<expr>} 并显示结果 \\ \hline
+    \texttt{-L}, \texttt{--load <file>} & 立即在所有进程中载入 \texttt{<file>} \\ \hline
+    \texttt{-p}, \texttt{--procs \{N|auto\}} & 这里的整数 N 表示启动 N 个额外的工作进程；\texttt{auto} 表示启动与 CPU 线程数目（logical cores）一样多的进程 \\ \hline
+    \texttt{--machine-file <file>} & 在 \texttt{<file>} 中列出的主机上运行进程 \\ \hline
+    \texttt{-i} & 交互式模式；REPL 运行且 \texttt{isinteractive()} 为 true \\ \hline
+    \texttt{-q}, \texttt{--quiet} & 安静的启动；REPL 启动时无横幅，不显示警告 \\ \hline
+    \texttt{--banner=\{yes|no|auto\}} & 开启或关闭 REPL 横幅 \\ \hline
+    \texttt{--color=\{yes|no|auto\}} & 开启或关闭文字颜色 \\ \hline
+    \texttt{--history-file=\{yes|no\}} & 载入或导出历史记录 \\ \hline
+    \texttt{--depwarn=\{yes|no|error\}} & 开启或关闭语法弃用警告，\texttt{error} 表示将弃用警告转换为错误。 \\ \hline
+    \texttt{--warn-overwrite=\{yes|no\}} & 开启或关闭“method overwrite”警告 \\ \hline
+    \texttt{-C}, \texttt{--cpu-target <target>} & 设置 \texttt{<target>} 来限制使用 CPU 的某些特性；设置为 \texttt{help} 可以查看可用的选项 \\ \hline
+    \texttt{-O}, \texttt{--optimize=\{0,1,2,3\}} & 设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。 \\ \hline
+    \texttt{-g}, \texttt{-g <level>} & 开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。 \\ \hline
+    \texttt{--inline=\{yes|no\}} & 控制是否允许函数内联，此选项会覆盖源文件中的 \texttt{@inline} 声明 \\ \hline
+    \texttt{--check-bounds=\{yes|no\}} & 设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明 \\ \hline
+    \texttt{--math-mode=\{ieee,fast\}} & 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 \texttt{@fastmath} 声明 \\ \hline
+    \texttt{--code-coverage=\{none|user|all\}} & 对源文件中每行代码执行的次数计数 \\ \hline
+    \texttt{--code-coverage} & 等价于 \texttt{--code-coverage=user} \\ \hline
+    \texttt{--track-allocation=\{none|user|all\}} & 对源文件中每行代码的内存分配计数，单位 byte \\ \hline
+    \texttt{--track-allocation} & 等价于 \texttt{--track-allocation=user} \\
+    
+    \bottomrule
+\end{longtable}

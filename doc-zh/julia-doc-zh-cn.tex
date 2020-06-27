@@ -1,19 +1,11 @@
-\documentclass{memoir}
-
-\usepackage{./documenter}
-\usepackage{./custom}
-
-\title{
-    {\HUGE Julia中文文档}\\
-    {\Large }
-}
-\author{Julia中文社区}
+\documentclass{ctexbook}
+\usepackage{JuliaCNDoc}
 
 
-\begin{document}
+\begin{document} % 正文开始
 
 \frontmatter
-\maketitle
+% \maketitle
 \tableofcontents
 \mainmatter
 
@@ -23,4 +15,4 @@
 \input{part/stdlib.tex}   % 标准库
 \input{part/devdocs.tex}  % 开发者文档
 
-\end{document}
+\end{document} % 文档结尾

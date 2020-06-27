@@ -1,0 +1,24 @@
+
+\begin{table}[h] 
+  \centering 
+  \tymin=0.1\textwidth
+  \tymax=0.5\textwidth
+\begin{tabulary}{\linewidth}{LLL}
+  \toprule
+  \textbf{必需方法} &  & \textbf{简短描述} \\
+  \midrule
+  
+  \texttt{iterate(iter)} &  & 通常返回由第一项及其初始状态组成的元组，但如果为空，则返回 \hyperlink{9331422207248206047}{\texttt{nothing}} \\ \midrule
+  \texttt{iterate(iter, state)} &  & 通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回 \texttt{nothing}。 \\ 
+  
+  \toprule
+  \textbf{重要可选方法} & \textbf{默认定义} & \textbf{简短描述} \\ \midrule
+  \texttt{IteratorSize(IterType)} & \texttt{HasLength()} & \texttt{HasLength()}，\texttt{HasShape\{N\}()}，\texttt{IsInfinite()} 或者 \texttt{SizeUnknown()} 中合适的一个 \\ \midrule
+  \texttt{IteratorEltype(IterType)} & \texttt{HasEltype()} & \texttt{EltypeUnknown()} 或 \texttt{HasEltype()} 中合适的一个 \\ \midrule
+  \texttt{eltype(IterType)} & \texttt{Any} & 由 \texttt{iterate()} 返回元组中第一项的类型。 \\ \midrule
+  \texttt{length(iter)} & (\emph{未定义}) & 项数，如果已知 \\ \midrule
+  \texttt{size(iter, [dim])} & (\emph{未定义}) & 在各个维度上项数，如果已知 \\
+  \bottomrule
+\end{tabulary}
+\end{table}
+

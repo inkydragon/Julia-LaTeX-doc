@@ -1,0 +1,25 @@
+%% re 替换
+% find:     r"(-){0,1}(2)(\{\\textasciicircum\})(\d+)( - 1){0,1}"
+% replace:  r"$ $1$2^{$4}$5 $"
+
+\begin{table}[h]
+  \centering
+\begin{tabulary}{\linewidth}{LLLLL}
+  \toprule
+  类型 & 带符号？ & 比特数 & 最小值 & 最大值 \\
+  \midrule
+
+  \hyperlink{5857518405103968275}{\texttt{Int8}} & ✓ & 8 & $ -2^{7} $ & $2^{7} - 1$ \\ \midrule
+  \hyperlink{6609065134969660118}{\texttt{UInt8}} &  & 8 & 0 & $ 2^{8} - 1 $ \\ \midrule
+  \hyperlink{6667287249103968645}{\texttt{Int16}} & ✓ & 16 & $ -2^{15} $ & $ 2^{15} - 1 $ \\ \midrule
+  \hyperlink{7018610346698168012}{\texttt{UInt16}} &  & 16 & 0 & $ 2^{16} - 1 $ \\ \midrule
+  \hyperlink{10103694114785108551}{\texttt{Int32}} & ✓ & 32 & $ -2^{31} $ & $ 2^{31} - 1 $ \\ \midrule
+  \hyperlink{8690996847580776341}{\texttt{UInt32}} &  & 32 & 0 & $ 2^{32} - 1 $ \\ \midrule
+  \hyperlink{7720564657383125058}{\texttt{Int64}} & ✓ & 64 & $ -2^{63} $ & $ 2^{63} - 1 $ \\ \midrule
+  \hyperlink{5500998675195555601}{\texttt{UInt64}} &  & 64 & 0 & $ 2^{64} - 1 $ \\ \midrule
+  \hyperlink{8012327724714767060}{\texttt{Int128}} & ✓ & 128 & $ -2^{127} $ & $ 2^{127} - 1 $ \\ \midrule
+  \hyperlink{14811222188335428522}{\texttt{UInt128}} &  & 128 & 0 & $ 2^{128} - 1 $ \\ \midrule
+  \hyperlink{46725311238864537}{\texttt{Bool}} & N/A & 8 & \texttt{false} (0) & \texttt{true} (1) \\
+  \bottomrule
+\end{tabulary}
+\end{table}

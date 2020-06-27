@@ -1,0 +1,83 @@
+
+
+%% 旋转页面
+
+\newgeometry{hmargin=1.5cm,vmargin=2cm}
+\begin{landscape}
+
+\begin{table}[h] 
+  \centering 
+\begin{tabulary}{\linewidth}{LLL}
+  \toprule
+  \textbf{需要实现的方法} &  & \textbf{简短描述} \\
+  \midrule
+  
+  \texttt{size(A)} &  & 返回包含 \texttt{A} 各维度大小的元组 \\ \midrule
+  \texttt{getindex(A, i::Int)} &  & （若为 \texttt{IndexLinear}）线性标量索引 \\ \midrule
+  \texttt{getindex(A, I::Vararg\{Int, N\})} &  & （若为 \texttt{IndexCartesian}，其中 \texttt{N = ndims(A)}）N 维标量索引 \\ \midrule
+  \texttt{setindex!(A, v, i::Int)} &  & （若为 \texttt{IndexLinear}）线性索引元素赋值 \\ \midrule
+  \texttt{setindex!(A, v, I::Vararg\{Int, N\})} &  & （若为 \texttt{IndexCartesian}，其中 \texttt{N = ndims(A)}）N 维标量索引元素赋值 \\ 
+  
+  \toprule
+  \textbf{可选方法} & \textbf{默认定义} & \textbf{简短描述} \\ 
+  \midrule
+  \texttt{IndexStyle(::Type)} & \texttt{IndexCartesian()} & 返回 \texttt{IndexLinear()} 或 \texttt{IndexCartesian()}。请参阅下文描述。 \\ \midrule
+  \texttt{getindex(A, I...)} & 基于标量 \texttt{getindex} 定义 & \hyperlink{14469287548874312017}{多维非标量索引} \\ \midrule
+  \texttt{setindex!(A, X, I...)} & 基于标量 \texttt{setindex!} 定义 & \hyperlink{14469287548874312017}{多维非标量索引元素赋值} \\ \midrule
+  \texttt{iterate} & 基于标量 \texttt{getindex} 定义 & Iteration \\ \midrule
+  \texttt{length(A)} & \texttt{prod(size(A))} & 元素数 \\ \midrule
+  \texttt{similar(A)} & \texttt{similar(A, eltype(A), size(A))} & 返回具有相同形状和元素类型的可变数组 \\ \midrule
+  \texttt{similar(A, ::Type\{S\})} & \texttt{similar(A, S, size(A))} & 返回具有相同形状和指定元素类型的可变数组 \\ \midrule
+  \texttt{similar(A, dims::Dims)} & \texttt{similar(A, eltype(A), dims)} & 返回具有相同元素类型和大小为 \emph{dims} 的可变数组 \\ \midrule
+  \texttt{similar(A, ::Type\{S\}, dims::Dims)} & \texttt{Array\{S\}(undef, dims)} & 返回具有指定元素类型及大小的可变数组 \\ 
+  
+  \toprule
+  \textbf{不遵循惯例的索引} & \textbf{默认定义} & \textbf{简短描述} \\ 
+  \midrule
+  \texttt{axes(A)} & \texttt{map(OneTo, size(A))} & 返回有效索引的 \texttt{AbstractUnitRange} \\ \midrule
+  \texttt{similar(A, ::Type\{S\}, inds)} & \texttt{similar(A, S, Base.to\_shape(inds))} & 返回使用特殊索引 \texttt{inds} 的可变数组（详见下文） \\ \midrule
+  \texttt{similar(T::Union\{Type,Function\}, inds)} & \texttt{T(Base.to\_shape(inds))} & 返回类似于 \texttt{T} 的使用特殊索引 \texttt{inds} 的数组（详见下文） \\ 
+  \bottomrule
+\end{tabulary}
+\end{table}
+
+\end{landscape}
+\restoregeometry
+
+
+%% 正常版式 -------------------------------------------------------------------------------
+% \begin{table}[h] 
+%   \centering 
+% \begin{tabulary}{\linewidth}{LLL}
+%   \toprule
+%   \textbf{需要实现的方法} &  & \textbf{简短描述} \\
+%   \midrule
+
+%   \texttt{size(A)} &  & 返回包含 \texttt{A} 各维度大小的元组 \\ \midrule
+%   \texttt{getindex(A, i::Int)} &  & （若为 \texttt{IndexLinear}）线性标量索引 \\ \midrule
+%   \texttt{getindex(A, I::Vararg\{Int, N\})} &  & （若为 \texttt{IndexCartesian}，其中 \texttt{N = ndims(A)}）N 维标量索引 \\ \midrule
+%   \texttt{setindex!(A, v, i::Int)} &  & （若为 \texttt{IndexLinear}）线性索引元素赋值 \\ \midrule
+%   \texttt{setindex!(A, v, I::Vararg\{Int, N\})} &  & （若为 \texttt{IndexCartesian}，其中 \texttt{N = ndims(A)}）N 维标量索引元素赋值 \\ 
+
+%   \toprule
+%   \textbf{可选方法} & \textbf{默认定义} & \textbf{简短描述} \\ 
+%   \midrule
+%   \texttt{IndexStyle(::Type)} & \texttt{IndexCartesian()} & 返回 \texttt{IndexLinear()} 或 \texttt{IndexCartesian()}。请参阅下文描述。 \\ \midrule
+%   \texttt{getindex(A, I...)} & 基于标量 \texttt{getindex} 定义 & \hyperlink{14469287548874312017}{多维非标量索引} \\ \midrule
+%   \texttt{setindex!(A, X, I...)} & 基于标量 \texttt{setindex!} 定义 & \hyperlink{14469287548874312017}{多维非标量索引元素赋值} \\ \midrule
+%   \texttt{iterate} & 基于标量 \texttt{getindex} 定义 & Iteration \\ \midrule
+%   \texttt{length(A)} & \texttt{prod(size(A))} & 元素数 \\ \midrule
+%   \texttt{similar(A)} & \texttt{similar(A, eltype(A), size(A))} & 返回具有相同形状和元素类型的可变数组 \\ \midrule
+%   \texttt{similar(A, ::Type\{S\})} & \texttt{similar(A, S, size(A))} & 返回具有相同形状和指定元素类型的可变数组 \\ \midrule
+%   \texttt{similar(A, dims::Dims)} & \texttt{similar(A, eltype(A), dims)} & 返回具有相同元素类型和大小为 \emph{dims} 的可变数组 \\ \midrule
+%   \texttt{similar(A, ::Type\{S\}, dims::Dims)} & \texttt{Array\{S\}(undef, dims)} & 返回具有指定元素类型及大小的可变数组 \\ 
+
+%   \toprule
+%   \textbf{不遵循惯例的索引} & \textbf{默认定义} & \textbf{简短描述} \\ 
+%   \midrule
+%   \texttt{axes(A)} & \texttt{map(OneTo, size(A))} & 返回有效索引的 \texttt{AbstractUnitRange} \\ \midrule
+%   \texttt{similar(A, ::Type\{S\}, inds)} & \texttt{similar(A, S, Base.to\_shape(inds))} & 返回使用特殊索引 \texttt{inds} 的可变数组（详见下文） \\ \midrule
+%   \texttt{similar(T::Union\{Type,Function\}, inds)} & \texttt{T(Base.to\_shape(inds))} & 返回类似于 \texttt{T} 的使用特殊索引 \texttt{inds} 的数组（详见下文） \\ 
+%   \bottomrule
+% \end{tabulary}
+% \end{table}
