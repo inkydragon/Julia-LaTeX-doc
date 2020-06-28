@@ -1,4 +1,10 @@
+%!TEX program = lualatex
 \documentclass{article}
+\usepackage[% 上下、左右对称
+  hmargin = 1.0cm, % left and right margin
+  vmargin = 2.5cm, % top and bottom margin
+]{geometry}
+
 \usepackage{amsmath,emoji}
 \newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
 \usepackage{longtable,booktabs}
@@ -13,7 +19,8 @@ $
 $
 
 
-\begin{longtable}{p{0.1\linewidth}p{0.05\linewidth}p{0.22\linewidth}p{0.53\linewidth}}
+% \begin{longtable}{p{0.1\linewidth}p{0.05\linewidth}p{0.22\linewidth}p{0.53\linewidth}}
+\begin{longtable}{ccll}
   \caption{Unicode 输入表} \\
   %% 所有表格 表头
   \toprule

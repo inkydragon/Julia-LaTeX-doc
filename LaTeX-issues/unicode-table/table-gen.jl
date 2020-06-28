@@ -55,25 +55,66 @@ function table_entries(completions, unicode_dict)
     entries
 end
 
+# copy from `LaTeXWriter.jl` documenter.jl
+const _latexescape_chars = Dict{Char, AbstractString}(
+    '~' => "{\\textasciitilde}",
+    '^' => "{\\textasciicircum}",
+    '\\' => "{\\textbackslash}",
+    '\'' => "{\\textquotesingle}",
+    '"' => "{\\textquotedbl}",
+)
+for ch in "&%\$#_{}"
+    _latexescape_chars[ch] = "\\$ch"
+end
+
+latexesc(io, ch::AbstractChar) = print(io, get(_latexescape_chars, ch, ch))
+
+function latexesc(io, s::AbstractString)
+    for ch in s
+        latexesc(io, ch)
+    end
+end
+
+latexesc(s) = sprint(latexesc, s)
+
 
 emoji = table_entries(
-    tab_completions(
-        # REPL.REPLCompletions.latex_symbols,
-        REPL.REPLCompletions.emoji_symbols
-    ),
+    tab_completions(REPL.REPLCompletions.emoji_symbols),
+    unicode_data()
+)
+math = table_entries(
+    tab_completions(REPL.REPLCompletions.latex_symbols),
     unicode_data()
 )
 
 # U+1F6B9 & 🚹 & {\textbackslash}:mens: & Mens Symbol \\ \hline
 function emoji_item(arr::Vector{String})
     code_points, emoji, name, desc = arr
-    emoji_name_esc = replace(name[2:end], r"_" => "\\_")
+    emoji_name_esc = latexesc(name[2:end])
 
     "  $(code_points) & \\EmojiFont{$(emoji)} & {\\textbackslash}$(emoji_name_esc) & $(desc) \\\\ \\hline"
 end
 
+function math_item(arr::Vector{String})
+    code_points, math, name, desc = arr
+    math_name_esc = latexesc(name[2:end])
+
+    # "  $(code_points) & \\MathSymFont{$(math)} & {\\textbackslash}$(math_name_esc) & $(desc) \\\\ \\hline"
+    "  $(code_points) & \$$(math)\$ & {\\textbackslash}$(math_name_esc) & $(desc) \\\\ \\hline"
+end
+
 open("unicode-table-item.tex", "w") do f
+    # for a in math[2:end]
+    #     println(f, math_item(a))
+    # end
+    # println(f)
     for a in emoji[2:end]
-      println(f, emoji_item(a))
+        println(f, emoji_item(a))
+    end
+end
+
+open("unicode-math-item.tex", "w") do f
+    for a in math[2:end]
+        println(f, math_item(a))
     end
 end
