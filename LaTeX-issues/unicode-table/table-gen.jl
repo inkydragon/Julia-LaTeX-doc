@@ -1,6 +1,8 @@
 import REPL
 const NBSP = '\u00A0'
 
+include("./math-sym/latex_symbols.jl")
+
 function tab_completions(symbols...)
     completions = Dict{String, Vector{String}}()
     for each in symbols, (k, v) in each
@@ -113,7 +115,26 @@ open("unicode-table-item.tex", "w") do f
     end
 end
 
-open("unicode-math-item.tex", "w") do f
+# open("unicode-math-item.tex", "w") do f
+#     for a in math[2:end]
+#         println(f, math_item(a))
+#     end
+# end
+
+open("unicode-man.tex", "w") do f
+    math = table_entries(tab_completions(manual_symbols), unicode_data())
+    for a in math[2:end]
+        println(f, math_item(a))
+    end
+end
+open("unicode-xml.tex", "w") do f
+    math = table_entries(tab_completions(xml_symbols), unicode_data())
+    for a in math[2:end]
+        println(f, math_item(a))
+    end
+end
+open("unicode-tex.tex", "w") do f
+    math = table_entries(tab_completions(tex_symbols), unicode_data())
     for a in math[2:end]
         println(f, math_item(a))
     end

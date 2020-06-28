@@ -1,0 +1,74 @@
+\documentclass[a4paper]{article}
+\usepackage[
+  hmargin=0.1cm, % left and right margin
+  vmargin=0.5cm, % top and bottom margin
+]{geometry}
+
+\usepackage{amsmath,unicode-math}
+% \newfontface\MathSymFont{DejaVuMathTeXGyre}
+
+\setmathfont{STEP Math}
+\usepackage{longtable,booktabs}
+\usepackage{caption}
+\captionsetup{justification=raggedright,singlelinecheck=false}
+
+\begin{document}
+
+{\Large STEP Math}
+
+\begin{longtable}{ccll}
+  \caption{Manually add} \\
+  %% all head
+  \toprule
+  Code point & Char & Tab seq & Unicode name \\
+  \hline \endhead
+  %% all footer
+  \multicolumn{4}{l}{To be continued...} \\ 
+  \midrule \endfoot
+  %% last footer
+  \bottomrule \endlastfoot
+
+  \input{../unicode-man.tex}
+
+  \bottomrule
+\end{longtable}
+
+\cleardoublepage
+
+\begin{longtable}{ccll}
+  \caption{unicode-math / unicode-math-table.tex} \\
+  %% all head
+  \toprule
+  Code point & Char & Tab seq & Unicode name \\
+  \hline \endhead
+  %% all footer
+  \multicolumn{4}{l}{To be continued...} \\ 
+  \midrule \endfoot
+  %% last footer
+  \bottomrule \endlastfoot
+
+  \input{../unicode-tex.tex}
+
+  \bottomrule
+\end{longtable}
+
+\cleardoublepage
+
+\begin{longtable}{ccll}
+  \caption{From Math/characters/unicode.xml} \\
+  %% all head
+  \toprule
+  Code point & Char & Tab seq & Unicode name \\
+  \hline \endhead
+  %% all footer
+  \multicolumn{4}{l}{To be continued...} \\ 
+  \midrule \endfoot
+  %% last footer
+  \bottomrule \endlastfoot
+
+  \input{../unicode-xml.tex}
+
+  \bottomrule
+\end{longtable}
+
+\end{document}
