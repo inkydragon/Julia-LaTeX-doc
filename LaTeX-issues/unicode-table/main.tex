@@ -11,8 +11,8 @@
 
 %% font settings
 \usepackage{fontspec}
-\setsansfont{DejaVu Sans}
-\setmonofont{DejaVu Sans Mono}
+% \setsansfont{DejaVu Sans}
+% \setmonofont{DejaVu Sans Mono}
 
 % CJK font
 % \usepackage{xeCJK}
@@ -21,22 +21,11 @@
 %   {Noto Sans Mono CJK KR},
 % }
 
-% Unicode char fallback
-% + Define fallback font for specific Unicode characters in LuaLaTeX - TeX - LaTeX Stack Exchange
-%   https://tex.stackexchange.com/questions/224584/define-fallback-font-for-specific-unicode-characters-in-lualatex/224585
-\usepackage{newunicodechar}
-\newfontfamily{\fallbackfont}{DejaVu Sans}[Scale=MatchLowercase]
-\DeclareTextFontCommand{\textfallback}{\fallbackfont}
-\newcommand{\fallbackchar}[2][\textfallback]{%
-    \newunicodechar{#2}{#1{#2}}%
-}
-\fallbackchar{⊻}
-
+% Unicode Math
 \usepackage{amsmath,unicode-math}
 \setmathfont{STEP Math}
 \newfontface\MathSymFontOne{STEP Math}
 \newfontface\MathSymFontTwo{FreeSerif}
-
 
 % emoji
 % + 在 LaTeX 中使用 Emoji ✌️ 
@@ -44,6 +33,17 @@
 \usepackage{emoji}
 \setemojifont{Twemoji Mozilla} % texlive2020 自带；可换 Noto Color Emoji
 \newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+
+% Unicode char fallback
+% + Define fallback font for specific Unicode characters in LuaLaTeX - TeX - LaTeX Stack Exchange
+%   https://tex.stackexchange.com/questions/224584/define-fallback-font-for-specific-unicode-characters-in-lualatex/224585
+% \usepackage{newunicodechar}
+% \newfontfamily{\fallbackfont}{DejaVu Sans}[Scale=MatchLowercase]
+% \DeclareTextFontCommand{\textfallback}{\fallbackfont}
+% \newcommand{\fallbackchar}[2][\textfallback]{%
+%     \newunicodechar{#2}{#1{#2}}%
+% }
+% \fallbackchar{⊻}
 %% font settings END
 
 % tables
@@ -74,7 +74,11 @@ Julia 提供了非常灵活的变量命名策略。
   \bottomrule \endlastfoot
 
   %% 表格正文
-  \input{unicode-input-table.tex}
+  % \input{unicode-input-table.tex}
+  U+03030 & {\EmojiFont 〰} & {\textbackslash}:wavy\_dash: & Wavy Dash \\ \hline
+  U+0303D & {\EmojiFont 〽} & {\textbackslash}:part\_alternation\_mark: & Part Alternation Mark \\ \hline
+  U+03297 & {\EmojiFont ㊗} & {\textbackslash}:congratulations: & Circled Ideograph Congratulation \\ \hline
+  U+03299 & {\EmojiFont ㊙} & {\textbackslash}:secret: & Circled Ideograph Secret \\ \hline
   
   \bottomrule
 \end{longtable}

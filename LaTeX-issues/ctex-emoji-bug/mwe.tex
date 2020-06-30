@@ -1,0 +1,15 @@
+% \documentclass{ctexbook}
+\documentclass{book}
+
+% [在 LaTeX 中使用 Emoji ✌️]( https://zhuanlan.zhihu.com/p/109158588 )
+\usepackage{fontspec}
+\newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+
+\begin{document}
+
+U+03030 | {\EmojiFont 〰}
+U+0303D | {\EmojiFont 〽}
+U+03297 | {\EmojiFont ㊗}
+U+03299 | {\EmojiFont ㊙}
+
+\end{document}
