@@ -1,0 +1,65 @@
+\documentclass[UTF8, a4paper, oneside]{book}
+\usepackage[%
+  hmargin = 3.0cm, % left and right margin
+  vmargin = 2.5cm, % top and bottom margin
+]{geometry}
+
+%% font settings
+\usepackage{fontspec}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+
+% Unicode Math
+\usepackage{amsmath,unicode-math}
+\setmathfont{STEP Math}
+\newfontface\MathSymFontOne{STEP Math}
+\newfontface\MathSymFontTwo{FreeSerif}
+
+% emoji
+\usepackage{emoji}
+\setemojifont{Twemoji Mozilla} % or Noto Color Emoji
+\newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+
+% Unicode char fallback
+% + Define fallback font for specific Unicode characters in LuaLaTeX - TeX - LaTeX Stack Exchange
+%   https://tex.stackexchange.com/questions/224584/define-fallback-font-for-specific-unicode-characters-in-lualatex/224585
+% \usepackage{newunicodechar}
+% \newfontfamily{\fallbackfont}{DejaVu Sans}[Scale=MatchLowercase]
+% \DeclareTextFontCommand{\textfallback}{\fallbackfont}
+% \newcommand{\fallbackchar}[2][\textfallback]{%
+%     \newunicodechar{#2}{#1{#2}}%
+% }
+% \fallbackchar{⊻}
+%% font settings END
+
+% tables
+% \usepackage{tabulary}
+\usepackage{longtable,booktabs}
+%
+
+
+\begin{document}
+
+The following table lists Unicode characters that can be entered via tab completion of LaTeX-like abbreviations in the Julia REPL (and in various other editing environments).  You can also get information on how to type a symbol by entering it in the REPL help, i.e. by typing \texttt{?} and then entering the symbol in the REPL (e.g., by copy-paste from somewhere you saw the symbol).
+
+
+\begin{longtable}{p{0.1\linewidth}p{0.05\linewidth}p{0.22\linewidth}p{0.53\linewidth}}
+  \caption{Unicode Input Table} \\
+  %% all head
+  \toprule
+  Code point & Char & Tab seq & Unicode name \\
+  \hline \endhead
+  %% all footer
+  \multicolumn{4}{l}{To be continued...} \\ 
+  \midrule \endfoot
+  %% last footer
+  \bottomrule \endlastfoot
+
+  \input{unicode-input-table.tex}
+  
+  \bottomrule
+\end{longtable}
+
+This table may appear to contain missing characters in the second column, or even show characters that are inconsistent with the characters as they are rendered in the Julia REPL. In these cases, users are strongly advised to check their choice of fonts in their browser and REPL environment, as there are known issues with glyphs in many fonts.
+
+\end{document}
