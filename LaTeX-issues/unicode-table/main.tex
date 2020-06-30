@@ -1,0 +1,87 @@
+\documentclass[
+  UTF8, % UTF-8 编码读入
+  a4paper,  % A4 纸大小
+  oneside,  % 单页模式，左右页边距相同
+]{ctexbook} % book 类：需要 `\part{}' 命令
+
+\usepackage[% 上下、左右对称
+  hmargin = 3.0cm, % left and right margin
+  vmargin = 2.5cm, % top and bottom margin
+]{geometry}
+
+%% font settings
+\usepackage{fontspec}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+
+% CJK font
+% \usepackage{xeCJK}
+% \setCJKmonofont{Noto Sans Mono CJK SC}
+% \setCJKfallbackfamilyfont{\CJKttdefault}{ % \texttt 和 \ttfamily
+%   {Noto Sans Mono CJK KR},
+% }
+
+% Unicode char fallback
+% + Define fallback font for specific Unicode characters in LuaLaTeX - TeX - LaTeX Stack Exchange
+%   https://tex.stackexchange.com/questions/224584/define-fallback-font-for-specific-unicode-characters-in-lualatex/224585
+\usepackage{newunicodechar}
+\newfontfamily{\fallbackfont}{DejaVu Sans}[Scale=MatchLowercase]
+\DeclareTextFontCommand{\textfallback}{\fallbackfont}
+\newcommand{\fallbackchar}[2][\textfallback]{%
+    \newunicodechar{#2}{#1{#2}}%
+}
+\fallbackchar{⊻}
+
+\usepackage{amsmath,unicode-math}
+\setmathfont{STEP Math}
+\newfontface\MathSymFontOne{STEP Math}
+\newfontface\MathSymFontTwo{FreeSerif}
+
+
+% emoji
+% + 在 LaTeX 中使用 Emoji ✌️ 
+%   https://zhuanlan.zhihu.com/p/109158588
+\usepackage{emoji}
+\setemojifont{Twemoji Mozilla} % texlive2020 自带；可换 Noto Color Emoji
+\newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+%% font settings END
+
+% tables
+% \usepackage{tabulary}
+\usepackage{longtable,booktabs}
+%
+
+
+\begin{document}
+
+Julia 提供了非常灵活的变量命名策略。
+变量名是大小写敏感的，且不包含语义，意思是说，Julia 不会根据变量的名字来区别对待它们。 
+（译者注：Julia \textbf{不会}自动将全大写的变量识别为常量，
+也\textbf{不会}将有特定前后缀的变量自动识别为某种特定类型的变量，即不会根据变量名字，自动判断变量的任何属性。）
+
+% \input{utable.tex}
+
+\begin{longtable}{p{0.1\linewidth}p{0.05\linewidth}p{0.22\linewidth}p{0.53\linewidth}}
+  \caption{Unicode 输入表} \label{unicode-input-table} \\
+  %% 所有表格 表头
+  \toprule
+  \bf{码点} & \bf{字符} & \tt{TAB}\bf{补全序列} & \bf{Unicode 名称} \\
+  \hline \endhead
+  %% 所有表格 页脚
+  \multicolumn{4}{r}{下页待续} \\ 
+  \midrule \endfoot
+  %% 表格最后一页 页脚
+  \bottomrule \endlastfoot
+
+  %% 表格正文
+  \input{unicode-input-table.tex}
+  
+  \bottomrule
+\end{longtable}
+
+Julia 提供了非常灵活的变量命名策略。
+变量名是大小写敏感的，且不包含语义，意思是说，Julia 不会根据变量的名字来区别对待它们。 
+（译者注：Julia \textbf{不会}自动将全大写的变量识别为常量，
+也\textbf{不会}将有特定前后缀的变量自动识别为某种特定类型的变量，即不会根据变量名字，自动判断变量的任何属性。）
+
+\end{document} % 文档结尾
