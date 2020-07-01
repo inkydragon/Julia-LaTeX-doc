@@ -1,0 +1,25 @@
+\documentclass{ctexbook}
+
+\usepackage{./emoji}
+\setemojifont{Twemoji Mozilla}
+\newCJKfontfamily\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+
+\begin{document}
+
+\verb!\newCJKfontfamily\EmojiFont! \\
+U+03030 | {\EmojiFont 〰}
+U+0303D | {\EmojiFont 〽}
+U+03297 | {\EmojiFont ㊗}
+U+03299 | {\EmojiFont ㊙}
+U+02194 | {\EmojiFont ↔} 
+U+02195 | {\EmojiFont ↕} \\
+
+\verb!\newCJKfontfamily\EmojiFont + \emoji{}! \\
+U+03030 | \emoji{wavy-dash}
+U+0303D | \emoji{part-alternation-mark}
+U+03297 | \emoji{congratulations}
+U+03299 | \emoji{secret}
+U+02194 | \emoji{left-right-arrow} 
+U+02195 | \emoji{left-right-arrow} \\
+
+\end{document}
