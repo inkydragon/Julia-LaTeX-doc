@@ -1,24 +1,58 @@
-\documentclass{ctexbook}
+%!TEX program = lualatex
+\documentclass[oneside]{ctexbook} %% 1. {ctexbook} + \newCJKfontfamily
+% \documentclass[oneside]{book} %% 2. {book} + \newfontface
 
-\newfontface\EmojiFontOne{Twemoji Mozilla}[Renderer=HarfBuzz]
-\newCJKfontfamily\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+\usepackage[
+  hmargin=0.1cm, % left and right margin
+  vmargin=0.5cm, % top and bottom margin
+]{geometry}
+
+% 表格
+\usepackage{longtable,booktabs}
+
+% emoji
+\usepackage{./emoji}
+\setemojifont{Twemoji Mozilla}
+\newCJKfontfamily\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz] %% 1. {ctexbook} + \newCJKfontfamily
+% \newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz] %% 2. {book} + \newfontface
+
 
 \begin{document}
 
-\verb!\newCJKfontfamily\EmojiFont! \\
-U+03030 | {\EmojiFont 〰}
-U+0303D | {\EmojiFont 〽}
-U+03297 | {\EmojiFont ㊗}
-U+03299 | {\EmojiFont ㊙} \\
+% \verb!\newCJKfontfamily\EmojiFont! \\
+% U+03030 | {\EmojiFont 〰}
+% U+0303D | {\EmojiFont 〽}
+% U+03297 | {\EmojiFont ㊗}
+% U+03299 | {\EmojiFont ㊙}
+% U+02194 | {\EmojiFont ↔} 
+% U+02195 | {\EmojiFont ↕} \\
+
+% \verb!\newCJKfontfamily\EmojiFont + \emoji{}! \\
+% U+03030 | \emoji{wavy-dash}
+% U+0303D | \emoji{part-alternation-mark}
+% U+03297 | \emoji{congratulations}
+% U+03299 | \emoji{secret}
+% U+02194 | \emoji{left-right-arrow} 
+% U+02195 | \emoji{left-right-arrow} \\
+
+\verb!\newCJKfontfamily\EmojiFont! \\ %% 1. {ctexbook} + \newCJKfontfamily
+% \verb! \newfontface\EmojiFont ! \\ %% 2. {book} + \newfontface
 
 
-\verb!\newCJKfontfamily\EmojiFont! \\
-U+02194 | {\EmojiFont ↔} 
-U+02195 | {\EmojiFont ↕} \\
-
-\verb!\newfontface\EmojiFontOne! \\
-U+02194 | {\EmojiFontOne ↔} 
-U+02195 | {\EmojiFontOne ↕} \\
-
+% 不管右侧溢出，确保一行一个 emoji
+\begin{longtable}{ccll}
+    \caption{Unicode emoji} \\
+    %% all head
+    \toprule
+    Code point & Char & Tab seq & Unicode name \\
+    \hline \endhead
+    %% all footer
+    \multicolumn{4}{l}{To be continued...} \\ 
+    \midrule \endfoot
+    %% last footer
+    \bottomrule \endlastfoot
+    
+    \input{emoji-test}
+\end{longtable}
 
 \end{document}
