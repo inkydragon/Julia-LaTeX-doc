@@ -1,8 +1,8 @@
 [submodule "julia"]
 	path = julia
 	url = https://github.com/JuliaLang/julia
-    ignore = dirty
+	branch = release-1.6
 [submodule "JuliaZH.jl"]
 	path = JuliaZH.jl
 	url = https://github.com/JuliaCN/JuliaZH.jl
-    ignore = dirty
+	branch = master
