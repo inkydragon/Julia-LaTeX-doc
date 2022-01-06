@@ -76,25 +76,25 @@ DataType
 
 
 
-注意 \texttt{fieldnames(DataType)} 给出了 \texttt{DataType} 本身的每个字段的名称，其中的一个字段是上面示例中提到的 \texttt{types} 字段。
+Note that \texttt{fieldnames(DataType)} gives the names for each field of \texttt{DataType} itself, and one of these fields is the \texttt{types} field observed in the example above.
 
 
 
-\hypertarget{13277644863207512265}{}
+\hypertarget{11371291537025953368}{}
 
 
-\section{子类型}
+\section{Subtypes}
 
 
 
-任何 \texttt{DataType} 的\emph{直接}子类型都可以通过使用 \hyperlink{13112219412833772146}{\texttt{subtypes}} 来列出。 例如抽象 \texttt{DataType} \hyperlink{11465394427882483091}{\texttt{AbstractFloat}} 有四个（具体的）子类型：
+The \emph{direct} subtypes of any \texttt{DataType} may be listed using \hyperlink{13112219412833772146}{\texttt{subtypes}}. For example, the abstract \texttt{DataType} \hyperlink{11465394427882483091}{\texttt{AbstractFloat}} has four (concrete) subtypes:
 
 
 
 
 \begin{minted}{jlcon}
 julia> subtypes(AbstractFloat)
-4-element Array{Any,1}:
+4-element Vector{Any}:
  BigFloat
  Float16
  Float32
@@ -140,7 +140,7 @@ julia> subtypes(AbstractFloat)
 
 
 
-As discussed in the \href{@ref}{Metaprogramming} section, the \hyperlink{8018172489611994488}{\texttt{macroexpand}} function gives the unquoted and interpolated expression (\hyperlink{17120496304147995299}{\texttt{Expr}}) form for a given macro. To use \texttt{macroexpand}, \texttt{quote} the expression block itself (otherwise, the macro will be evaluated and the result will be passed instead!). For example:
+As discussed in the \hyperlink{15430858583934124136}{Metaprogramming} section, the \hyperlink{8018172489611994488}{\texttt{macroexpand}} function gives the unquoted and interpolated expression (\hyperlink{17120496304147995299}{\texttt{Expr}}) form for a given macro. To use \texttt{macroexpand}, \texttt{quote} the expression block itself (otherwise, the macro will be evaluated and the result will be passed instead!). For example:
 
 
 
@@ -164,7 +164,7 @@ Finally, the \hyperlink{6644553029841096787}{\texttt{Meta.lower}} function gives
 \begin{minted}{jlcon}
 julia> Meta.lower(@__MODULE__, :( [1+2, sin(0.5)] ))
 :($(Expr(:thunk, CodeInfo(
-    @ none within `top-level scope'
+    @ none within `top-level scope`
 1 ─ %1 = 1 + 2
 │   %2 = sin(0.5)
 │   %3 = Base.vect(%1, %2)
@@ -258,11 +258,11 @@ How does the Julia runtime execute \texttt{julia -e {\textquotesingle}println({\
 
 
 
-Execution starts at \href{https://github.com/JuliaLang/julia/blob/master/ui/repl.c}{\texttt{main()} in \texttt{ui/repl.c}}.
+Execution starts at \href{https://github.com/JuliaLang/julia/blob/master/cli/loader\_exe.c}{\texttt{main()} in \texttt{cli/loader\_exe.c}}, which calls \texttt{jl\_load\_repl()} in \href{https://github.com/JuliaLang/julia/blob/master/cli/loader\_lib.c}{\texttt{cli/loader\_lib.c}} which loads a few libraries, eventually calling \href{https://github.com/JuliaLang/julia/blob/master/src/jlapi.c}{\texttt{repl\_entrypoint()} in \texttt{src/jlapi.c}}.
 
 
 
-\texttt{main()} calls \href{https://github.com/JuliaLang/julia/blob/master/src/support/libsupportinit.c}{\texttt{libsupport\_init()}} to set the C library locale and to initialize the {\textquotedbl}ios{\textquotedbl} library (see \href{https://github.com/JuliaLang/julia/blob/master/src/support/ios.c}{\texttt{ios\_init\_stdstreams()}} and \hyperlink{3841537160196121279}{Legacy \texttt{ios.c} library}).
+\texttt{repl\_entrypoint()} calls \href{https://github.com/JuliaLang/julia/blob/master/src/support/libsupportinit.c}{\texttt{libsupport\_init()}} to set the C library locale and to initialize the {\textquotedbl}ios{\textquotedbl} library (see \href{https://github.com/JuliaLang/julia/blob/master/src/support/ios.c}{\texttt{ios\_init\_stdstreams()}} and \hyperlink{3841537160196121279}{Legacy \texttt{ios.c} library}).
 
 
 
@@ -408,7 +408,7 @@ Finally \href{https://github.com/JuliaLang/julia/blob/master/src/signals-unix.c}
 
 
 
-\texttt{\_julia\_init()} then returns \href{https://github.com/JuliaLang/julia/blob/master/ui/repl.c}{back to \texttt{main()} in \texttt{ui/repl.c}} and \texttt{main()} calls \texttt{true\_main(argc, (char**)argv)}.
+\texttt{\_julia\_init()} then returns \href{https://github.com/JuliaLang/julia/blob/master/cli/loader\_exe.c}{back to \texttt{main()} in \texttt{cli/loader\_exe.c}} and \texttt{main()} calls \texttt{repl\_entrypoint(argc, (char**)argv)}.
 
 
 
@@ -424,18 +424,18 @@ Note: \href{https://github.com/JuliaLang/julia/blob/master/src/staticdata.c}{\te
 \end{quote}
 
 
-\hypertarget{8052465870854670365}{}
+\hypertarget{11153303243704616360}{}
 
 
-\subsection{\texttt{true\_main()}}
-
-
-
-\href{https://github.com/JuliaLang/julia/blob/master/ui/repl.c}{\texttt{true\_main()}} loads the contents of \texttt{argv[]} into \hyperlink{2567473177880607455}{\texttt{Base.ARGS}}.
+\subsection{\texttt{repl\_entrypoint()}}
 
 
 
-If a \texttt{.jl} {\textquotedbl}program{\textquotedbl} file was supplied on the command line, then \href{https://github.com/JuliaLang/julia/blob/master/ui/repl.c}{\texttt{exec\_program()}} calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_load(program,len)}} which calls \href{https://github.com/JuliaLang/julia/blob/master/src/ast.c}{\texttt{jl\_parse\_eval\_all}} which repeatedly calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_toplevel\_eval\_flex()}} to execute the program.
+\href{https://github.com/JuliaLang/julia/blob/master/src/jlapi.c}{\texttt{repl\_entrypoint()}} loads the contents of \texttt{argv[]} into \hyperlink{2567473177880607455}{\texttt{Base.ARGS}}.
+
+
+
+If a \texttt{.jl} {\textquotedbl}program{\textquotedbl} file was supplied on the command line, then \href{https://github.com/JuliaLang/julia/blob/master/src/jlapi.c}{\texttt{exec\_program()}} calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_load(program,len)}} which calls \href{https://github.com/JuliaLang/julia/blob/master/src/ast.c}{\texttt{jl\_parse\_eval\_all}} which repeatedly calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_toplevel\_eval\_flex()}} to execute the program.
 
 
 
@@ -594,29 +594,29 @@ Finally, \texttt{main()} calls \href{https://github.com/JuliaLang/julia/blob/mas
 
 
 
-Julia 有两种代码的表现形式。 第一种是解析器返回的表面语法 AST （例如 \hyperlink{10422957797582368651}{\texttt{Meta.parse}} 函数），由宏来操控。是代码编写时的结构化表示，由 \texttt{julia-parser.scm} 用字符流构造而成。 另一种则是底层形式，或者 IR（中间表示），这种形式在进行类型推导和代码生成的时候被使用。在这种底层形式中结点的类型相对更少，所有的宏都会被展开，所有的控制流会被转化成显式的分支和语句的序列。底层的形式由 \texttt{julia-syntax.scm} 构建。
+Julia 有两种代码的表现形式。 第一种是解析器返回的表面语法 AST （例如 \hyperlink{9794549254908071788}{\texttt{Meta.parse}} 函数），由宏来操控。是代码编写时的结构化表示，由 \texttt{julia-parser.scm} 用字符流构造而成。 另一种则是底层形式，或者 IR（中间表示），这种形式在进行类型推导和代码生成的时候被使用。在这种底层形式中结点的类型相对更少，所有的宏都会被展开，所有的控制流会被转化成显式的分支和语句的序列。底层的形式由 \texttt{julia-syntax.scm} 构建。
 
 
 
-First we will focus on the AST, since it is needed to write macros.
+首先，我们将关注AST，因为需要它来编写宏。
 
 
 
-\hypertarget{6198433338459689204}{}
+\hypertarget{16689812133917537196}{}
 
 
-\subsection{Surface syntax AST}
-
-
-
-Front end ASTs consist almost entirely of \hyperlink{17120496304147995299}{\texttt{Expr}}s and atoms (e.g. symbols, numbers). There is generally a different expression head for each visually distinct syntactic form. Examples will be given in s-expression syntax. Each parenthesized list corresponds to an Expr, where the first element is the head. For example \texttt{(call f x)} corresponds to \texttt{Expr(:call, :f, :x)} in Julia.
+\subsection{表面语法AST}
 
 
 
-\hypertarget{13191950853363974893}{}
+前端AST几乎由 \hyperlink{17120496304147995299}{\texttt{Expr}} 和原子（例如 符号、数字）。 对于视觉上不同的语法形式，通常有不同的表达式头。 示例将在s-expression 语法中给出。 每个圆括号括着的列表都对应着一个 Expr，其中第一个元素是它的头部。 例如\texttt{(call f x)}对应于Julia中的 \texttt{Expr(:call，:f，:x)} 。
 
 
-\subsubsection{Calls}
+
+\hypertarget{15042124627959636433}{}
+
+
+\subsubsection{调用}
 
 
 
@@ -625,7 +625,7 @@ Front end ASTs consist almost entirely of \hyperlink{17120496304147995299}{\text
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-Input & AST \\
+输入 & AST \\
 \hline
 \texttt{f(x)} & \texttt{(call f x)} \\
 \hline
@@ -658,10 +658,10 @@ parses as \texttt{(do (call f x) (-> (tuple a b) (block body)))}.
 
 
 
-\hypertarget{16991843071018324380}{}
+\hypertarget{4882683519850361669}{}
 
 
-\subsubsection{Operators}
+\subsubsection{运算符}
 
 
 
@@ -730,6 +730,8 @@ Input & AST \\
 \hline
 \texttt{t[a b; c d]} & \texttt{(typed\_vcat t (row a b) (row c d))} \\
 \hline
+\texttt{t[a b;;; c d]} & \texttt{(typed\_ncat t 3 (row a b) (row c d))} \\
+\hline
 \texttt{a\{b\}} & \texttt{(curly a b)} \\
 \hline
 \texttt{a\{b;c\}} & \texttt{(curly a (parameters c) b)} \\
@@ -743,6 +745,8 @@ Input & AST \\
 \texttt{[x y]} & \texttt{(hcat x y)} \\
 \hline
 \texttt{[x y; z t]} & \texttt{(vcat (row x y) (row z t))} \\
+\hline
+\texttt{[x;y;; z;t;;;]} & \texttt{(ncat 3 (nrow 2 (nrow 1 x y) (nrow 1 z t)))} \\
 \hline
 \texttt{[x for y in z, a in b]} & \texttt{(comprehension x (= y z) (= a b))} \\
 \hline
@@ -1078,12 +1082,17 @@ In addition to \texttt{Symbol}s and some number types, the following data types 
 \begin{itemize}
 \item \texttt{Expr}
 
-Has a node type indicated by the \texttt{head} field, and an \texttt{args} field which is a \texttt{Vector\{Any\}} of subexpressions. While almost every part of a surface AST is represented by an \texttt{Expr}, the IR uses only a limited number of \texttt{Expr}s, mostly for calls, conditional branches (\texttt{gotoifnot}), and returns.
+Has a node type indicated by the \texttt{head} field, and an \texttt{args} field which is a \texttt{Vector\{Any\}} of subexpressions. While almost every part of a surface AST is represented by an \texttt{Expr}, the IR uses only a limited number of \texttt{Expr}s, mostly for calls and some top-level-only forms.
 
 
 \item \texttt{Slot}
 
-Identifies arguments and local variables by consecutive numbering. \texttt{Slot} is an abstract type with subtypes \texttt{SlotNumber} and \texttt{TypedSlot}. Both types have an integer-valued \texttt{id} field giving the slot index. Most slots have the same type at all uses, and so are represented with \texttt{SlotNumber}. The types of these slots are found in the \texttt{slottypes} field of their \texttt{MethodInstance} object. Slots that require per-use type annotations are represented with \texttt{TypedSlot}, which has a \texttt{typ} field.
+Identifies arguments and local variables by consecutive numbering. \texttt{Slot} is an abstract type with subtypes \texttt{SlotNumber} and \texttt{TypedSlot}. Both types have an integer-valued \texttt{id} field giving the slot index. Most slots have the same type at all uses, and so are represented with \texttt{SlotNumber}. The types of these slots are found in the \texttt{slottypes} field of their \texttt{CodeInfo} object. Slots that require per-use type annotations are represented with \texttt{TypedSlot}, which has a \texttt{typ} field.
+
+
+\item \texttt{Argument}
+
+The same as \texttt{SlotNumber}, but appears only post-optimization. Indicates that the referenced slot is an argument of the enclosing function.
 
 
 \item \texttt{CodeInfo}
@@ -1094,6 +1103,16 @@ Wraps the IR of a group of statements. Its \texttt{code} field is an array of ex
 \item \texttt{GotoNode}
 
 Unconditional branch. The argument is the branch target, represented as an index in the code array to jump to.
+
+
+\item \texttt{GotoIfNot}
+
+Conditional branch. If the \texttt{cond} field evaluates to false, goes to the index identified by the \texttt{dest} field.
+
+
+\item \texttt{ReturnNode}
+
+Returns its argument (the \texttt{val} field) as the value of the enclosing function. If the \texttt{val} field is undefined, then this represents an unreachable statement.
 
 
 \item \texttt{QuoteNode}
@@ -1145,11 +1164,6 @@ Function call (static dispatch). \texttt{args[1]} is the MethodInstance to call,
 Reference a static parameter by index.
 
 
-\item \texttt{gotoifnot}
-
-Conditional branch. If \texttt{args[1]} is false, goes to the index identified in \texttt{args[2]}.
-
-
 \item \texttt{=}
 
 Assignment. In the IR, the first argument is always a Slot or a GlobalRef.
@@ -1166,7 +1180,7 @@ The 3-argument form has the following arguments:
 \begin{itemize}
 \item \texttt{args[1]}
 
-A function name, or \texttt{false} if unknown. If a symbol, then the expression first behaves like the 1-argument form above. This argument is ignored from then on. When this is \texttt{false}, it means a method is being added strictly by type, \texttt{(::T)(x) = x}.
+A function name, or \texttt{nothing} if unknown or unneeded. If a symbol, then the expression first behaves like the 1-argument form above. This argument is ignored from then on. It can be \texttt{nothing} when methods are added strictly by type, \texttt{(::T)(x) = x}, or when a method is being added to an existing function, \texttt{MyModule.f(x) = x}.
 
 
 \item \texttt{args[2]}
@@ -1255,11 +1269,6 @@ Allocates a new struct-like object. First argument is the type. The \hyperlink{1
 \item \texttt{splatnew}
 
 Similar to \texttt{new}, except field values are passed as a single tuple. Works similarly to \texttt{Base.splat(new)} if \texttt{new} were a first-class function, hence the name.
-
-
-\item \texttt{return}
-
-Returns its argument as the value of the enclosing function.
 
 
 \item \texttt{isdefined}
@@ -1453,7 +1462,7 @@ The uncompressed source code for a toplevel thunk. Additionally, for a generated
 
 \item \texttt{backedges}
 
-We store the reverse-list of cache dependencies for efficient tracking of incremental reanalysis/recompilation work that may be needed after a new method definitions. This works by keeping a list of the other \texttt{MethodInstance} that have been inferred or optimized to contain a possible call to this \texttt{MethodInstance}. Those optimization results might be stored somewhere in the \texttt{cache}, or it might have been the result of something we didn{\textquotesingle}t want to cache, such as constant propagation. Thus we merge all of those backedges to various cache entries here (there{\textquotesingle}s almost always only the one applicable cache entry with a sentinal value for max\_world anyways).
+We store the reverse-list of cache dependencies for efficient tracking of incremental reanalysis/recompilation work that may be needed after a new method definitions. This works by keeping a list of the other \texttt{MethodInstance} that have been inferred or optimized to contain a possible call to this \texttt{MethodInstance}. Those optimization results might be stored somewhere in the \texttt{cache}, or it might have been the result of something we didn{\textquotesingle}t want to cache, such as constant propagation. Thus we merge all of those backedges to various cache entries here (there{\textquotesingle}s almost always only the one applicable cache entry with a sentinel value for max\_world anyways).
 
 
 \item \texttt{cache}
@@ -1668,7 +1677,7 @@ Whether this is known to be a pure function of its arguments, without respect to
 
 
 
-If you{\textquotesingle}ve used Julia for a while, you understand the fundamental role that types play.  Here we try to get under the hood, focusing particularly on \href{@ref}{Parametric Types}.
+使用Julia一段时间之后，你就会体会到类型在其中的基础性作用。本部分我们将深入到类型体系的内部，并着重关注 \hyperlink{5611641345231583503}{Parametric Types}。
 
 
 
@@ -1679,19 +1688,19 @@ If you{\textquotesingle}ve used Julia for a while, you understand the fundamenta
 
 
 
-It{\textquotesingle}s perhaps easiest to conceive of Julia{\textquotesingle}s type system in terms of sets. While programs manipulate individual values, a type refers to a set of values. This is not the same thing as a collection; for example a \hyperlink{1143189053501747033}{\texttt{Set}} of values is itself a single \texttt{Set} value. Rather, a type describes a set of \emph{possible} values, expressing uncertainty about which value we have.
+Julia的类型系统很容易会被看作是一种集合（set）。程序处理个体值，类型处理值的集合。但是集合与类型是两个不同的概念。一组值组成的集合 \hyperlink{1143189053501747033}{\texttt{Set}} 本身也是一个值的集合。而类型描述的是一个组\emph{可能}值组成的集合，即类型的值是不确定的。
 
 
 
-A \emph{concrete} type \texttt{T} describes the set of values whose direct tag, as returned by the \hyperlink{13440452181855594120}{\texttt{typeof}} function, is \texttt{T}. An \emph{abstract} type describes some possibly-larger set of values.
+函数 \hyperlink{13440452181855594120}{\texttt{typeof}} 可以返回\emph{具体类型} \texttt{T} 包含的值的直接标签 \texttt{T}。而\emph{抽象类型}描述的集合则可能会更大。
 
 
 
-\hyperlink{15014186392807667022}{\texttt{Any}} describes the entire universe of possible values. \hyperlink{8469131683393450448}{\texttt{Integer}} is a subset of \texttt{Any} that includes \texttt{Int}, \hyperlink{5857518405103968275}{\texttt{Int8}}, and other concrete types. Internally, Julia also makes heavy use of another type known as \texttt{Bottom}, which can also be written as \texttt{Union\{\}}. This corresponds to the empty set.
+类型 \hyperlink{15014186392807667022}{\texttt{Any}} 包含所有可能值。类型 \hyperlink{8469131683393450448}{\texttt{Integer}} 是 \texttt{Any} 的一个子类型，而 \texttt{Integer}的子类型有包括 \texttt{Int}，\hyperlink{5857518405103968275}{\texttt{Int8}} 等其他具体类型。在内部表征上，Julia 类型系统还非常依赖类型 \texttt{Bottom}，也记做\texttt{Union\{\}}。这对应于集合中的空集。
 
 
 
-Julia{\textquotesingle}s types support the standard operations of set theory: you can ask whether \texttt{T1} is a {\textquotedbl}subset{\textquotedbl} (subtype) of \texttt{T2} with \texttt{T1 <: T2}. Likewise, you intersect two types using \hyperlink{1869272868531275554}{\texttt{typeintersect}}, take their union with \hyperlink{5087820771052303592}{\texttt{Union}}, and compute a type that contains their union with \hyperlink{6895589781245489183}{\texttt{typejoin}}:
+Julia类型系统支持集合理论的标准操作：你可以用 \texttt{T1 <: T2} 来判断类型 \texttt{T1} 是否是\texttt{T2} 的子集（子类型）。 \hyperlink{1869272868531275554}{\texttt{typeintersect}} 和 \hyperlink{6895589781245489183}{\texttt{typejoin}} 可用来计算两个类型的交集和合集；用 \hyperlink{5087820771052303592}{\texttt{Union}} 用于集合所有列出的类型。
 
 
 
@@ -1715,42 +1724,42 @@ Union{UInt8, Signed}
 julia> typejoin(Signed, Union{UInt8, Int8})
 Integer
 
-julia> typeintersect(Tuple{Integer,Float64}, Tuple{Int,Real})
-Tuple{Int64,Float64}
+julia> typeintersect(Tuple{Integer, Float64}, Tuple{Int, Real})
+Tuple{Int64, Float64}
 
-julia> Union{Tuple{Integer,Float64}, Tuple{Int,Real}}
-Union{Tuple{Int64,Real}, Tuple{Integer,Float64}}
+julia> Union{Tuple{Integer, Float64}, Tuple{Int, Real}}
+Union{Tuple{Int64, Real}, Tuple{Integer, Float64}}
 
-julia> typejoin(Tuple{Integer,Float64}, Tuple{Int,Real})
-Tuple{Integer,Real}
+julia> typejoin(Tuple{Integer, Float64}, Tuple{Int, Real})
+Tuple{Integer, Real}
 \end{minted}
 
 
 
-While these operations may seem abstract, they lie at the heart of Julia.  For example, method dispatch is implemented by stepping through the items in a method list until reaching one for which the type of the argument tuple is a subtype of the method signature. For this algorithm to work, it{\textquotesingle}s important that methods be sorted by their specificity, and that the search begins with the most specific methods. Consequently, Julia also implements a partial order on types; this is achieved by functionality that is similar to \texttt{<:}, but with differences that will be discussed below.
+这些操作看起来很抽象，但是他们处于 Julia 语言的核心位置。例如，方法的派发过程就是对方法列表中的项目进行逐步搜索，直到找到一个其类型是方法标签子类型的参数元组为止。该算法有效的前提是方法必须按照特异性（specificity）进行排序，搜索过程必须从最具特异性的开始。所以，Julia 也需要对类型进行偏序排序(partial order)，该函数与 \texttt{<:} 类似但又不完全相同。
 
 
 
-\hypertarget{11911810306869937851}{}
+\hypertarget{7112415101914947726}{}
 
 
-\subsection{UnionAll types}
-
-
-
-Julia{\textquotesingle}s type system can also express an \emph{iterated union} of types: a union of types over all values of some variable. This is needed to describe parametric types where the values of some parameters are not known.
+\subsection{\texttt{UnionAll}类型}
 
 
 
-For example, \hyperlink{15492651498431872487}{\texttt{Array}} has two parameters as in \texttt{Array\{Int,2\}}. If we did not know the element type, we could write \texttt{Array\{T,2\} where T}, which is the union of \texttt{Array\{T,2\}} for all values of \texttt{T}: \texttt{Union\{Array\{Int8,2\}, Array\{Int16,2\}, ...\}}.
+Julia 的类型系统也可以表征类型的\emph{迭代合集}(iterated union)，即某个变量的所有值的集合。当参数化类型的某些参数值是未知数时，迭代合集是非常有用的。
 
 
 
-Such a type is represented by a \texttt{UnionAll} object, which contains a variable (\texttt{T} in this example, of type \texttt{TypeVar}), and a wrapped type (\texttt{Array\{T,2\}} in this example).
+例如，下面这个数组 \texttt{Array\{Int,2\}} 有两个参数。如果其成分类型未知，该数组可以写成 \texttt{Array\{T,2\} where T}。该数组是取所有不同 \texttt{T} 值后的所有数组\texttt{Array\{T,2\}} 的合集：\texttt{Union\{Array\{Int8,2\}, Array\{Int16,2\}, ...\}}。
 
 
 
-Consider the following methods:
+类型的迭代集合由类型为\texttt{UnionAll}的对象表征。\texttt{UnionAll}对象有一个类型为 \texttt{TypeVar} 的变量，此处为\texttt{T}，和一个包裹化的类型，此处为 \texttt{Array\{T,2\}}。
+
+
+
+考虑下面的例子：
 
 
 
@@ -1764,11 +1773,11 @@ f4(A::Array{Any}) = 4
 
 
 
-The signature - as described in \href{@ref}{Function calls} - of \texttt{f3} is a \texttt{UnionAll} type wrapping a tuple type: \texttt{Tuple\{typeof(f3), Array\{T\}\} where T}. All but \texttt{f4} can be called with \texttt{a = [1,2]}; all but \texttt{f2} can be called with \texttt{b = Any[1,2]}.
+如 \href{@ref}{Function calls} 中描述的，函数 \texttt{f3} 的签名是元组类型的 \texttt{UnionAll} 类型包裹：\texttt{Tuple\{typeof(f3), Array\{T\}\} where T}。此处除 \texttt{f4} 外所有函数都可以被\texttt{a = [1,2]}调用；除 \texttt{f2} 外所有函数都可以被 \texttt{b = Any[1,2]} 调用。
 
 
 
-Let{\textquotesingle}s look at these types a little more closely:
+\texttt{dump()} 函数可用于进一步查看这些类型：
 
 
 
@@ -1785,20 +1794,20 @@ UnionAll
       name: Symbol N
       lb: Union{}
       ub: Any
-    body: Array{T,N} <: DenseArray{T,N}
+    body: Array{T, N} <: DenseArray{T, N}
 \end{minted}
 
 
 
-This indicates that \texttt{Array} actually names a \texttt{UnionAll} type. There is one \texttt{UnionAll} type for each parameter, nested. The syntax \texttt{Array\{Int,2\}} is equivalent to \texttt{Array\{Int\}\{2\}}; internally each \texttt{UnionAll} is instantiated with a particular variable value, one at a time, outermost-first. This gives a natural meaning to the omission of trailing type parameters; \texttt{Array\{Int\}} gives a type equivalent to \texttt{Array\{Int,N\} where N}.
+这说明数组 \texttt{Array} 实际上命名了一个 \texttt{UnionAll} 类型。嵌套其中的参数也都是 \texttt{UnionAll} 类型。句法 \texttt{Array\{Int,2\}} 等价于\texttt{Array\{Int\}\{2\}}。\texttt{UnionAll} 在内部会被实例化为变量的特定值，每次一个，从最外侧开始。这使得省略尾端参数是自然而有意义的：类型 \texttt{Array\{Int\}} 与类型 \texttt{Array\{Int, N\} where N}。
 
 
 
-A \texttt{TypeVar} is not itself a type, but rather should be considered part of the structure of a \texttt{UnionAll} type. Type variables have lower and upper bounds on their values (in the fields \texttt{lb} and \texttt{ub}). The symbol \texttt{name} is purely cosmetic. Internally, \texttt{TypeVar}s are compared by address, so they are defined as mutable types to ensure that {\textquotedbl}different{\textquotedbl} type variables can be distinguished. However, by convention they should not be mutated.
+\texttt{TypeVar} 本身不是类型，而是 \texttt{UnionAll} 类型的一个内部结构成分。类型变量的值会有上界和下界，分别由字段\texttt{lb} 和 \texttt{ub} 表示。符号 \texttt{name} 是纯装饰性的（cosmetic）。在内部 \texttt{TypeVar} 是通过地址比较的。所以为了区分“不同”变量类型，\texttt{TypeVar} 是一个可更改类型，但通常不应修改它们。
 
 
 
-One can construct \texttt{TypeVar}s manually:
+你也可以手动创建 \texttt{TypeVar}:
 
 
 
@@ -1810,11 +1819,11 @@ Signed<:V<:Real
 
 
 
-There are convenience versions that allow you to omit any of these arguments except the \texttt{name} symbol.
+你可以用更简便的方式省掉除 \texttt{name} 之外的任意参数。
 
 
 
-The syntax \texttt{Array\{T\} where T<:Integer} is lowered to
+句法 \texttt{Array\{T\} where T<:Integer} 会被降级为如下格式。
 
 
 
@@ -1827,37 +1836,37 @@ end
 
 
 
-so it is seldom necessary to construct a \texttt{TypeVar} manually (indeed, this is to be avoided).
+所以极少需要手动建构 \texttt{TypeVar}（实际上这也应该是尽量避免的）。
 
 
 
-\hypertarget{10862279169779752699}{}
+\hypertarget{5813562109795449718}{}
 
 
-\subsection{Free variables}
-
-
-
-The concept of a \emph{free} type variable is extremely important in the type system. We say that a variable \texttt{V} is free in type \texttt{T} if \texttt{T} does not contain the \texttt{UnionAll} that introduces variable \texttt{V}. For example, the type \texttt{Array\{Array\{V\} where V<:Integer\}} has no free variables, but the \texttt{Array\{V\}} part inside of it does have a free variable, \texttt{V}.
+\subsection{自由变量}
 
 
 
-A type with free variables is, in some sense, not really a type at all. Consider the type \texttt{Array\{Array\{T\}\} where T}, which refers to all homogeneous arrays of arrays. The inner type \texttt{Array\{T\}}, seen by itself, might seem to refer to any kind of array. However, every element of the outer array must have the \emph{same} array type, so \texttt{Array\{T\}} cannot refer to just any old array. One could say that \texttt{Array\{T\}} effectively {\textquotedbl}occurs{\textquotedbl} multiple times, and \texttt{T} must have the same value each {\textquotedbl}time{\textquotedbl}.
+\emph{自由}类型变量在类型系统中是至关重要的。如果类型 \texttt{T} 不包含一个引入变量 \texttt{V} 的 \texttt{UnionAll} 类型，那么类型 \texttt{T} 中的变量 \texttt{V} 就是自由的 （free）。例如，类型 \texttt{Array\{Array\{V\} where V<:Integer\}} 没有自由变量，但该类型的子成分 \texttt{Array\{V\}} 则包含了一个自由变量 \texttt{V}。
 
 
 
-For this reason, the function \texttt{jl\_has\_free\_typevars} in the C API is very important. Types for which it returns true will not give meaningful answers in subtyping and other type functions.
+从某种程度上讲，一个包含自由变量的类型根本就不是一个类型。例如，类型 \texttt{Array\{Array\{T\}\} where T} 是一个成分为数组的数组，且所有子数组元素的类型都相同。其内部类型 \texttt{Array\{T\}} 乍一看似乎包含所有数组类型。但外部数组的成分必须有\emph{相同}类型，所以 \texttt{Array\{T\}} 不能指向所有数组。我们可以说 \texttt{Array\{T\}} 出现了很多次，但每次 \texttt{T} 值都必须相同。
 
 
 
-\hypertarget{9475610527503799038}{}
-
-
-\subsection{TypeNames}
+故此， C 应用程序接口函数 \texttt{jl\_has\_free\_typevars} 是非常重要的。若该函数的返回值为真，则说明类型中存在自由变量。此时子类型判断和其他类型函数中的返回结果没有太多意义。
 
 
 
-The following two \hyperlink{15492651498431872487}{\texttt{Array}} types are functionally equivalent, yet print differently:
+\hypertarget{10502823991263434301}{}
+
+
+\subsection{类型名称\texttt{TypeNames}}
+
+
+
+下面两个数组 \hyperlink{15492651498431872487}{\texttt{Array}} 类型在功能上是相同的，但有不同的打印方式：
 
 
 
@@ -1869,13 +1878,13 @@ julia> TV, NV = TypeVar(:T), TypeVar(:N)
 julia> Array
 Array
 
-julia> Array{TV,NV}
-Array{T,N}
+julia> Array{TV, NV}
+Array{T, N}
 \end{minted}
 
 
 
-These can be distinguished by examining the \texttt{name} field of the type, which is an object of type \texttt{TypeName}:
+二者之间的差别可以通过类型的名称 \texttt{name} 字段来区分。名称 \texttt{name} 字段是一个类型为 \texttt{TypeName} 的对象。
 
 
 
@@ -1896,7 +1905,7 @@ TypeName
         name: Symbol N
         lb: Union{}
         ub: Any
-      body: Array{T,N} <: DenseArray{T,N}
+      body: Array{T, N} <: DenseArray{T, N}
   cache: SimpleVector
     ...
 
@@ -1917,7 +1926,7 @@ TypeName
 
 
 
-In this case, the relevant field is \texttt{wrapper}, which holds a reference to the top-level type used to make new \texttt{Array} types.
+与此相关的字段是包装器 \texttt{wrapper}，该字段存储了一个指向顶层类型（tip-level）的引用，用以产生新的数组 \texttt{Array} 类型。
 
 
 
@@ -1938,11 +1947,11 @@ Ptr{Cvoid} @0x00007fcc7de64850
 
 
 
-The \texttt{wrapper} field of \hyperlink{15492651498431872487}{\texttt{Array}} points to itself, but for \texttt{Array\{TV,NV\}} it points back to the original definition of the type.
+数组 \hyperlink{15492651498431872487}{\texttt{Array}} 的包装器 \texttt{wrapper} 字段指向它自己，而在数组 \texttt{Array\{TV,NV\}} 中，该字段则指回该类型的原始定义。
 
 
 
-What about the other fields? \texttt{hash} assigns an integer to each type.  To examine the \texttt{cache} field, it{\textquotesingle}s helpful to pick a type that is less heavily used than Array. Let{\textquotesingle}s first create our own type:
+那其他字段都是什么作用呢？字段\texttt{hash} 会给每个类型指派一个整数。要查看 \texttt{cache} 字段的内容，最好选不像数组那么常用的类型。我们可以自己创造一个类型：
 
 
 
@@ -1951,26 +1960,26 @@ What about the other fields? \texttt{hash} assigns an integer to each type.  To 
 julia> struct MyType{T,N} end
 
 julia> MyType{Int,2}
-MyType{Int64,2}
+MyType{Int64, 2}
 
 julia> MyType{Float32, 5}
-MyType{Float32,5}
+MyType{Float32, 5}
 \end{minted}
 
 
 
-When you instantiate a parametric type, each concrete type gets saved in a type cache (\texttt{MyType.body.body.name.cache}). However, instances containing free type variables are not cached.
+当参数类型被实例化时，每个具体类型都会被存储到类型缓存中（\texttt{MyType.body.body.name.cache}）。不过含有自由变量的实例是不会被缓存的。
 
 
 
-\hypertarget{15137612054834825471}{}
+\hypertarget{5158816437121320312}{}
 
 
-\subsection{Tuple types}
+\subsection{元组类型}
 
 
 
-Tuple types constitute an interesting special case.  For dispatch to work on declarations like \texttt{x::Tuple}, the type has to be able to accommodate any tuple.  Let{\textquotesingle}s check the parameters:
+元组类型是一个有趣的特例。为了使派发在诸如 \texttt{x::Tuple} 之类的声明中正常工作，该类型必须能包含所有元组。我们可以查看一下元组的参数：
 
 
 
@@ -1980,34 +1989,34 @@ julia> Tuple
 Tuple
 
 julia> Tuple.parameters
-svec(Vararg{Any,N} where N)
+svec(Vararg{Any})
 \end{minted}
 
 
 
-Unlike other types, tuple types are covariant in their parameters, so this definition permits \texttt{Tuple} to match any type of tuple:
+与其他类型不同，元组类型的参数是共变的（covariant），所以类型 \texttt{Tuple} 能与任何类型的元组相匹配。
 
 
 
 
 \begin{minted}{jlcon}
 julia> typeintersect(Tuple, Tuple{Int,Float64})
-Tuple{Int64,Float64}
+Tuple{Int64, Float64}
 
 julia> typeintersect(Tuple{Vararg{Any}}, Tuple{Int,Float64})
-Tuple{Int64,Float64}
+Tuple{Int64, Float64}
 \end{minted}
 
 
 
-However, if a variadic (\texttt{Vararg}) tuple type has free variables it can describe different kinds of tuples:
+但是，如果一个可变元组 (\texttt{Vararg}) 类型含有自由变量，那么他描述的元组类型则可能就是不同的：
 
 
 
 
 \begin{minted}{jlcon}
 julia> typeintersect(Tuple{Vararg{T} where T}, Tuple{Int,Float64})
-Tuple{Int64,Float64}
+Tuple{Int64, Float64}
 
 julia> typeintersect(Tuple{Vararg{T}} where T, Tuple{Int,Float64})
 Union{}
@@ -2015,11 +2024,11 @@ Union{}
 
 
 
-Notice that when \texttt{T} is free with respect to the \texttt{Tuple} type (i.e. its binding \texttt{UnionAll} type is outside the \texttt{Tuple} type), only one \texttt{T} value must work over the whole type. Therefore a heterogeneous tuple does not match.
+当 \texttt{T} 绑定的 \texttt{UnionAll} 类型位于元组 \texttt{Tuple} 之外，即 \texttt{T} 是元组 \texttt{Tuple} 的自由变量时，一个唯一的 \texttt{T} 值必须作用与整个类型。此时异质的元组是不匹配的。
 
 
 
-Finally, it{\textquotesingle}s worth noting that \texttt{Tuple\{\}} is distinct:
+最后，意识到元组 \texttt{Tuple\{\}} 的独特性是有意义的：
 
 
 
@@ -2037,7 +2046,7 @@ Union{}
 
 
 
-What is the {\textquotedbl}primary{\textquotedbl} tuple-type?
+那么什么是元组类型的基本（primary）类型呢？
 
 
 
@@ -2058,18 +2067,18 @@ Ptr{Cvoid} @0x00007f5998a04370
 
 
 
-so \texttt{Tuple == Tuple\{Vararg\{Any\}\}} is indeed the primary type.
+所以 \texttt{Tuple == Tuple\{Vararg\{Any\}\}} 事实上就是其基本类型。
 
 
 
-\hypertarget{5206945150982308765}{}
+\hypertarget{14276380726498563975}{}
 
 
-\subsection{Diagonal types}
+\subsection{对角变量}
 
 
 
-Consider the type \texttt{Tuple\{T,T\} where T}. A method with this signature would look like:
+考虑类型 \texttt{Tuple\{T,T\} where T}。使用该标签的方法看起来会是下面的样子：
 
 
 
@@ -2080,23 +2089,23 @@ f(x::T, y::T) where {T} = ...
 
 
 
-According to the usual interpretation of a \texttt{UnionAll} type, this \texttt{T} ranges over all types, including \texttt{Any}, so this type should be equivalent to \texttt{Tuple\{Any,Any\}}. However, this interpretation causes some practical problems.
+根据对类型 \texttt{UnionAll} 的通常理解， \texttt{T} 将覆盖所有的类型，包括 \texttt{T}，所以此类型应该等价于 \texttt{Tuple\{Any,Any\}}。但是这种理解会面临很多实际的问题。
 
 
 
-First, a value of \texttt{T} needs to be available inside the method definition. For a call like \texttt{f(1, 1.0)}, it{\textquotesingle}s not clear what \texttt{T} should be. It could be \texttt{Union\{Int,Float64\}}, or perhaps \hyperlink{6175959395021454412}{\texttt{Real}}. Intuitively, we expect the declaration \texttt{x::T} to mean \texttt{T === typeof(x)}. To make sure that invariant holds, we need \texttt{typeof(x) === typeof(y) === T} in this method. That implies the method should only be called for arguments of the exact same type.
+首先，\texttt{T} 值需要在方法定之内可及。对诸如 \texttt{f(1, 1.0)} 的调用来说，\texttt{T} 的值是不明确的。\texttt{T} 可以是 \texttt{Union\{Int,Float64\}} 或 \hyperlink{6175959395021454412}{\texttt{Real}}。直觉上，声明 \texttt{x::T} 意味着 \texttt{T} 应该为 \texttt{x} 的类型，即 \texttt{T === typeof(x)}。为了保有这种不变性， 该方法应满足如下关系： \texttt{typeof(x) === typeof(y) === T}。 这说明该方法只能被拥有相同类型的参数元组调用。
 
 
 
-It turns out that being able to dispatch on whether two values have the same type is very useful (this is used by the promotion system for example), so we have multiple reasons to want a different interpretation of \texttt{Tuple\{T,T\} where T}. To make this work we add the following rule to subtyping: if a variable occurs more than once in covariant position, it is restricted to ranging over only concrete types. ({\textquotedbl}Covariant position{\textquotedbl} means that only \texttt{Tuple} and \texttt{Union} types occur between an occurrence of a variable and the \texttt{UnionAll} type that introduces it.) Such variables are called {\textquotedbl}diagonal variables{\textquotedbl} or {\textquotedbl}concrete variables{\textquotedbl}.
+能依据两个值的类型是否相同进行派发是非常有用的（例如类型提升系统就用到了该机制）。所以我们有很多理由给 \texttt{Tuple\{T,T\} where T} 一个不同的含义。为此，我们在子类型系统中增加了如下规则：{\textbackslash}textbf\{如果一个变量在共变位置上出现了不止一次，那么其作用范围将仅局限于具体类型\}。共变位置指在一个变量和引入该变量的 \texttt{UnionAll} 类型之间，只出现了元组 \texttt{Tuple} 类型和联合 \texttt{Union} 类型。这些变量被称为对角变量（diagonal variables）或具体变量（concrete variables）。
 
 
 
-So for example, \texttt{Tuple\{T,T\} where T} can be seen as \texttt{Union\{Tuple\{Int8,Int8\}, Tuple\{Int16,Int16\}, ...\}}, where \texttt{T} ranges over all concrete types. This gives rise to some interesting subtyping results. For example \texttt{Tuple\{Real,Real\}} is not a subtype of \texttt{Tuple\{T,T\} where T}, because it includes some types like \texttt{Tuple\{Int8,Int16\}} where the two elements have different types. \texttt{Tuple\{Real,Real\}} and \texttt{Tuple\{T,T\} where T} have the non-trivial intersection \texttt{Tuple\{T,T\} where T<:Real}. However, \texttt{Tuple\{Real\}} \emph{is} a subtype of \texttt{Tuple\{T\} where T}, because in that case \texttt{T} occurs only once and so is not diagonal.
+例如，元组 \texttt{Tuple\{T,T\} where T} 可以被看作是如下元组的集合 \texttt{Union\{Tuple\{Int8,Int8\}, Tuple\{Int16,Int16\}, ...\}}， 即 \texttt{T} 包括所有的具体类型。该规则会产生一些有趣的子类型结果。例如 \texttt{Tuple\{Real,Real\}} 不是 \texttt{Tuple\{T,T\} where T} 的子类型，因为前者包含了诸如 \texttt{Tuple\{Int8,Int16\}} 的子类型，该子类型的元素类型是不同的。\texttt{Tuple\{Real,Real\}} 和 \texttt{Tuple\{T,T\} where T} 又一个不容小视的交集 \texttt{Tuple\{T,T\} where T<:Real}。但是 \texttt{Tuple\{Real\}} 是 \texttt{Tuple\{T\} where T} 的子集，因为此时 \texttt{T} 只出现了一次，所以是不对角的。
 
 
 
-Next consider a signature like the following:
+现在考虑如下签名：
 
 
 
@@ -2107,7 +2116,7 @@ f(a::Array{T}, x::T, y::T) where {T} = ...
 
 
 
-In this case, \texttt{T} occurs in invariant position inside \texttt{Array\{T\}}. That means whatever type of array is passed unambiguously determines the value of \texttt{T} – we say \texttt{T} has an \emph{equality constraint} on it. Therefore in this case the diagonal rule is not really necessary, since the array determines \texttt{T} and we can then allow \texttt{x} and \texttt{y} to be of any subtypes of \texttt{T}. So variables that occur in invariant position are never considered diagonal. This choice of behavior is slightly controversial –- some feel this definition should be written as
+此例中， \texttt{T} 出现在了非共变位置，即 \texttt{Array\{T\}} 之内。 这意味着无论数组传递的类型是什么，该类型都会无歧义的决定 \texttt{T}，即 \texttt{T} 又一个等价性限制（equality constraint）。此时是不需要对角规则的，因为数组决定了 \texttt{T}，然后 \texttt{x} 和 \texttt{y} 则可以是 \texttt{T} 的任何子类型。所以非共变位置的变量均不受对角线规则的限制。上述定义的行为选择有一点矛盾，或许应该写成：
 
 
 
@@ -2118,11 +2127,11 @@ f(a::Array{T}, x::S, y::S) where {T, S<:T} = ...
 
 
 
-to clarify whether \texttt{x} and \texttt{y} need to have the same type. In this version of the signature they would, or we could introduce a third variable for the type of \texttt{y} if \texttt{x} and \texttt{y} can have different types.
+为明确 \texttt{x} 和 \texttt{y} 应该有相同的类型。如果 \texttt{x} 和 \texttt{y} 可以有不同类型，这个版本的签名可以引入针对类型 \texttt{y} 的第三个变量。
 
 
 
-The next complication is the interaction of unions and diagonal variables, e.g.
+下面一个难题是合集 \texttt{Union\{\}} 和对角线变量的交互作用，例如
 
 
 
@@ -2133,7 +2142,7 @@ f(x::Union{Nothing,T}, y::T) where {T} = ...
 
 
 
-Consider what this declaration means. \texttt{y} has type \texttt{T}. \texttt{x} then can have either the same type \texttt{T}, or else be of type \hyperlink{13508459519898889544}{\texttt{Nothing}}. So all of the following calls should match:
+考虑一下这个生命的含义。\texttt{y} 的类型是 \texttt{T}。 而 \texttt{x} 的类型或者与 \texttt{y} 相同 \texttt{T} 或类型为空 \hyperlink{13508459519898889544}{\texttt{Nothing}}。下面调用都是匹配的。
 
 
 
@@ -2149,7 +2158,7 @@ f(nothing, 2.0)
 
 
 
-These examples are telling us something: when \texttt{x} is \texttt{nothing::Nothing}, there are no extra constraints on \texttt{y}. It is as if the method signature had \texttt{y::Any}. Indeed, we have the following type equivalence:
+上述例子告诉我们：当 \texttt{x} 的类型是空集 \texttt{nothing::Nothing} 时，\texttt{y} 的类型就没有任何限制了。此时方法标签中字段 \texttt{y} 可以是任何类型，即 \texttt{y::Any}。确实，下面两个类型是等价的：
 
 
 
@@ -2160,69 +2169,75 @@ These examples are telling us something: when \texttt{x} is \texttt{nothing::Not
 
 
 
-The general rule is: a concrete variable in covariant position acts like it{\textquotesingle}s not concrete if the subtyping algorithm only \emph{uses} it once. When \texttt{x} has type \texttt{Nothing}, we don{\textquotesingle}t need to use the \texttt{T} in \texttt{Union\{Nothing,T\}}; we only use it in the second slot. This arises naturally from the observation that in \texttt{Tuple\{T\} where T} restricting \texttt{T} to concrete types makes no difference; the type is equal to \texttt{Tuple\{Any\}} either way.
+一般的规则是：如果出现在共变位置的一个具体变量只被子类型算法（subtyping algorithm）\emph{使用一次}，则该具体变量的行为就会像一个抽象变量。上例中，当 \texttt{x} 类型为空时 \texttt{Nothing}，集合 \texttt{Union\{Nothing,T\}} 中的类型 \texttt{T} 不起作用，即 \texttt{T} 只在第二个槽中被用到。此时，无论把 \texttt{Tuple\{T\} where T} 中的 \texttt{T} 限制为具体类型还是不限制，该类型都等价于 \texttt{Tuple\{Any\}}。
 
 
 
-However, appearing in \emph{invariant} position disqualifies a variable from being concrete whether that appearance of the variable is used or not. Otherwise types can behave differently depending on which other types they are compared to, making subtyping not transitive. For example, consider
+当变量出现在\emph{非共变} 位置时，无论是否被使用，该变量都不再是具体变量。否则类型的行为就会因为比较对象类型的不同而不同，从而违反传递律（transitive）。例如，
 
 
 
-Tuple\{Int,Int8,Vector\{Integer\}\} <: Tuple\{T,T,Vector\{Union\{Integer,T\}\}\} where T
+
+\begin{minted}{julia}
+Tuple{Int,Int8,Vector{Integer}} <: Tuple{T,T,Vector{Union{Integer,T}}} where T
+\end{minted}
 
 
 
-If the \texttt{T} inside the Union is ignored, then \texttt{T} is concrete and the answer is {\textquotedbl}false{\textquotedbl} since the first two types aren{\textquotesingle}t the same. But consider instead
+如果忽略掉合集 \texttt{Union} 内部的 \texttt{T}，则 \texttt{T} 就是具体的，且上述判断结果是 “否”，因为左侧元组前两个成分的类型是不同的。这两个类型不相同。再看下例：
 
 
 
-Tuple\{Int,Int8,Vector\{Any\}\} <: Tuple\{T,T,Vector\{Union\{Integer,T\}\}\} where T
+
+\begin{minted}{julia}
+Tuple{Int,Int8,Vector{Any}} <: Tuple{T,T,Vector{Union{Integer,T}}} where T
+\end{minted}
 
 
 
-Now we cannot ignore the \texttt{T} in the Union (we must have T == Any), so \texttt{T} is not concrete and the answer is {\textquotedbl}true{\textquotedbl}. That would make the concreteness of \texttt{T} depend on the other type, which is not acceptable since a type must have a clear meaning on its own. Therefore the appearance of \texttt{T} inside \texttt{Vector} is considered in both cases.
+此处合集 \texttt{Union} 内的 \texttt{T} 是不能被忽略的，因为 \texttt{T} 必须等于 \texttt{Any}，即 \texttt{T == Any}。所以 \texttt{T} 不能是具体的，且判断结果为“真”。所以，类型 \texttt{T} 的具体还是抽象是受制于其他类型特征的。这是不被接受的，因为类型的含义必须是清晰和自洽的。所以，向量 \texttt{Vector} 之内的 \texttt{T} 需要同时考虑这两种情况。
 
 
 
-\hypertarget{12600482412457091491}{}
+\hypertarget{15982598794751332626}{}
 
 
-\subsection{Subtyping diagonal variables}
-
-
-
-The subtyping algorithm for diagonal variables has two components: (1) identifying variable occurrences, and (2) ensuring that diagonal variables range over concrete types only.
+\subsection{对角变量的子类型}
 
 
 
-The first task is accomplished by keeping counters \texttt{occurs\_inv} and \texttt{occurs\_cov} (in \texttt{src/subtype.c}) for each variable in the environment, tracking the number of invariant and covariant occurrences, respectively. A variable is diagonal when \texttt{occurs\_inv == 0 \&\& occurs\_cov > 1}.
+对角变量的子系统算法（substyping algorithm）有两个成分：（1）确定变量出现次数；（2）确保对角变量只包含具体类型。
 
 
 
-The second task is accomplished by imposing a condition on a variable{\textquotesingle}s lower bound. As the subtyping algorithm runs, it narrows the bounds of each variable (raising lower bounds and lowering upper bounds) to keep track of the range of variable values for which the subtype relation would hold. When we are done evaluating the body of a \texttt{UnionAll} type whose variable is diagonal, we look at the final values of the bounds. Since the variable must be concrete, a contradiction occurs if its lower bound could not be a subtype of a concrete type. For example, an abstract type like \hyperlink{6514416309183787338}{\texttt{AbstractArray}} cannot be a subtype of a concrete type, but a concrete type like \texttt{Int} can be, and the empty type \texttt{Bottom} can be as well. If a lower bound fails this test the algorithm stops with the answer \texttt{false}.
+第一个任务由两个计数器完成。环境中的每个自由变量都有两个计数器 \texttt{occurs\_inv} 和 \texttt{occurs\_cov} (在文件 \texttt{src/subtype.c} 中)，分别用于追踪不变和共变的出现次数。如果 \texttt{occurs\_inv == 0 \&\& occurs\_cov > 1} 则这个变量就是对角的。
 
 
 
-For example, in the problem \texttt{Tuple\{Int,String\} <: Tuple\{T,T\} where T}, we derive that this would be true if \texttt{T} were a supertype of \texttt{Union\{Int,String\}}. However, \texttt{Union\{Int,String\}} is an abstract type, so the relation does not hold.
+第二个任务通过在变量下界添加一个条件实现。子类型算法在运行过程中会逐渐压缩每个变量的界限（提高下界和降低上界），以保证子类型关系在该变量范围内能继续保持。评估完对角变量合集类型 \texttt{UnionAll} 后，可以查看边界的最终值。因为变量必须是具体的，所以如果其下边界不是具体类型的子类型，就会产生矛盾。例如，抽象类型 \hyperlink{6514416309183787338}{\texttt{AbstractArray}} 不可能是一个具体类型的子类型，而具体类型 \texttt{Int} 则可以，空类型 \texttt{Bottom} 也可以。如果下边界没通过该测试，算法将终止并返回 \texttt{false}。
 
 
 
-This concreteness test is done by the function \texttt{is\_leaf\_bound}. Note that this test is slightly different from \texttt{jl\_is\_leaf\_type}, since it also returns \texttt{true} for \texttt{Bottom}. Currently this function is heuristic, and does not catch all possible concrete types. The difficulty is that whether a lower bound is concrete might depend on the values of other type variable bounds. For example, \texttt{Vector\{T\}} is equivalent to the concrete type \texttt{Vector\{Int\}} only if both the upper and lower bounds of \texttt{T} equal \texttt{Int}. We have not yet worked out a complete algorithm for this.
+例如，如果 \texttt{T} 是 \texttt{Union\{Int,String\}} 的上位类型，则 \texttt{Tuple\{Int,String\}} 将是 \texttt{Tuple\{T,T\} where T} 的子集，即 \texttt{Tuple\{Int,String\} <: Tuple\{T,T\} where T} 的返回值将为真。但 \texttt{Union\{Int,String\}} 是一个抽象类型，所以上述关系不成立。
 
 
 
-\hypertarget{37604590457653524}{}
-
-
-\subsection{Introduction to the internal machinery}
+具体性判断是由函数 \texttt{is\_leaf\_bound} 完成的。注意该函数与函数 \texttt{jl\_is\_leaf\_type} 稍微有点不同，因为其对类型 \texttt{Bottom} 的返回值也为真 \texttt{true}。该函数目前是启发式的，无法捕获所有的具体类型。该函数的困难在于，其他变量类型的界限会影响当下变量下界限的具体与否。例如，只有当 \texttt{T} 的上界限和下界限都是 \texttt{Int} 时，类型 \texttt{Vector\{T\}} 才和具体类型 \texttt{Vector\{Int\}} 相同。目前，设计者还没有想出一个完备的算法来解决该问题。
 
 
 
-Most operations for dealing with types are found in the files \texttt{jltypes.c} and \texttt{subtype.c}. A good way to start is to watch subtyping in action. Build Julia with \texttt{make debug} and fire up Julia within a debugger. \href{@ref}{gdb debugging tips} has some tips which may be useful.
+\hypertarget{17413862228343911094}{}
+
+
+\subsection{内部机制}
 
 
 
-Because the subtyping code is used heavily in the REPL itself–and hence breakpoints in this code get triggered often–it will be easiest if you make the following definition:
+大部分类型处理操作都存储在 \texttt{jltypes.c} 和 \texttt{subtype.c} 这两个文件中。了解自类型系统的最好方式是查看其工作方式。用 \texttt{make debug} 创建且在调试器中运行程序。手册\href{@ref}{gdb debugging tips}章中有一些有用的建议。
+
+
+
+因为 REPL 中也经常使用子类型代码 – 这些代码中的断点也经常被触发。所以定义下面函数并在 \texttt{jl\_breakpoint} 中设定一个断点将非常方便：
 
 
 
@@ -2236,22 +2251,22 @@ julia> function mysubtype(a,b)
 
 
 
-and then set a breakpoint in \texttt{jl\_breakpoint}.  Once this breakpoint gets triggered, you can set breakpoints in other functions.
+一旦该断点被触发，你就可以在其他函数中设定断点了。
 
 
 
-As a warm-up, try the following:
+作为热身，试一下下面代码
 
 
 
 
 \begin{minted}{julia}
-mysubtype(Tuple{Int,Float64}, Tuple{Integer,Real})
+mysubtype(Tuple{Int, Float64}, Tuple{Integer, Real})
 \end{minted}
 
 
 
-We can make it more interesting by trying a more complex case:
+你也可以用一个更复杂的例子让其变得更有趣：
 
 
 
@@ -2262,22 +2277,22 @@ mysubtype(Tuple{Array{Int,2}, Int8}, Tuple{Array{T}, T} where T)
 
 
 
-\hypertarget{9271541181781970079}{}
+\hypertarget{197922126248734429}{}
 
 
-\subsection{Subtyping and method sorting}
-
-
-
-The \texttt{type\_morespecific} functions are used for imposing a partial order on functions in method tables (from most-to-least specific). Specificity is strict; if \texttt{a} is more specific than \texttt{b}, then \texttt{a} does not equal \texttt{b} and \texttt{b} is not more specific than \texttt{a}.
+\subsection{子类型和方法排序}
 
 
 
-If \texttt{a} is a strict subtype of \texttt{b}, then it is automatically considered more specific. From there, \texttt{type\_morespecific} employs some less formal rules. For example, \texttt{subtype} is sensitive to the number of arguments, but \texttt{type\_morespecific} may not be. In particular, \texttt{Tuple\{Int,AbstractFloat\}} is more specific than \texttt{Tuple\{Integer\}}, even though it is not a subtype.  (Of \texttt{Tuple\{Int,AbstractFloat\}} and \texttt{Tuple\{Integer,Float64\}}, neither is more specific than the other.)  Likewise, \texttt{Tuple\{Int,Vararg\{Int\}\}} is not a subtype of \texttt{Tuple\{Integer\}}, but it is considered more specific. However, \texttt{morespecific} does get a bonus for length: in particular, \texttt{Tuple\{Int,Int\}} is more specific than \texttt{Tuple\{Int,Vararg\{Int\}\}}.
+函数 \texttt{type\_morespecific} 可用来对函数的方法列表从最具特异行到最不具特异性进行部分排序（partial order）。特异性是严格的：如果 \texttt{a} 比 \texttt{b} 更特异，则 \texttt{b} 就不比 \texttt{a} 更特异。
 
 
 
-If you{\textquotesingle}re debugging how methods get sorted, it can be convenient to define the function:
+如果 \texttt{a} 是 \texttt{b} 的严格子类型（strict subtype），那么 \texttt{a} 就自动的比 \texttt{b} 更特异。接下来，函数 \texttt{type\_morespecific} 还引进了一些不太形式化的规则。例如，子类型 \texttt{subtype} 对参数的数量敏感，而函数 \texttt{type\_morespecific} 则不敏感。特别的，\texttt{Tuple\{Int,AbstractFloat\}} 比 \texttt{Tuple\{Integer\}} 更特异，虽然前者不是后者的子类型。此外， \texttt{Tuple\{Int,AbstractFloat\}} 和 \texttt{Tuple\{Integer,Float64\}} 不存在特异性关系。类似的，\texttt{Tuple\{Int,Vararg\{Int\}\}} 不是 \texttt{Tuple\{Integer\}} 的子类型，但前者比后者更特异。但是，长度确实也影响特异性关系\texttt{morespecific}，如 \texttt{Tuple\{Int,Int\}} 比 \texttt{Tuple\{Int,Vararg\{Int\}\}} 更特异。
+
+
+
+要调试方法的排序，定义下面的函数很方便：
 
 
 
@@ -2288,7 +2303,7 @@ type_morespecific(a, b) = ccall(:jl_type_morespecific, Cint, (Any,Any), a, b)
 
 
 
-which allows you to test whether tuple type \texttt{a} is more specific than tuple type \texttt{b}.
+它可以被用来测试元组 \texttt{a} 是否比元组 \texttt{b} 更特异。
 
 
 
@@ -2610,7 +2625,7 @@ See \hyperlink{14008188290941962431}{Singleton Types} and \href{@ref}{Nothingnes
 
 
 
-学习 Julia 语言如何运行代码的最难的一部分是 学习如何让所有的小部分工作协同工作来执行一段代码。 
+学习 Julia 语言如何运行代码的最难的一部分是 学习如何让所有的小部分工作协同工作来执行一段代码。
 
 
 
@@ -2650,7 +2665,7 @@ REPL 表示 读取-求值-输出-循环（Read-Eval-Print Loop）。 我们管�
 \item[1.  ] 用户打开了 \texttt{julia}。
 
 
-\item[2.  ] The C function \texttt{main()} from \texttt{ui/repl.c} gets called. This function processes the command line arguments, filling in the \texttt{jl\_options} struct and setting the variable \texttt{ARGS}. It then initializes 在 \texttt{ui/repl.c} 中的 C 语言的函数 \texttt{main()} 被调用。这个函数处理命令行参数，填充到 \texttt{jl\_options} 结构图并且设置变了 \texttt{ARGS} 。接下来初始化 Julia (通过调用  \href{https://github.com/JuliaLang/julia/blob/master/src/task.c}{\texttt{julia\_init} in \texttt{task.c}} which may load a previously compiled \hyperlink{6082338945993475185}{sysimg}). Finally, it passes off control to Julia by calling \href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{Base.\_start()}}.
+\item[2.  ] The C function \texttt{main()} from \texttt{cli/loader\_exe.c} gets called. This function processes the command line arguments, filling in the \texttt{jl\_options} struct and setting the variable \texttt{ARGS}. It then initializes 在 \texttt{ui/repl.c} 中的 C 语言的函数 \texttt{main()} 被调用。这个函数处理命令行参数，填充到 \texttt{jl\_options} 结构图并且设置变了 \texttt{ARGS} 。接下来初始化 Julia (通过调用  \href{https://github.com/JuliaLang/julia/blob/master/src/task.c}{\texttt{julia\_init} in \texttt{task.c}} which may load a previously compiled \hyperlink{6082338945993475185}{sysimg}). Finally, it passes off control to Julia by calling \href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{Base.\_start()}}.
 
 
 \item[3.  ] When \texttt{\_start()} takes over control, the subsequent sequence of commands depends on the command line arguments given. For example, if a filename was supplied, it will proceed to execute that file. Otherwise, it will start an interactive REPL.
@@ -2977,17 +2992,17 @@ Tuples are always represented as C arrays.
 
 
 
-\hypertarget{7542203617935209330}{}
+\hypertarget{937983670031722699}{}
 
 
-\section{High-level Overview of the Native-Code Generation Process}
+\section{本机代码生成过程的高级概述}
 
 
 
-\hypertarget{6164157073495091365}{}
+\hypertarget{10925450738979772529}{}
 
 
-\subsection{Representation of Pointers}
+\subsection{指针的表示}
 
 
 
@@ -3672,7 +3687,7 @@ Anonymous-function expressions have many uses in practice.
 \paragraph{Macro reference}
 
 
-\hypertarget{4938945836201444124}{} 
+\hypertarget{4938945836201444124}{}
 \hyperlink{4938945836201444124}{\texttt{Base.Cartesian.@nloops}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3712,11 +3727,11 @@ If you want just a post-expression, supply \hyperlink{9331422207248206047}{\text
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L9-L37}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L9-L37}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{5318613607184308860}{} 
+\hypertarget{5318613607184308860}{}
 \hyperlink{5318613607184308860}{\texttt{Base.Cartesian.@nref}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3738,11 +3753,11 @@ julia> @macroexpand Base.Cartesian.@nref 3 A i
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L72-L83}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L72-L83}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{5592996802344748158}{} 
+\hypertarget{5592996802344748158}{}
 \hyperlink{5592996802344748158}{\texttt{Base.Cartesian.@nextract}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3773,11 +3788,11 @@ x_3 = y[5]
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L132-L149}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L132-L149}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{17386123129446980507}{} 
+\hypertarget{17386123129446980507}{}
 \hyperlink{17386123129446980507}{\texttt{Base.Cartesian.@nexprs}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3804,11 +3819,11 @@ end
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L111-L126}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L111-L126}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{16431416314224139891}{} 
+\hypertarget{16431416314224139891}{}
 \hyperlink{16431416314224139891}{\texttt{Base.Cartesian.@ncall}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3836,11 +3851,11 @@ func(a, b, c[1], c[2])
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L89-L103}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L89-L103}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{4425932542618492714}{} 
+\hypertarget{4425932542618492714}{}
 \hyperlink{4425932542618492714}{\texttt{Base.Cartesian.@ntuple}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3854,11 +3869,11 @@ Generates an \texttt{N}-tuple. \texttt{@ntuple 2 i} would generate \texttt{(i\_1
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L193-L198}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L193-L198}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{5463798602076286002}{} 
+\hypertarget{5463798602076286002}{}
 \hyperlink{5463798602076286002}{\texttt{Base.Cartesian.@nall}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3874,11 +3889,11 @@ Check whether all of the expressions generated by the anonymous-function express
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L160-L168}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L160-L168}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{11114957141394185901}{} 
+\hypertarget{11114957141394185901}{}
 \hyperlink{11114957141394185901}{\texttt{Base.Cartesian.@nany}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3894,11 +3909,11 @@ Check whether any of the expressions generated by the anonymous-function express
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L177-L184}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L177-L184}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{2428714678347040919}{} 
+\hypertarget{2428714678347040919}{}
 \hyperlink{2428714678347040919}{\texttt{Base.Cartesian.@nif}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3931,7 +3946,7 @@ end
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L204-L221}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/9058264a69f9efc1af805c4473c946f87859b731/base/cartesian.jl#L204-L221}{\texttt{source}}
 
 
 \end{adjustwidth}
@@ -4034,15 +4049,15 @@ Consider making 2d slices of a 3d array:
 julia> A = rand(2,3,4);
 
 julia> S1 = view(A, :, 1, 2:3)
-2×2 view(::Array{Float64,3}, :, 1, 2:3) with eltype Float64:
- 0.200586  0.066423
- 0.298614  0.956753
+2×2 view(::Array{Float64, 3}, :, 1, 2:3) with eltype Float64:
+ 0.342284  0.831961
+ 0.237287  0.435938
 
 julia> S2 = view(A, 1, :, 2:3)
-3×2 view(::Array{Float64,3}, 1, :, 2:3) with eltype Float64:
- 0.200586  0.066423
- 0.246837  0.646691
- 0.648882  0.276021
+3×2 view(::Array{Float64, 3}, 1, :, 2:3) with eltype Float64:
+ 0.342284  0.831961
+ 0.988944  0.927795
+ 0.178426  0.404876
 \end{minted}
 
 
@@ -4209,7 +4224,7 @@ julia> A = reshape(1:4*2, 4, 2)
  4  8
 
 julia> diff(A[2:2:4,:][:])
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  2
  2
  2
@@ -4232,7 +4247,7 @@ julia> A = reshape(1:5*2, 5, 2)
  5  10
 
 julia> diff(A[2:2:4,:][:])
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  2
  3
  2
@@ -4323,7 +4338,7 @@ Julia now includes an optimization wherein {\textquotedbl}isbits Union{\textquot
 
 
 
-Julia can now also store {\textquotedbl}isbits Union{\textquotedbl} values inline in an Array, as opposed to requiring an indirection box. The optimization is accomplished by storing an extra {\textquotedbl}type tag array{\textquotedbl} of bytes, one byte per array element, alongside the bytes of the actual array data. This type tag array serves the same function as the type field case: its value signals the type of the actual stored Union value in the array. In terms of layout, a Julia Array can include extra {\textquotedbl}buffer{\textquotedbl} space before and after its actual data values, which are tracked in the \texttt{a->offset} and \texttt{a->maxsize} fields of the \texttt{jl\_array\_t*} type. The {\textquotedbl}type tag array{\textquotedbl} is treated exactly as another \texttt{jl\_array\_t*}, but which shares the same \texttt{a->offset}, \texttt{a->maxsize}, and \texttt{a->len} fields. So the formula to access an isbits Union Array{\textquotesingle}s type tag bytes is \texttt{a->data + (a->maxsize - a->offset) * a->elsize + a->offset}; i.e. the Array{\textquotesingle}s \texttt{a->data} pointer is already shifted by \texttt{a->offset}, so correcting for that, we follow the data all the way to the max of what it can hold \texttt{a->maxsize}, then adjust by \texttt{a->ofset} more bytes to account for any present {\textquotedbl}front buffering{\textquotedbl} the array might be doing. This layout in particular allows for very efficient resizing operations as the type tag data only ever has to move when the actual array{\textquotesingle}s data has to move.
+Julia can now also store {\textquotedbl}isbits Union{\textquotedbl} values inline in an Array, as opposed to requiring an indirection box. The optimization is accomplished by storing an extra {\textquotedbl}type tag array{\textquotedbl} of bytes, one byte per array element, alongside the bytes of the actual array data. This type tag array serves the same function as the type field case: its value signals the type of the actual stored Union value in the array. In terms of layout, a Julia Array can include extra {\textquotedbl}buffer{\textquotedbl} space before and after its actual data values, which are tracked in the \texttt{a->offset} and \texttt{a->maxsize} fields of the \texttt{jl\_array\_t*} type. The {\textquotedbl}type tag array{\textquotedbl} is treated exactly as another \texttt{jl\_array\_t*}, but which shares the same \texttt{a->offset}, \texttt{a->maxsize}, and \texttt{a->len} fields. So the formula to access an isbits Union Array{\textquotesingle}s type tag bytes is \texttt{a->data + (a->maxsize - a->offset) * a->elsize + a->offset}; i.e. the Array{\textquotesingle}s \texttt{a->data} pointer is already shifted by \texttt{a->offset}, so correcting for that, we follow the data all the way to the max of what it can hold \texttt{a->maxsize}, then adjust by \texttt{a->offset} more bytes to account for any present {\textquotedbl}front buffering{\textquotedbl} the array might be doing. This layout in particular allows for very efficient resizing operations as the type tag data only ever has to move when the actual array{\textquotesingle}s data has to move.
 
 
 
@@ -4444,7 +4459,7 @@ The parsing and cloning decision are done in \texttt{src/processor*}.  We curren
 
 \item[2. ] System image loading
 
-The loading and initialization of the system image is done in \texttt{src/processor*} by  parsing the metadata saved during system image generation.  Host feature detection and selection decision are done in \texttt{src/processor\_*.cpp}  depending on the ISA. The target selection will prefer exact CPU name match,  larger vector register size, and larget number of features.  An overview of this process is in \texttt{src/processor.cpp}.
+The loading and initialization of the system image is done in \texttt{src/processor*} by  parsing the metadata saved during system image generation.  Host feature detection and selection decision are done in \texttt{src/processor\_*.cpp}  depending on the ISA. The target selection will prefer exact CPU name match,  larger vector register size, and larger number of features.  An overview of this process is in \texttt{src/processor.cpp}.
 
 \end{itemize}
 
@@ -4544,7 +4559,7 @@ The default version of LLVM is specified in \texttt{deps/Versions.make}. You can
 
 
 \begin{lstlisting}
-LLVM_VER = 6.0.1
+LLVM_VER = 12.0.1
 \end{lstlisting}
 
 
@@ -4553,7 +4568,7 @@ Besides the LLVM release numerals, you can also use \texttt{LLVM\_VER = svn} to 
 
 
 
-You can also specify to build a debug version of LLVM, by setting either \texttt{LLVM\_DEBUG = 1} or \texttt{LLVM\_DEBUG = Release} in your \texttt{Make.user} file. The former will be a fully unoptimized build of LLVM and the latter will produce an optimized build of LLVM. Depending on your needs the latter will suffice and it quite a bit faster. If you use \texttt{LLVM\_DEBUG = Release} you will also want to set \texttt{LLVM\_ASSERTIONS = 1} to enable diagonstics for different passes. Only \texttt{LLVM\_DEBUG = 1} implies that option by default.
+You can also specify to build a debug version of LLVM, by setting either \texttt{LLVM\_DEBUG = 1} or \texttt{LLVM\_DEBUG = Release} in your \texttt{Make.user} file. The former will be a fully unoptimized build of LLVM and the latter will produce an optimized build of LLVM. Depending on your needs the latter will suffice and it quite a bit faster. If you use \texttt{LLVM\_DEBUG = Release} you will also want to set \texttt{LLVM\_ASSERTIONS = 1} to enable diagnostics for different passes. Only \texttt{LLVM\_DEBUG = 1} implies that option by default.
 
 
 
@@ -4569,10 +4584,10 @@ You can pass options to LLVM via the environment variable \texttt{JULIA\_LLVM\_A
 
 
 \begin{itemize}
-\item \texttt{export JULIA\_LLVM\_ARGS = -print-after-all} dumps IR after each pass.
+\item \texttt{export JULIA\_LLVM\_ARGS=-print-after-all} dumps IR after each pass.
 
 
-\item \texttt{export JULIA\_LLVM\_ARGS = -debug-only=loop-vectorize} dumps LLVM \texttt{DEBUG(...)} diagnostics for loop vectorizer. If you get warnings about {\textquotedbl}Unknown command line argument{\textquotedbl}, rebuild LLVM with \texttt{LLVM\_ASSERTIONS = 1}.
+\item \texttt{export JULIA\_LLVM\_ARGS=-debug-only=loop-vectorize} dumps LLVM \texttt{DEBUG(...)} diagnostics for loop vectorizer. If you get warnings about {\textquotedbl}Unknown command line argument{\textquotedbl}, rebuild LLVM with \texttt{LLVM\_ASSERTIONS = 1}.
 
 \end{itemize}
 
@@ -4590,7 +4605,7 @@ On occasion, it can be useful to debug LLVM{\textquotesingle}s transformations i
 
 
 \begin{lstlisting}
-opt -load libjulia.so -julia -o opt.bc unopt.bc
+opt -load libjulia-internal.so -julia -o opt.bc unopt.bc
 llc -o sys.o opt.bc
 cc -shared -o sys.so sys.o
 \end{lstlisting}
@@ -4598,10 +4613,6 @@ cc -shared -o sys.so sys.o
 
 
 This system image can then be loaded by \texttt{julia} as usual.
-
-
-
-Alternatively, you can use \texttt{--output-jit-bc jit.bc} to obtain a trace of all IR passed to the JIT. This is useful for code that cannot be run as part of the sysimg generation process (e.g. because it creates unserializable state). However, the resulting \texttt{jit.bc} does not include sysimage data, and can thus not be used as such.
 
 
 
@@ -4643,7 +4654,7 @@ If you are planning to improve a pass, be sure to read the \href{http://llvm.org
 \item[1. ] Create an example Julia code of interest.
 
 
-\item[2. ] Use \texttt{JULIA\_LLVM\_ARGS = -print-after-all} to dump the IR.
+\item[2. ] Use \texttt{JULIA\_LLVM\_ARGS=-print-after-all} to dump the IR.
 
 
 \item[3. ] Pick out the IR at the point just before the pass of interest runs.
@@ -4960,7 +4971,7 @@ int jl_vprintf(uv_stream_t *s, const char *format, va_list args);
 
 
 
-These \texttt{printf} functions are used by the \texttt{.c} files in the \texttt{src/} and \texttt{ui/} directories wherever stdio is needed to ensure that output buffering is handled in a unified way.
+These \texttt{printf} functions are used by the \texttt{.c} files in the \texttt{src/} and \texttt{cli/} directories wherever stdio is needed to ensure that output buffering is handled in a unified way.
 
 
 
@@ -5110,7 +5121,7 @@ if (stream->type > UV_HANDLE_TYPE_MAX) {
 
 
 
-宏 \texttt{@boundscheck(...)} 把代码块标记为要执行边界检查。但当这些代码块被被宏 \texttt{@inbounds(...)} 标记的代码包裹时，它们可能会被编译器移除。仅当\texttt{@boundscheck(...)} 代码块被调用函数包裹时，编译器会移除它们。比如你可能这样写的 \texttt{sum} 方法： 
+宏 \texttt{@boundscheck(...)} 把代码块标记为要执行边界检查。但当这些代码块被被宏 \texttt{@inbounds(...)} 标记的代码包裹时，它们可能会被编译器移除。仅当\texttt{@boundscheck(...)} 代码块被调用函数包裹时，编译器会移除它们。比如你可能这样写的 \texttt{sum} 方法：
 
 
 
@@ -5118,7 +5129,7 @@ if (stream->type > UV_HANDLE_TYPE_MAX) {
 \begin{minted}{julia}
 function sum(A::AbstractArray)
     r = zero(eltype(A))
-    for i = 1:length(A)
+    for i in eachindex(A)
         @inbounds r += A[i]
     end
     return r
@@ -5218,6 +5229,17 @@ Note this hierarchy has been designed to reduce the likelihood of method ambigui
 
 
 
+\hypertarget{15511139749343586557}{}
+
+
+\subsection{Emit bounds checks}
+
+
+
+Julia can be launched with \texttt{--check-bounds=\{yes|no|auto\}} to emit bounds checks always, never, or respect @inbounds declarations.
+
+
+
 \hypertarget{17038639605096915302}{}
 
 
@@ -5282,6 +5304,9 @@ While holding this lock, the code must not do any allocation or hit any safepoin
 
 
 \item flisp
+
+
+\item jl\emph{in}stackwalk (Win32)
 
 \begin{quote}
 flisp itself is already threadsafe, this lock only protects the \texttt{jl\_ast\_context\_list\_t} pool
@@ -5670,7 +5695,7 @@ This code implicitly assumes that vectors are indexed from 1; if \texttt{dest} s
 
 
 
-\texttt{axes(A)} (reminiscent of \texttt{size(A)}) returns a tuple of \texttt{AbstractUnitRange} objects, specifying the range of valid indices along each dimension of \texttt{A}.  When \texttt{A} has unconventional indexing, the ranges may not start at 1.  If you just want the range for a particular dimension \texttt{d}, there is \texttt{axes(A, d)}.
+\texttt{axes(A)} (reminiscent of \texttt{size(A)}) returns a tuple of \texttt{AbstractUnitRange\{<:Integer\}} objects, specifying the range of valid indices along each dimension of \texttt{A}.  When \texttt{A} has unconventional indexing, the ranges may not start at 1.  If you just want the range for a particular dimension \texttt{d}, there is \texttt{axes(A, d)}.
 
 
 
@@ -5978,11 +6003,7 @@ end
 
 
 
-\href{https://en.wikipedia.org/wiki/Type\_inference}{类型推导}指的是由输入值的类型推导其他值得类型得过程。
-
-
-
-这两篇博客 (\href{https://juliacomputing.com/blog/2016/04/04/inference-convergence.html}{1}, \href{https://juliacomputing.com/blog/2017/05/15/inference-converage2.html}{2}) 描述了 Julia 的类型推导实现。
+\href{https://en.wikipedia.org/wiki/Type\_inference}{Type inference} refers to the process of deducing the types of later values from the types of input values. Julia{\textquotesingle}s approach to inference has been described in blog posts (\href{https://juliacomputing.com/blog/2016/04/inference-convergence/}{1}, \href{https://juliacomputing.com/blog/2017/05/inference-converage2/}{2}).
 
 
 
@@ -6013,12 +6034,11 @@ mths = methods(convert, atypes)  # worth checking that there is only one
 m = first(mths)
 
 # Create variables needed to call `typeinf_code`
-params = Core.Compiler.Params(typemax(UInt))  # parameter is the world age,
-                                              # typemax(UInt) -> most recent
+interp = Core.Compiler.NativeInterpreter()
 sparams = Core.svec()      # this particular method doesn't have type-parameters
 optimize = true            # run all inference optimizations
 types = Tuple{typeof(convert), atypes.parameters...} # Tuple{typeof(convert), Type{Int}, UInt}
-Core.Compiler.typeinf_code(m, types, sparams, optimize, params)
+Core.Compiler.typeinf_code(interp, m, types, sparams, optimize)
 \end{minted}
 
 
@@ -6058,53 +6078,657 @@ We supplement this low-level lookup table with a number of special cases. For ex
 
 
 
-Each statement gets analyzed for its total cost in a function called \texttt{statement\_cost}. You can run this yourself by following the sketch below, where \texttt{f} is your function and \texttt{tt} is the Tuple-type of the arguments:
+Each statement gets analyzed for its total cost in a function called \texttt{statement\_cost}. You can display the cost associated with each statement as follows:
+
+
+
+
+\begin{minted}{jlcon}
+julia> Base.print_statement_costs(stdout, map, (typeof(sqrt), Tuple{Int},)) # map(sqrt, (2,))
+map(f, t::Tuple{Any}) in Base at tuple.jl:179
+  0 1 ─ %1  = Base.getfield(_3, 1, true)::Int64
+  1 │   %2  = Base.sitofp(Float64, %1)::Float64
+  2 │   %3  = Base.lt_float(%2, 0.0)::Bool
+  0 └──       goto #3 if not %3
+  0 2 ─       invoke Base.Math.throw_complex_domainerror(:sqrt::Symbol, %2::Float64)::Union{}
+  0 └──       unreachable
+ 20 3 ─ %7  = Base.Math.sqrt_llvm(%2)::Float64
+  0 └──       goto #4
+  0 4 ─       goto #5
+  0 5 ─ %10 = Core.tuple(%7)::Tuple{Float64}
+  0 └──       return %10
+\end{minted}
+
+
+
+The line costs are in the left column. This includes the consequences of inlining and other forms of optimization.
+
+
+
+\hypertarget{16468279497102584880}{}
+
+
+\section{Julia SSA-form IR}
+
+
+
+\hypertarget{5370755282098388224}{}
+
+
+\subsection{Background}
+
+
+
+Beginning in Julia 0.7, parts of the compiler use a new \href{https://en.wikipedia.org/wiki/Static\_single\_assignment\_form}{SSA-form} intermediate representation. Historically, the compiler used to directly generate LLVM IR, from a lowered form of the Julia AST. This form had most syntactic abstractions removed, but still looked a lot like an abstract syntax tree. Over time, in order to facilitate optimizations, SSA values were introduced to this IR and the IR was linearized (i.e. a form where function arguments may only be SSA values or constants). However, non-SSA values (slots) remained in the IR due to the lack of Phi nodes in the IR (necessary for back-edges and re-merging of conditional control flow), negating much of the usefulness of the SSA form representation to perform middle end optimizations. Some heroic effort was put into making these optimizations work without a complete SSA form representation, but the lack of such a representation ultimately proved prohibitive.
+
+
+
+\hypertarget{14402415240566144810}{}
+
+
+\subsection{New IR nodes}
+
+
+
+With the new IR representation, the compiler learned to handle four new IR nodes, Phi nodes, Pi nodes as well as PhiC nodes and Upsilon nodes (the latter two are only used for exception handling).
+
+
+
+\hypertarget{919068206461821671}{}
+
+
+\subsubsection{Phi nodes and Pi nodes}
+
+
+
+Phi nodes are part of generic SSA abstraction (see the link above if you{\textquotesingle}re not familiar with the concept). In the Julia IR, these nodes are represented as:
+
+
+
+
+\begin{lstlisting}
+struct PhiNode
+    edges::Vector{Int}
+    values::Vector{Any}
+end
+\end{lstlisting}
+
+
+
+where we ensure that both vectors always have the same length. In the canonical representation (the one handled by codegen and the interpreter), the edge values indicate come-from statement numbers (i.e. if edge has an entry of \texttt{15}, there must be a \texttt{goto}, \texttt{gotoifnot} or implicit fall through from statement \texttt{15} that targets this phi node). Values are either SSA values or constants. It is also possible for a value to be unassigned if the variable was not defined on this path. However, undefinedness checks get explicitly inserted and represented as booleans after middle end optimizations, so code generators may assume that any use of a Phi node will have an assigned value in the corresponding slot. It is also legal for the mapping to be incomplete, i.e. for a Phi node to have missing incoming edges. In that case, it must be dynamically guaranteed that the corresponding value will not be used.
+
+
+
+PiNodes encode statically proven information that may be implicitly assumed in basic blocks dominated by a given pi node. They are conceptually equivalent to the technique introduced in the paper \href{https://dl.acm.org/citation.cfm?id=358438.349342}{ABCD: Eliminating Array Bounds Checks on Demand} or the predicate info nodes in LLVM. To see how they work, consider, e.g.
 
 
 
 
 \begin{minted}{julia}
-# A demo on `fill(3.5, (2, 3))`
-f = fill
-tt = Tuple{Float64, Tuple{Int,Int}}
-# Create the objects we need to interact with the compiler
-params = Core.Compiler.Params(typemax(UInt))
-mi = Base.method_instances(f, tt)[1]
-ci = code_typed(f, tt)[1][1]
-opt = Core.Compiler.OptimizationState(mi, params)
-# Calculate cost of each statement
-cost(stmt::Expr) = Core.Compiler.statement_cost(stmt, -1, ci, opt.sptypes, opt.slottypes, opt.params)
-cost(stmt) = 0
-cst = map(cost, ci.code)
-
-# output
-
-31-element Array{Int64,1}:
-  0
-  0
- 20
-  4
-  1
-  1
-  1
-  0
-  0
-  0
-  ⋮
-  0
-  0
-  0
-  0
-  0
-  0
-  0
-  0
-  0
+%x::Union{Int, Float64} # %x is some Union{Int, Float64} typed ssa value
+if isa(x, Int)
+    # use x
+else
+    # use x
+end
 \end{minted}
 
 
 
-The output is a \texttt{Vector\{Int\}} holding the estimated cost of each statement in \texttt{ci.code}.  Note that \texttt{ci} includes the consequences of inlining callees, and consequently the costs do too.
+We can perform predicate insertion and turn this into:
+
+
+
+
+\begin{minted}{julia}
+%x::Union{Int, Float64} # %x is some Union{Int, Float64} typed ssa value
+if isa(x, Int)
+    %x_int = PiNode(x, Int)
+    # use %x_int
+else
+    %x_float = PiNode(x, Float64)
+    # use %x_float
+end
+\end{minted}
+
+
+
+Pi nodes are generally ignored in the interpreter, since they don{\textquotesingle}t have any effect on the values, but they may sometimes lead to code generation in the compiler (e.g. to change from an implicitly union split representation to a plain unboxed representation). The main usefulness of PiNodes stems from the fact that path conditions of the values can be accumulated simply by def-use chain walking that is generally done for most optimizations that care about these conditions anyway.
+
+
+
+\hypertarget{1498305755051877944}{}
+
+
+\subsubsection{PhiC nodes and Upsilon nodes}
+
+
+
+Exception handling complicates the SSA story moderately, because exception handling introduces additional control flow edges into the IR across which values must be tracked. One approach to do so, which is followed by LLVM is to make calls which may throw exceptions into basic block terminators and add an explicit control flow edge to the catch handler:
+
+
+
+
+\begin{lstlisting}
+invoke @function_that_may_throw() to label %regular unwind to %catch
+
+regular:
+# Control flow continues here
+
+catch:
+# Exceptions go here
+\end{lstlisting}
+
+
+
+However, this is problematic in a language like julia where at the start of the optimization pipeline, we do not know which calls throw. We would have to conservatively assume that every call (which in julia is every statement) throws. This would have several negative effects. On the one hand, it would essentially reduce the scope of every basic block to a single call, defeating the purpose of having operations be performed at the basic block level. On the other hand, every catch basic block would have \texttt{n*m} phi node arguments (\texttt{n}, the number of statements in the critical region, \texttt{m} the number of live values through the catch block). To work around this, we use a combination of \texttt{Upsilon} and \texttt{PhiC} (the C standing for \texttt{catch}, written \texttt{φᶜ} in the IR pretty printer, because unicode subscript c is not available) nodes. There are several ways to think of these nodes, but perhaps the easiest is to think of each \texttt{PhiC} as a load from a unique store-many, read-once slot, with \texttt{Upsilon} being the corresponding store operation. The \texttt{PhiC} has an operand list of all the upsilon nodes that store to its implicit slot. The \texttt{Upsilon} nodes however, do not record which \texttt{PhiC} node they store to. This is done for more natural integration with the rest of the SSA IR. E.g. if there are no more uses of a \texttt{PhiC} node, it is safe to delete it, and the same is true of an \texttt{Upsilon} node. In most IR passes, \texttt{PhiC} nodes can be treated like \texttt{Phi} nodes. One can follow use-def chains through them, and they can be lifted to new \texttt{PhiC} nodes and new \texttt{Upsilon} nodes (in the same places as the original \texttt{Upsilon} nodes). The result of this scheme is that the number of \texttt{Upsilon} nodes (and \texttt{PhiC} arguments) is proportional to the number of assigned values to a particular variable (before SSA conversion), rather than the number of statements in the critical region.
+
+
+
+To see this scheme in action, consider the function
+
+
+
+
+\begin{minted}{julia}
+@noinline opaque() = invokelatest(identity, nothing) # Something opaque
+function foo()
+    local y
+    x = 1
+    try
+        y = 2
+        opaque()
+        y = 3
+        error()
+    catch
+    end
+    (x, y)
+end
+\end{minted}
+
+
+
+The corresponding IR (with irrelevant types stripped) is:
+
+
+
+
+\begin{lstlisting}
+1 ─       nothing::Nothing
+2 ─ %2  = $(Expr(:enter, #4))
+3 ─ %3  = ϒ (false)
+│   %4  = ϒ (#undef)
+│   %5  = ϒ (1)
+│   %6  = ϒ (true)
+│   %7  = ϒ (2)
+│         invoke Main.opaque()::Any
+│   %9  = ϒ (true)
+│   %10 = ϒ (3)
+│         invoke Main.error()::Union{}
+└──       $(Expr(:unreachable))::Union{}
+4 ┄ %13 = φᶜ (%3, %6, %9)::Bool
+│   %14 = φᶜ (%4, %7, %10)::Core.Compiler.MaybeUndef(Int64)
+│   %15 = φᶜ (%5)::Core.Const(1)
+└──       $(Expr(:leave, 1))
+5 ─       $(Expr(:pop_exception, :(%2)))::Any
+│         $(Expr(:throw_undef_if_not, :y, :(%13)))::Any
+│   %19 = Core.tuple(%15, %14)
+└──       return %19
+\end{lstlisting}
+
+
+
+Note in particular that every value live into the critical region gets an upsilon node at the top of the critical region. This is because catch blocks are considered to have an invisible control flow edge from outside the function. As a result, no SSA value dominates the catch blocks, and all incoming values have to come through a \texttt{φᶜ} node.
+
+
+
+\hypertarget{13190851783504287053}{}
+
+
+\subsection{Main SSA data structure}
+
+
+
+The main \texttt{SSAIR} data structure is worthy of discussion. It draws inspiration from LLVM and Webkit{\textquotesingle}s B3 IR. The core of the data structure is a flat vector of statements. Each statement is implicitly assigned an SSA value based on its position in the vector (i.e. the result of the statement at idx 1 can be accessed using \texttt{SSAValue(1)} etc). For each SSA value, we additionally maintain its type. Since, SSA values are definitionally assigned only once, this type is also the result type of the expression at the corresponding index. However, while this representation is rather efficient (since the assignments don{\textquotesingle}t need to be explicitly encoded), it of course carries the drawback that order is semantically significant, so reorderings and insertions change statement numbers. Additionally, we do not keep use lists (i.e. it is impossible to walk from a def to all its uses without explicitly computing this map–def lists however are trivial since you can look up the corresponding statement from the index), so the LLVM-style RAUW (replace-all-uses-with) operation is unavailable.
+
+
+
+Instead, we do the following:
+
+
+
+\begin{itemize}
+\item We keep a separate buffer of nodes to insert (including the position to insert them at, the type of the corresponding value and the node itself). These nodes are numbered by their occurrence in the insertion buffer, allowing their values to be immediately used elsewhere in the IR (i.e. if there are 12 statements in the original statement list, the first new statement will be accessible as \texttt{SSAValue(13)}).
+
+
+\item RAUW style operations are performed by setting the corresponding statement index to the replacement value.
+
+
+\item Statements are erased by setting the corresponding statement to \texttt{nothing} (this is essentially just a special-case convention of the above.
+
+
+\item If there are any uses of the statement being erased, they will be set to \texttt{nothing}.
+
+\end{itemize}
+
+
+There is a \texttt{compact!} function that compacts the above data structure by performing the insertion of nodes in the appropriate place, trivial copy propagation, and renaming of uses to any changed SSA values. However, the clever part of this scheme is that this compaction can be done lazily as part of the subsequent pass. Most optimization passes need to walk over the entire list of statements, performing analysis or modifications along the way. We provide an \texttt{IncrementalCompact} iterator that can be used to iterate over the statement list. It will perform any necessary compaction and return the new index of the node, as well as the node itself. It is legal at this point to walk def-use chains, as well as make any modifications or deletions to the IR (insertions are disallowed however).
+
+
+
+The idea behind this arrangement is that, since the optimization passes need to touch the corresponding memory anyway and incur the corresponding memory access penalty, performing the extra housekeeping should have comparatively little overhead (and save the overhead of maintaining these data structures during IR modification).
+
+
+
+\hypertarget{3374914057216712271}{}
+
+
+\section{Static analyzer annotations for GC correctness in C code}
+
+
+
+\hypertarget{10926948174874297988}{}
+
+
+\subsection{Running the analysis}
+
+
+
+The analyzer plugin that drives the anlysis ships with julia. Its source code can be found in \texttt{src/clangsa}. Running it requires the clang dependency to be build. Set the \texttt{BUILD\_LLVM\_CLANG} variable in your Make.user in order to build an appropriate version of clang. You may also want to use the prebuilt binaries using the \texttt{USE\_BINARYBUILDER\_LLVM} options. Afterwards, running the analysis over the source tree is as simple as running \texttt{make -C src analyzegc}.
+
+
+
+\hypertarget{9968293705752668266}{}
+
+
+\subsection{General Overview}
+
+
+
+Since Julia{\textquotesingle}s GC is precise, it needs to maintain correct rooting information for any value that may be referenced at any time GC may occur. These places are known as \texttt{safepoints} and in the function local context, we extend this designation to any function call that may recursively end up at a safepoint.
+
+
+
+In generated code, this is taken care of automatically by the GC root placement pass (see the chapter on GC rooting in the LLVM codegen devdocs). However, in C code, we need to inform the runtime of any GC roots manually. This is done using the following macros:
+
+
+
+
+\begin{lstlisting}
+// The value assigned to any slot passed as an argument to these
+// is rooted for the duration of this GC frame.
+JL_GC_PUSH{1,...,6}(args...)
+// The values assigned into the size `n` array `rts` are rooted
+// for the duration of this GC frame.
+JL_GC_PUSHARGS(rts, n)
+// Pop a GC frame
+JL_GC_POP
+\end{lstlisting}
+
+
+
+If these macros are not used where they need to be, or they are used incorrectly, the result is silent memory corruption. As such it is very important that they are placed correctly in all applicable code.
+
+
+
+As such, we employ static analysis (and in particular the clang static analyzer) to help ensure that these macros are used correctly. The remainder of this document gives an overview of this static analysis and describes the support needed in the julia code base to make things work.
+
+
+
+\hypertarget{15061338110065038518}{}
+
+
+\subsection{GC Invariants}
+
+
+
+There is two simple invariants correctness:
+
+
+
+\begin{itemize}
+\item All \texttt{GC\_PUSH} calls need to be followed by an appropriate \texttt{GC\_POP} (in practice we enforce this at the function level)
+
+
+\item If a value was previously not rooted at any safepoint, it may no longer be referenced afterwards
+
+\end{itemize}
+
+
+Of course the devil is in the details here. In particular to satisfy the second of the above conditions, we need to know:
+
+
+
+\begin{itemize}
+\item Which calls are safepoints and which are not
+
+
+\item Which values are rooted at any given safepoint and which are not
+
+
+\item When is a value referenced
+
+\end{itemize}
+
+
+For the second point in particular, we need to know which memory locations will be considered rooting at runtime (i.e. values assigned to such locations are rooted). This includes locations explicitly designated as such by passing them to one of the \texttt{GC\_PUSH} macros, globally rooted locations and values, as well as any location recursively reachable from one of those locations.
+
+
+
+\hypertarget{7498210263575228495}{}
+
+
+\subsection{Static Analysis Algorithm}
+
+
+
+The idea itself is very simple, although the implementation is quite a bit more complicated (mainly due to a large number of special cases and intricacies of C and C++). In essence, we keep track of all locations that are rooting, all values that are rootable and any expression (assignments, allocations, etc) affect the rootedness of any rootable values. Then, at any safepoint, we perform a {\textquotedbl}symbolic GC{\textquotedbl} and poison any values that are not rooted at said location. If these values are later referenced, we emit an error.
+
+
+
+The clang static analyzer works by constructing a graph of states and exploring this graph for sources of errors. Several nodes in this graph are generated by the analyzer itself (e.g. for control flow), but the definitions above augment this graph with our own state.
+
+
+
+The static analyzer is interprocedural and can analyze control flow across function boundaries. However, the static analyzer is not fully recursive and makes heuristic decisions about which calls to explore (additionally some calls are cross-translation unit and invisible to the analyzer). In our case, our definition of correctness requires total information. As such, we need to annotate the prototypes of all function calls with whatever information the analysis required, even if that information would otherwise be available by interprocedural static analysis.
+
+
+
+Luckily however, we can still use this interprocedural analysis to ensure that the annotations we place on a given function are indeed correct given the implementation of said function.
+
+
+
+\hypertarget{5382015011410468170}{}
+
+
+\subsection{The analyzer annotations}
+
+
+
+These annotations are found in src/support/analyzer\_annotations.h. The are only active when the analyzer is being used and expand either to nothing (for prototype annotations) or to no-ops (for function like annotations).
+
+
+
+\hypertarget{4716575215472782777}{}
+
+
+\subsubsection{\texttt{JL\_NOTSAFEPOINT}}
+
+
+
+This is perhaps the most common annotation, and should be placed on any function that is known not to possibly lead to reaching a GC safepoint. In general, it is only safe for such a function to perform arithmetic, memory accesses and calls to functions either annotated \texttt{JL\_NOTSAFEPOINT} or otherwise known not to be safepoints (e.g. function in the C standard library, which are hardcoded as such in the analyzer)
+
+
+
+It is valid to keep values unrooted across calls to any function annotated with this attribute:
+
+
+
+Usage Example:
+
+
+
+
+\begin{lstlisting}
+void jl_get_one() JL_NOTSAFEPOINT {
+  return 1;
+}
+
+jl_value_t *example() {
+  jl_value_t *val = jl_alloc_whatever();
+  // This is valid, even though `val` is unrooted, because
+  // jl_get_one is not a safepoint
+  jl_get_one();
+  return val;
+}
+\end{lstlisting}
+
+
+
+\hypertarget{2060328680206426649}{}
+
+
+\subsubsection{\texttt{JL\_MAYBE\_UNROOTED}/\texttt{JL\_ROOTS\_TEMPORARILY}}
+
+
+
+When \texttt{JL\_MAYBE\_UNROOTED} is annotated as an argument on a function, indicates that said argument may be passed, even if it is not rooted. In the ordinary course of events, the julia ABI guarantees that callers root values before passing them to callees. However, some functions do not follow this ABI and allow values to be passed to them even though they are not rooted. Note however, that this does not automatically imply that said argument will be preserved. The \texttt{ROOTS\_TEMPORARILY} annotation provides the stronger guarantee that, not only may the value be unrooted when passed, it will also be preserved across any internal safepoints by the callee.
+
+
+
+Note that \texttt{JL\_NOTSAFEPOINT} essentially implies \texttt{JL\_MAYBE\_UNROOTED}/\texttt{JL\_ROOTS\_TEMPORARILY}, because the rootedness of an argument is irrelevant if the function contains no safepoints.
+
+
+
+One additional point to note is that these annotations apply on both the caller and the callee side. On the caller side, they lift rootedness restrictions that are normally required for julia ABI functions. On the callee side, they have the reverse effect of preventing these arguments from being considered implicitly rooted.
+
+
+
+If either of these annotations is applied to the function as a whole, it applies to all arguments of the function. This should generally only be necessary for varargs functions.
+
+
+
+Usage example:
+
+
+
+
+\begin{lstlisting}
+JL_DLLEXPORT void JL_NORETURN jl_throw(jl_value_t *e JL_MAYBE_UNROOTED);
+jl_value_t *jl_alloc_error();
+
+void example() {
+  // The return value of the allocation is unrooted. This would normally
+  // be an error, but is allowed because of the above annotation.
+  jl_throw(jl_alloc_error());
+}
+\end{lstlisting}
+
+
+
+\hypertarget{8714501739065873603}{}
+
+
+\subsubsection{\texttt{JL\_PROPAGATES\_ROOT}}
+
+
+
+This annotation is commonly found on accessor functions that return one rootable object stored within another. When annotated on a function argument, it tells the analyzer that the root for that argument also applies to the value returned by the function.
+
+
+
+Usage Example:
+
+
+
+
+\begin{lstlisting}
+jl_value_t *jl_svecref(jl_svec_t *t JL_PROPAGATES_ROOT, size_t i) JL_NOTSAFEPOINT;
+
+size_t example(jl_svec_t *svec) {
+  jl_value_t *val = jl_svecref(svec, 1)
+  // This is valid, because, as annotated by the PROPAGATES_ROOT annotation,
+  // jl_svecref propagates the rooted-ness from `svec` to `val`
+  jl_gc_safepoint();
+  return jl_unbox_long(val);
+}
+\end{lstlisting}
+
+
+
+\hypertarget{78198301944071640}{}
+
+
+\subsubsection{\texttt{JL\_ROOTING\_ARGUMENT}/\texttt{JL\_ROOTED\_ARGUMENT}}
+
+
+
+This is essentially the assignment counterpart to \texttt{JL\_PROPAGATES\_ROOT}. When assigning a value to a field of another value that is already rooted, the assigned value will inherit the root of the value it is assigned into.
+
+
+
+Usage Example:
+
+
+
+
+\begin{lstlisting}
+void jl_svecset(void *t JL_ROOTING_ARGUMENT, size_t i, void *x JL_ROOTED_ARGUMENT) JL_NOTSAFEPOINT
+
+
+size_t example(jl_svec_t *svec) {
+  jl_value_t *val = jl_box_long(10000);
+  jl_svecset(svec, val);
+  // This is valid, because the annotations imply that the
+  // jl_svecset propagates the rooted-ness from `svec` to `val`
+  jl_gc_safepoint();
+  return jl_unbox_long(val);
+}
+\end{lstlisting}
+
+
+
+\hypertarget{9078058200292228414}{}
+
+
+\subsubsection{\texttt{JL\_GC\_DISABLED}}
+
+
+
+This annotation implies that this function is only called with the GC runtime-disabled. Functions of this kind are most often encountered during startup and in the GC code itself. Note that this annotation is checked against the runtime enable/disable calls, so clang will know if you lie. This is not a good way to disable processing of a given function if the GC is not actually disabled (use \texttt{ifdef \_\_clang\_analyzer\_\_} for that if you must).
+
+
+
+Usage example:
+
+
+
+
+\begin{lstlisting}
+void jl_do_magic() JL_GC_DISABLED {
+  // Wildly allocate here with no regard for roots
+}
+
+void example() {
+  int en = jl_gc_enable(0);
+  jl_do_magic();
+  jl_gc_enable(en);
+}
+\end{lstlisting}
+
+
+
+\hypertarget{14120380498342272328}{}
+
+
+\subsubsection{\texttt{JL\_REQUIRE\_ROOTED\_SLOT}}
+
+
+
+This annotation requires the caller to pass in a slot that is rooted (i.e. values assigned to this slot will be rooted).
+
+
+
+Usage example:
+
+
+
+
+\begin{lstlisting}
+void jl_do_processing(jl_value_t **slot JL_REQUIRE_ROOTED_SLOT) {
+  *slot = jl_box_long(1);
+  // Ok, only, because the slot was annotated as rooting
+  jl_gc_safepoint();
+}
+
+void example() {
+  jl_value_t *slot = NULL;
+  JL_GC_PUSH1(&slot);
+  jl_do_processing(&slot);
+  JL_GC_POP();
+}
+\end{lstlisting}
+
+
+
+\hypertarget{11329720779284449718}{}
+
+
+\subsubsection{\texttt{JL\_GLOBALLY\_ROOTED}}
+
+
+
+This annotation implies that a given value is always globally rooted. It can be applied to global variable declarations, in which case it will apply to the value of those variables (or values if the declaration if for an array), or to functions, in which case it will apply to the return value of such functions (e.g. for functions that always return some private, globally rooted value).
+
+
+
+Usage example:
+
+
+
+
+\begin{lstlisting}
+extern JL_DLLEXPORT jl_datatype_t *jl_any_type JL_GLOBALLY_ROOTED;
+jl_ast_context_t *jl_ast_ctx(fl_context_t *fl) JL_GLOBALLY_ROOTED;
+\end{lstlisting}
+
+
+
+\hypertarget{503057295712361449}{}
+
+
+\subsubsection{\texttt{JL\_ALWAYS\_LEAFTYPE}}
+
+
+
+This annotations is essentially equivalent to \texttt{JL\_GLOBALLY\_ROOTED}, except that is should only be used if those values are globally rooted by virtue of being a leaftype. The rooting of leaftypes is a bit complicated. They are generally rooted through \texttt{cache} field of the corresponding \texttt{TypeName}, which itself is rooted by the containing module (so they{\textquotesingle}re rooted as long as the containing module is ok) and we can generally assume that leaftypes are rooted where they are used, but we may refine this property in the future, so the separate annotation helps split out the reason for being globally rooted.
+
+
+
+The analyzer also automatically detects checks for leaftype-ness and will not complain about missing GC roots on these paths.
+
+
+
+
+\begin{lstlisting}
+JL_DLLEXPORT jl_value_t *jl_apply_array_type(jl_value_t *type, size_t dim) JL_ALWAYS_LEAFTYPE;
+\end{lstlisting}
+
+
+
+\hypertarget{15063650179417682020}{}
+
+
+\subsubsection{\texttt{JL\_GC\_PROMISE\_ROOTED}}
+
+
+
+This is a function-like annotation. Any value passed to this annotation will be considered rooted for the scope of the current function. It is designed as an escape hatch for analyzer inadequacy or complicated situations. However, it should be used sparingly, in favor of improving the analyzer itself.
+
+
+
+
+\begin{lstlisting}
+void example() {
+  jl_value_t *val = jl_alloc_something();
+  if (some_condition) {
+    // We happen to know for complicated external reasons
+    // that val is rooted under these conditions
+    JL_GC_PROMISE_ROOTED(val);
+  }
+}
+\end{lstlisting}
+
+
+
+\hypertarget{18107261293830917313}{}
+
+
+\subsection{Completeness of analysis}
+
+
+
+The analyzer only looks at local information. In particular, e.g. in the \texttt{PROPAGATES\_ROOT} case above, it assumes that such memory is only modified in ways it can see, not in any called functions (unless it happens to decide to consider them in its analysis) and not in any concurrently running threads. As such, it may miss a few problematic cases, though in practice such concurrent modification is fairly rare. Improving the analyzer to handle more such cases may be an interesting topic for future work.
 
 
 
@@ -6127,13 +6751,16 @@ If you{\textquotesingle}ve been directed to this page, find the symptom that bes
 
 
 \begin{itemize}
-\item \href{@ref}{自举启动阶段的段错误 (\texttt{sysimg.jl})}
+\item \hyperlink{13671941627037387928}{Segfaults during bootstrap (\texttt{sysimg.jl})}
 
 
-\item \href{@ref}{运行脚本时的段错误}
+\item \hyperlink{17238593239204343556}{Segfaults when running a script}
 
 
-\item \href{@ref}{启动 Julia 时发生的段错误}
+\item \hyperlink{15906783386188107842}{Errors during Julia startup}
+
+
+\item \hyperlink{9648352711765890842}{Other generic segfaults or unreachables reached}
 
 \end{itemize}
 
@@ -6141,7 +6768,7 @@ If you{\textquotesingle}ve been directed to this page, find the symptom that bes
 \hypertarget{13046485394122703550}{}
 
 
-\subsection{版本/环境信息}
+\subsection{Version/Environment info}
 
 
 
@@ -6154,16 +6781,14 @@ No matter the error, we will always need to know what version of Julia you are r
 julia> using InteractiveUtils
 
 julia> versioninfo()
-Julia Version 1.4.2
-Commit 44fa15b150* (2020-05-23 18:35 UTC)
+Julia Version 1.6.5
+Commit 9058264a69 (2021-12-19 12:30 UTC)
 Platform Info:
   OS: Windows (x86_64-w64-mingw32)
-  CPU: Intel(R) Core(TM) i7-5600U CPU @ 2.60GHz
+  CPU: Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz
   WORD_SIZE: 64
   LIBM: libopenlibm
-  LLVM: libLLVM-8.0.1 (ORCJIT, broadwell)
-Environment:
-  JULIA_PKG_SERVER = https://mirrors.bfsu.edu.cn/julia/static
+  LLVM: libLLVM-11.0.1 (ORCJIT, skylake)
 \end{minted}
 
 
@@ -6291,10 +6916,43 @@ Create a \href{https://gist.github.com}{gist} with the \texttt{strace}/ \texttt{
 
 
 
-\hypertarget{17259129457802099150}{}
+\hypertarget{15486738137712275027}{}
 
 
-\subsection{术语表}
+\subsection{Other generic segfaults or unreachables reached}
+
+
+
+As mentioned elsewhere, \texttt{julia} has good integration with \texttt{rr} for generating traces; this includes, on Linux, the ability to automatically run \texttt{julia} under \texttt{rr} and share the trace after a crash. This can be immensely helpful when debugging such crashes and is strongly encouraged when reporting crash issues to the JuliaLang/julia repo. To run \texttt{julia} under \texttt{rr} automatically, do:
+
+
+
+
+\begin{minted}{julia}
+julia --bug-report=rr
+\end{minted}
+
+
+
+To generate the \texttt{rr} trace locally, but not share, you can do:
+
+
+
+
+\begin{minted}{julia}
+julia --bug-report=rr-local
+\end{minted}
+
+
+
+Note that this is only works on Linux. The blog post on \href{https://julialang.org/blog/2020/05/rr/}{Time Travelling Bug Reporting} has many more details.
+
+
+
+\hypertarget{15861385441225766089}{}
+
+
+\subsection{Glossary}
 
 
 
@@ -6847,6 +7505,31 @@ An easy solution is to have an dedicated build folder for providing a matching t
 
 
 
+To use one of of the sanitizers set \texttt{SANITIZE=1} and then the appropriate flag for the sanitizer you want to use.
+
+
+
+On macOS, this might need some extra flags also to work. Altogether, it might look like this, plus one or more of the \texttt{SANITIZE\_*} flags listed below:
+
+
+
+
+\begin{lstlisting}
+make -C deps USE_BINARYBUILDER_LLVM=0 LLVM_VER=svn stage-llvm
+
+make -C src SANITIZE=1 USECLANG=1 \
+    CC=~+/deps/scratch/llvm-svn/build_Release/bin/clang \
+    CXX=~+/deps/scratch/llvm-svn/build_Release/bin/clang++ \
+    CPPFLAGS="-isysroot $(xcode-select -p)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk" \
+    CXXFLAGS="-isystem $(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"
+\end{lstlisting}
+
+
+
+(or put these into your \texttt{Make.user}, so you don{\textquotesingle}t need to remember them every time).
+
+
+
 \hypertarget{1061650975116506198}{}
 
 
@@ -6854,7 +7537,7 @@ An easy solution is to have an dedicated build folder for providing a matching t
 
 
 
-For detecting or debugging memory bugs, you can use Clang{\textquotesingle}s \href{http://clang.llvm.org/docs/AddressSanitizer.html}{address sanitizer (ASAN)}. By compiling with \texttt{SANITIZE=1} you enable ASAN for the Julia compiler and its generated code. In addition, you can specify \texttt{LLVM\_SANITIZE=1} to sanitize the LLVM library as well. Note that these options incur a high performance and memory cost. For example, using ASAN for Julia and LLVM makes \texttt{testall1} takes 8-10 times as long while using 20 times as much memory (this can be reduced to respectively a factor of 3 and 4 by using the options described below).
+For detecting or debugging memory bugs, you can use Clang{\textquotesingle}s \href{http://clang.llvm.org/docs/AddressSanitizer.html}{address sanitizer (ASAN)}. By compiling with \texttt{SANITIZE\_ADDRESS=1} you enable ASAN for the Julia compiler and its generated code. In addition, you can specify \texttt{LLVM\_SANITIZE=1} to sanitize the LLVM library as well. Note that these options incur a high performance and memory cost. For example, using ASAN for Julia and LLVM makes \texttt{testall1} takes 8-10 times as long while using 20 times as much memory (this can be reduced to respectively a factor of 3 and 4 by using the options described below).
 
 
 
@@ -6870,3 +7553,14 @@ By default, Julia sets the \texttt{allow\_user\_segv\_handler=1} ASAN flag, whic
 
 
 For detecting use of uninitialized memory, you can use Clang{\textquotesingle}s \href{http://clang.llvm.org/docs/MemorySanitizer.html}{memory sanitizer (MSAN)} by compiling with \texttt{SANITIZE\_MEMORY=1}.
+
+
+
+\hypertarget{14311970646292028418}{}
+
+
+\subsection{Thread Sanitizer (TSAN)}
+
+
+
+For debugging data-races and other threading related issues you can use Clang{\textquotesingle}s \href{https://clang.llvm.org/docs/ThreadSanitizer.html}{thread sanitizer (TSAN)} by compiling with \texttt{SANITIZE\_THREAD=1}.
