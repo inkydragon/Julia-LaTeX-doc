@@ -1,0 +1,439 @@
+%% For testing TOC styles
+
+\part{Manual}
+\chapter{Julia 1.8-DEV Documentation}
+    \subsection{Introduction}
+\chapter{Getting Started}
+    \section{Resources}
+\chapter{Variables}
+    \section{Allowed Variable Names}
+    \section{Stylistic Conventions}
+\chapter{Integers and Floating-Point Numbers}
+    \section{Integers}
+    \subsection{Overflow behavior}
+    \subsection{Division errors}
+    \section{Floating-Point Numbers}
+    \subsection{Floating-point zero}
+    \subsection{Special floating-point values}
+    \subsection{Machine epsilon}
+    \subsection{Rounding modes}
+    \subsection{Background and References}
+    \section{Arbitrary Precision Arithmetic}
+    \section{Numeric Literal Coefficients}
+    \subsection{Syntax Conflicts}
+    \section{Literal zero and one}
+\chapter{Mathematical Operations and Elementary Functions}
+    \section{Arithmetic Operators}
+    \section{Boolean Operators}
+    \section{Bitwise Operators}
+    \section{Updating operators}
+    \section{Vectorized {\textquotedbl}dot{\textquotedbl} operators}
+    \section{Numeric Comparisons}
+    \subsection{Chaining comparisons}
+    \subsection{Elementary Functions}
+    \section{Operator Precedence and Associativity}
+    \section{Numerical Conversions}
+    \subsection{Rounding functions}
+    \subsection{Division functions}
+    \subsection{Sign and absolute value functions}
+    \subsection{Powers, logs and roots}
+    \subsection{Trigonometric and hyperbolic functions}
+    \subsection{Special functions}
+\chapter{Complex and Rational Numbers}
+    \section{Complex Numbers}
+    \section{Rational Numbers}
+\chapter{Strings}
+    \section{Characters}
+    \section{String Basics}
+    \section{Unicode and UTF-8}
+    \section{Concatenation}
+    \section{Interpolation}
+    \section{Triple-Quoted String Literals}
+    \section{Common Operations}
+    \section{Non-Standard String Literals}
+    \section{Regular Expressions}
+    \section{Byte Array Literals}
+    \section{Version Number Literals}
+    \section{Raw String Literals}
+\chapter{Functions}
+    \section{Argument Passing Behavior}
+    \section{Argument-type declarations}
+    \section{The \texttt{return} Keyword}
+    \subsection{Return type}
+    \subsection{Returning nothing}
+    \section{Operators Are Functions}
+    \section{Operators With Special Names}
+    \section{Anonymous Functions}
+    \section{Tuples}
+    \section{Named Tuples}
+    \section{Destructuring Assignment and Multiple Return Values}
+    \section{Property destructuring}
+    \section{Argument destructuring}
+    \section{Varargs Functions}
+    \section{Optional Arguments}
+    \section{Keyword Arguments}
+    \section{Evaluation Scope of Default Values}
+    \section{Do-Block Syntax for Function Arguments}
+    \section{Function composition and piping}
+    \section{Dot Syntax for Vectorizing Functions}
+    \section{Further Reading}
+\chapter{Control Flow}
+    \section{Compound Expressions}
+    \section{Conditional Evaluation}
+    \section{Short-Circuit Evaluation}
+    \section{Repeated Evaluation: Loops}
+    \section{Exception Handling}
+    \subsection{Built-in \texttt{Exception}s}
+    \subsection{The \texttt{throw} function}
+    \subsection{Errors}
+    \subsection{The \texttt{try/catch} statement}
+    \subsection{\texttt{finally} Clauses}
+    \section{Tasks (aka Coroutines)}
+\chapter{Scope of Variables}
+    \subsection{Scope constructs}
+    \section{Global Scope}
+    \section{Local Scope}
+    \subsection{Let Blocks}
+    \subsection{Loops and Comprehensions}
+    \section{Constants}
+\chapter{Types}
+    \section{Type Declarations}
+    \section{Abstract Types}
+    \section{Primitive Types}
+    \section{Composite Types}
+    \section{Mutable Composite Types}
+    \section{Declared Types}
+    \section{Type Unions}
+    \section{Parametric Types}
+    \subsection{Parametric Composite Types}
+    \subsection{Parametric Abstract Types}
+\chapter{Command-line Options}
+    \section{Using arguments inside scripts}
+    \section{Command-line switches for Julia}
+
+
+
+
+\part{Base}
+\chapter{Essentials}
+    \section{Introduction}
+    \section{Getting Around}
+    \section{Keywords}
+    \section{Standard Modules}
+    \section{Base Submodules}
+    \section{All Objects}
+    \section{Properties of Types}
+    \subsection{Type relations}
+    \subsection{Declared structure}
+    \subsection{Memory layout}
+    \subsection{Special values}
+    \section{Special Types}
+    \section{Generic Functions}
+    \section{Syntax}
+    \section{Missing Values}
+    \section{System}
+    \section{Versioning}
+    \section{Errors}
+    \section{Events}
+    \section{Reflection}
+    \section{Internals}
+    \section{Meta}
+\chapter{Collections and Data Structures}
+    \section{Iteration}
+    \section{Constructors and Types}
+    \section{General Collections}
+    \section{Iterable Collections}
+    \section{Indexable Collections}
+    \section{Dictionaries}
+    \section{Set-Like Collections}
+    \section{Dequeues}
+    \section{Utility Collections}
+\chapter{Mathematics}
+    \section{Mathematical Operators}
+    \section{Mathematical Functions}
+\chapter{Examples}
+    \section{Customizable binary operators}
+\chapter{Numbers}
+    \section{Standard Numeric Types}
+    \subsection{Abstract number types}
+    \subsection{Concrete number types}
+    \section{Data Formats}
+    \section{General Number Functions and Constants}
+    \subsection{Integers}
+    \section{BigFloats and BigInts}
+\chapter{Strings}
+\chapter{Arrays}
+    \section{Constructors and Types}
+    \section{Basic functions}
+    \section{Broadcast and vectorization}
+    \section{Indexing and assignment}
+    \section{Views (SubArrays and other view types)}
+    \section{Concatenation and permutation}
+    \section{Array functions}
+    \section{Combinatorics}
+\chapter{Tasks}
+    \section{Scheduling}
+    \section{Synchronization}
+    \section{Synchronization}
+    \section{Channels}
+    \section{Low-level synchronization using \texttt{schedule} and \texttt{wait}}
+\chapter{Multi-Threading}
+    \section{Atomic operations}
+    \section{ccall using a threadpool (Experimental)}
+    \section{Low-level synchronization primitives}
+\chapter{Constants}
+\chapter{Filesystem}
+\chapter{I/O and Network}
+    \section{General I/O}
+    \section{Text I/O}
+    \section{Multimedia I/O}
+    \section{Network I/O}
+\chapter{Punctuation}
+\chapter{Sorting and Related Functions}
+    \section{Sorting Functions}
+    \section{Order-Related Functions}
+    \section{Sorting Algorithms}
+    \section{Alternate orderings}
+\chapter{Iteration utilities}
+\chapter{C Interface}
+\chapter{LLVM Interface}
+\chapter{C Standard Library}
+\chapter{StackTraces}
+\chapter{SIMD Support}
+
+
+
+
+\part{Standard Library}
+\chapter{ArgTools}
+    \section{Argument Handling}
+    \section{Function Testing}
+\chapter{Artifacts}
+\chapter{Base64}
+\chapter{CRC32c}
+\chapter{Dates}
+    \section{Constructors}
+    \section{Durations/Comparisons}
+    \section{Accessor Functions}
+    \section{Query Functions}
+    \section{TimeType-Period Arithmetic}
+    \section{Adjuster Functions}
+    \section{Period Types}
+    \section{Rounding}
+    \subsection{Rounding Epoch}
+\chapter{API reference}
+    \section{Dates and Time Types}
+    \section{Dates Functions}
+    \subsection{Accessor Functions}
+    \subsection{Query Functions}
+    \subsection{Adjuster Functions}
+    \subsection{Periods}
+    \subsection{Rounding Functions}
+    \subsection{Conversion Functions}
+    \subsection{Constants}
+\chapter{Delimited Files}
+\chapter{Distributed Computing}
+    \section{Cluster Manager Interface}
+\chapter{Downloads}
+\chapter{File Events}
+\chapter{Future}
+\chapter{Interactive Utilities}
+\chapter{Lazy Artifacts}
+\chapter{LibCURL}
+\chapter{LibGit2}
+    \subsection{Functionality}
+\chapter{Dynamic Linker}
+\chapter{Linear Algebra}
+    \section{Special matrices}
+    \subsection{Elementary operations}
+    \subsection{Matrix factorizations}
+    \subsection{The uniform scaling operator}
+    \section{Matrix factorizations}
+    \section{Standard functions}
+    \section{Low-level matrix operations}
+    \section{BLAS functions}
+    \subsection{BLAS character arguments}
+    \section{LAPACK functions}
+\chapter{Logging}
+    \section{Log event structure}
+    \section{Processing log events}
+    \subsection{Loggers}
+    \subsection{Early filtering and message handling}
+    \section{Testing log events}
+    \section{Environment variables}
+    \section{Examples}
+    \subsection{Example: Writing log events to a file}
+    \subsection{Example: Enable debug-level messages}
+    \section{Reference}
+    \subsection{Logging module}
+    \subsection{Creating events}
+    \subsection{Processing events with AbstractLogger}
+    \subsection{Using Loggers}
+\chapter{Markdown}
+    \section{Inline elements}
+    \subsection{Bold}
+    \subsection{Italics}
+    \subsection{Literals}
+    \subsection{\LaTeX}
+    \subsection{Links}
+    \subsection{Footnote references}
+    \section{Toplevel elements}
+    \subsection{Paragraphs}
+    \subsection{Headers}
+    \subsection{Code blocks}
+    \subsection{Block quotes}
+    \subsection{Images}
+    \subsection{Lists}
+    \subsection{Display equations}
+    \subsection{Footnotes}
+    \subsection{Horizontal rules}
+    \subsection{Tables}
+    \subsection{Admonitions}
+    \section{Markdown Syntax Extensions}
+\chapter{Memory-mapped I/O}
+\chapter{NetworkOptions}
+\chapter{Pkg}
+\chapter{Printf}
+\chapter{Profiling}
+\chapter{The Julia REPL}
+    \section{The different prompt modes}
+    \subsection{The Julian mode}
+    \subsection{Help mode}
+    \subsection{Shell mode}
+    \subsection{Pkg mode}
+    \subsection{Search modes}
+    \section{Key bindings}
+    \subsection{Customizing keybindings}
+    \section{Tab completion}
+    \section{Customizing Colors}
+    \section{TerminalMenus}
+    \subsection{Examples}
+    \subsection{Customization / Configuration}
+    \section{References}
+    \subsection{REPL}
+    \subsection{TerminalMenus}
+\chapter{Random Numbers}
+    \section{Random numbers module}
+    \section{Random generation functions}
+    \section{Subsequences, permutations and shuffling}
+    \section{Generators (creation and seeding)}
+    \section{Hooking into the \texttt{Random} API}
+    \subsection{Generating random values of custom types}
+    \subsection{Creating new generators}
+\chapter{Reproducibility}
+\chapter{SHA}
+\chapter{Serialization}
+\chapter{Shared Arrays}
+\chapter{Sockets}
+\chapter{Sparse Arrays}
+    \section{Compressed Sparse Column (CSC) Sparse Matrix Storage}
+    \section{Sparse Vector Storage}
+    \section{Sparse Vector and Matrix Constructors}
+    \section{Sparse matrix operations}
+    \section{Correspondence of dense and sparse methods}
+\chapter{Sparse Arrays}
+\chapter{Statistics}
+\chapter{Sparse Linear Algebra}
+\chapter{TOML}
+    \section{Parsing TOML data}
+    \section{Exporting data to TOML file}
+    \section{References}
+\chapter{Tar}
+\chapter{Unit Testing}
+    \section{Testing Base Julia}
+    \section{Basic Unit Tests}
+    \section{Working with Test Sets}
+    \section{Other Test Macros}
+    \section{Broken Tests}
+    \section{Creating Custom \texttt{AbstractTestSet} Types}
+    \section{Test utilities}
+\chapter{UUIDs}
+\chapter{Unicode}
+
+
+
+
+\part{Developer Documentation}
+\chapter{Reflection and introspection}
+    \section{Module bindings}
+    \section{DataType fields}
+    \section{Subtypes}
+    \section{DataType layout}
+    \section{Function methods}
+    \section{Expansion and lowering}
+    \section{Intermediate and compiled representations}
+\chapter{Documentation of Julia's Internals}
+    \section{Initialization of the Julia runtime}
+    \section{Julia ASTs}
+    \section{More about types}
+    \section{Memory layout of Julia Objects}
+    \section{Eval of Julia code}
+    \section{Calling Conventions}
+    \section{High-level Overview of the Native-Code Generation Process}
+    \section{Julia Functions}
+    \section{Base.Cartesian}
+    \section{Talking to the compiler (the \texttt{:meta} mechanism)}
+    \section{SubArrays}
+    \section{isbits Union Optimizations}
+    \section{System Image Building}
+    \section{Working with LLVM}
+    \section{printf() and stdio in the Julia runtime}
+    \section{Bounds checking}
+    \section{Proper maintenance and care of multi-threading locks}
+    \section{Arrays with custom indices}
+    \section{Module loading}
+    \section{Inference}
+    \section{Julia SSA-form IR}
+    \section{Static analyzer annotations for GC correctness in C code}
+\chapter{Developing/debugging Julia's C code}
+    \section{Reporting and analyzing crashes (segfaults)}
+    \section{gdb debugging tips}
+    \section{Using Valgrind with Julia}
+    \section{Sanitizer support}
+    \section{Instrumenting Julia with DTrace, and bpftrace}
+\chapter{Building Julia}
+    \section{Building Julia (Detailed)}
+    \section{Linux}
+    \section{macOS}
+    \section{Windows}
+    \section{FreeBSD}
+    \section{ARM (Linux)}
+    \section{Binary distributions}
+    \section{Point releasing 101}
+
+
+
+
+\part{Julia v1.8 Release Notes}
+\chapter{New language features}
+\chapter{Language changes}
+\chapter{Compiler/Runtime improvements}
+\chapter{Command-line option changes}
+\chapter{Multi-threading changes}
+\chapter{Build system changes}
+\chapter{New library functions}
+\chapter{New library features}
+\chapter{Standard library changes}
+    \subsection{InteractiveUtils}
+    \subsection{Package Manager}
+    \subsection{LinearAlgebra}
+    \subsection{Markdown}
+    \subsection{Printf}
+    \subsection{Profile}
+    \subsection{Random}
+    \subsection{REPL}
+    \subsection{SparseArrays}
+    \subsection{Dates}
+    \subsection{Downloads}
+    \subsection{Statistics}
+    \subsection{Sockets}
+    \subsection{Tar}
+    \subsection{Distributed}
+    \subsection{UUIDs}
+    \subsection{Mmap}
+    \subsection{DelimitedFiles}
+    \subsection{Logging}
+    \subsection{Unicode}
+\chapter{Deprecated or removed}
+\chapter{External dependencies}
+\chapter{Tooling Improvements}
