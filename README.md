@@ -1,6 +1,20 @@
 # Julia LaTeX doc
 
-Output: [[PDF] TheJuliaLanguage-en-[4 over 4]-1c28e22](https://drive.google.com/file/d/1XU1_phqFnThR7k408f8TX0FWoup_3m4y/view?usp=sharing)
+The tex file in the `doc-en` folder is derived from the intermediate files of the julia repo master branch documentation build.
+You can use these `.tex` files to test changes to the document style.
+
+Following 2 PDFs, they should look similar:
++ V1.8 PDF doc build from [JuliaLang/julia#master][julia-2d472c633d]: [JuliaLang-julia#master-v1.8dev+2d472c633d](https://drive.google.com/file/d/1iiubflsSiPYY_AUtpHQWk-3c_XkJ3-Op/view?usp=sharing) in WSL2;
+    Build with `tectonic`;
++ V1.8 PDF doc build from [`doc-en/julia-doc-en.tex`][26d1781]: [julia-doc-en+26d1781](https://drive.google.com/file/d/1kEhOXBqIvhdrFn2ex26ghhesDtnUQPMX/view?usp=sharing)
+    Build with [`tectonic`](doc-en/tectonic.sh) in WSL2;
+<!-- + V1.8 PDF doc build from [`doc-en/julia-doc-en.tex`][26d1781]: [julia-doc-en+26d1781]()
+    Build with [`latexmk`](doc-en/pdf.cmd) on Win10; -->
+
+
+[julia-2d472c633d]: https://github.com/JuliaLang/julia/commit/2d472c633d66e7697dda5aff75d2367b823048b8
+[26d1781]: https://github.com/inkydragon/Julia-LaTeX-doc/commit/26d1781c695c7bc4dac4a6fdde9208b87ea49a46
+
 
 
 ## Build `tex` files
