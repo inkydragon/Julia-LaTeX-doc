@@ -1,0 +1,73 @@
+From 41bd3572e33121d2976765c7e363c5820cdad6d0 Mon Sep 17 00:00:00 2001
+From: woclass <git@wo-class.cn>
+Date: Thu, 6 Jan 2022 19:44:51 +0800
+Subject: [PATCH] gen-tex
+
+---
+ doc/Makefile |  5 +++++
+ doc/make.jl  | 16 +++++++++++++---
+ 2 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/doc/Makefile b/doc/Makefile
+index 2f8b3f1849..ed968488f4 100644
+--- a/doc/Makefile
++++ b/doc/Makefile
+@@ -52,6 +52,11 @@ pdf: deps
+ 	$(JULIA_EXECUTABLE) --color=yes $(call cygpath_w,$(SRCDIR)/make.jl) -- pdf $(DOCUMENTER_OPTIONS)
+ 	@echo "Build finished."
+ 
++tex: deps
++	@echo "Generating tex source."
++	$(JULIA_EXECUTABLE) --color=yes $(call cygpath_w,$(SRCDIR)/make.jl) -- tex $(DOCUMENTER_OPTIONS)
++	@echo "Generating finished."
++
+ # The deploy target should only be called in CI builds
+ deploy: deps
+ 	@echo "Deploying HTML documentation."
+diff --git a/doc/make.jl b/doc/make.jl
+index 8be3b80740..0a25fae9b9 100644
+--- a/doc/make.jl
++++ b/doc/make.jl
+@@ -44,6 +44,7 @@ end
+ 
+ # Check if we are building a PDF
+ const render_pdf = "pdf" in ARGS
++const gen_tex = "tex" in ARGS
+ 
+ # Generate a suitable markdown file from NEWS.md and put it in src
+ str = read(joinpath(@__DIR__, "..", "NEWS.md"), String)
+@@ -276,7 +277,9 @@ let r = r"buildroot=(.+)", i = findfirst(x -> occursin(r, x), ARGS)
+     global const buildroot = i === nothing ? (@__DIR__) : first(match(r, ARGS[i]).captures)
+ end
+ 
+-const format = if render_pdf
++const format = if gen_tex
++    Documenter.LaTeX(platform = "none")
++elseif render_pdf
+     Documenter.LaTeX(
+         platform = "texplatform=docker" in ARGS ? "docker" : "native"
+     )
+@@ -294,11 +297,18 @@ else
+     )
+ end
+ 
+-const output_path = joinpath(buildroot, "doc", "_build", (render_pdf ? "pdf" : "html"), "en")
++const sub_dir = if gen_tex
++    "tex"
++elseif render_pdf
++    "pdf"
++else
++    "html"
++end
++const output_path = joinpath(buildroot, "doc", "_build", sub_dir, "en")
+ makedocs(
+     build     = output_path,
+     modules   = [Main, Base, Core, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
+-    clean     = true,
++    clean     = !gen_tex,
+     doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=only" in ARGS) ? (:only) : ("doctest=true" in ARGS) ? true : false,
+     linkcheck = "linkcheck=true" in ARGS,
+     linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
+-- 
+2.31.1.windows.1
+
