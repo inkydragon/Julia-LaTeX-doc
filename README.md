@@ -15,8 +15,12 @@ Output: [[PDF] TheJuliaLanguage-en-[4 over 4]-1c28e22](https://drive.google.com/
 
 **make PDF**
 + `git clone https://github.com/inkydragon/Julia-LaTeX-doc.git`
-+ `cd ./Julia-LaTeX-doc/doc-en/`
-+ `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape TheJuliaLanguage.tex`
+**english**
++ `cd Julia-LaTeX-doc/doc-en/`
++ EN: `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape TheJuliaLanguage.tex`
+**chinese**
++ `cd Julia-LaTeX-doc/doc-zh/`
++ Zh-cn: `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape julia-doc-zh-cn.tex`
     You can also use `lualatex`, but it's a little bit slow.
 + You can comment some `\input` to speed up build process.
 
