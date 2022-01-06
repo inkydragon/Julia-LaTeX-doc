@@ -1,7 +1,17 @@
 \documentclass[oneside]{memoir}
 \usepackage{./documenter}
 
+%% TOC settings
 \settocdepth{chapter}
+% -- TOC spacing
+%   ref: https://tex.stackexchange.com/questions/60317/toc-spacing-in-memoir
+\makeatletter
+% {part} to {chaper}
+\setlength{\cftbeforepartskip}{1.5em \@plus \p@}
+% {chaper} to {chaper}
+\setlength{\cftbeforechapterskip}{0.0em \@plus \p@}
+\makeatother
+
 
 \title{
     {\HUGE The Julia Language}\\
