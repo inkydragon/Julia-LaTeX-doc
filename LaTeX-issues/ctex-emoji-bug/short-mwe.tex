@@ -6,13 +6,13 @@
 
 \begin{document}
 
-\verb!\newCJKfontfamily\EmojiFont! \\
-U+03030 | {\EmojiFont 〰}
-U+0303D | {\EmojiFont 〽}
-U+03297 | {\EmojiFont ㊗}
-U+03299 | {\EmojiFont ㊙}
-U+02194 | {\EmojiFont ↔} 
-U+02195 | {\EmojiFont ↕} \\
+\verb!\newCJKfontfamily\EmojiFont + \ltj@allalchar! \\
+U+03030 | {\ltj@allalchar\EmojiFont 〰}
+U+0303D | {\ltj@allalchar\EmojiFont 〽}
+U+03297 | {\ltj@allalchar\EmojiFont ㊗}
+U+03299 | {\ltj@allalchar\EmojiFont ㊙}
+U+02194 | {\ltj@allalchar\EmojiFont ↔} 
+U+02195 | {\ltj@allalchar\EmojiFont ↕} \\
 
 \verb!\newCJKfontfamily\EmojiFont + \emoji{}! \\
 U+03030 | \emoji{wavy-dash}

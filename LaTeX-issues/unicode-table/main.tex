@@ -32,7 +32,8 @@
 %   https://zhuanlan.zhihu.com/p/109158588
 \usepackage{emoji}
 \setemojifont{Twemoji Mozilla} % texlive2020 自带；可换 Noto Color Emoji
-\newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+% \newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+\newCJKfontfamily\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
 
 % Unicode char fallback
 % + Define fallback font for specific Unicode characters in LuaLaTeX - TeX - LaTeX Stack Exchange

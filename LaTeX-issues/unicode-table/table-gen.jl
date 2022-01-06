@@ -239,7 +239,31 @@ all_symbols = table_entries(
     unicode_data()
 )
 
-open("unicode-input-table.tex", "w") do f
+# open("unicode-input-table.tex", "w") do f
+#     for a in all_symbols[2:end]
+#         println(f, table_item(a))
+#     end
+# end
+
+function table_item(arr::Vector{String})
+    code_point, uchar, name, desc = arr
+
+    latex_input = "$(uchar)"
+    if ':' in name || uchar[1] in Full_OneCP_Emoji_List
+        latex_input = "{\\EmojiFont $(uchar)}"
+    else
+        return ""
+    end
+
+    join([
+        code_point,
+        latex_input,
+        latexesc(name),
+        latexesc(desc),
+    ], " & ") * " \\\\ \\hline"
+end
+
+open("emoji-test.tex", "w") do f
     for a in all_symbols[2:end]
         println(f, table_item(a))
     end

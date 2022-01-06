@@ -1,0 +1,51 @@
+% \documentclass[
+%   UTF8, % UTF-8 编码读入
+%   a4paper,  % A4 纸大小
+%   oneside,  % 单页模式，左右页边距相同
+% ]{ctexbook} % book 类：需要 `\part{}' 命令
+\documentclass{book}
+
+\usepackage[% 上下、左右对称
+  hmargin = 3.0cm, % left and right margin
+  vmargin = 2.5cm, % top and bottom margin
+]{geometry}
+
+\usepackage{amsmath,unicode-math}
+\setmathfont{STEP Math}
+
+\usepackage{emoji}
+\setemojifont{Twemoji Mozilla} % texlive2020 自带；可换 Noto Color Emoji
+\newfontface\EmojiFont{Twemoji Mozilla}[Renderer=HarfBuzz]
+
+\usepackage{longtable,booktabs}
+% \usepackage{caption}
+% \captionsetup{justification=raggedright,singlelinecheck=false}
+
+
+
+\begin{document}
+
+{\Large STEP Math}
+
+\begin{longtable}{ccll}
+  \caption{Manually add} \\
+  %% all head
+  \toprule
+  Code point & Char & Tab seq & Unicode name \\
+  \hline \endhead
+  %% all footer
+  \multicolumn{4}{l}{To be continued...} \\ 
+  \midrule \endfoot
+  %% last footer
+  \bottomrule \endlastfoot
+
+  U+03030 & {\EmojiFont 〰} & {\textbackslash}:wavy\_dash: & Wavy Dash \\ \hline
+  U+0303D & {\EmojiFont 〽} & {\textbackslash}:part\_alternation\_mark: & Part Alternation Mark \\ \hline
+  U+03297 & {\EmojiFont ㊗} & {\textbackslash}:congratulations: & Circled Ideograph Congratulation \\ \hline
+  U+03299 & {\EmojiFont ㊙} & {\textbackslash}:secret: & Circled Ideograph Secret \\ \hline
+
+  \bottomrule
+\end{longtable}
+
+
+\end{document}
