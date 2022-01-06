@@ -1,0 +1,43 @@
+From 28f45f985f0c530b99501b7876db4b537fd00904 Mon Sep 17 00:00:00 2001
+From: woclass <git@wo-class.cn>
+Date: Thu, 6 Jan 2022 00:53:27 +0800
+Subject: [PATCH] gen-tex-file
+
+---
+ contrib/LaTeXWriter.jl | 2 ++
+ doc/make.jl            | 4 ++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/LaTeXWriter.jl b/contrib/LaTeXWriter.jl
+index 32402775..49cbf476 100644
+--- a/contrib/LaTeXWriter.jl
++++ b/contrib/LaTeXWriter.jl
+@@ -50,5 +50,7 @@ function Documenter.Writers.LaTeXWriter.compile_tex(doc::Documents.Document, set
+         finally
+             try; piperun(`docker stop latex-container`); catch; end
+         end
++    elseif settings.platform == "none"
++        return true
+     end
+ end
+diff --git a/doc/make.jl b/doc/make.jl
+index 3d8daee0..96933174 100644
+--- a/doc/make.jl
++++ b/doc/make.jl
+@@ -214,11 +214,11 @@ end
+ 
+ makedocs(
+     modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
+-    clean     = true,
++    clean     = false,
+     doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=true" in ARGS) ? true : false,
+     linkcheck = "linkcheck=true" in ARGS,
+     checkdocs = :none,
+-    format    = format,
++    format    = LaTeX(platform = "none"),
+     sitename  = "Julia中文文档",
+     authors   = "Julia中文社区",
+     pages     = PAGES,
+-- 
+2.31.1.windows.1
+
