@@ -17,26 +17,37 @@ Following 2 PDFs, they should look similar:
 
 
 
-## Build `tex` files
+## Gen PDF files
 
-> Those TeX files are self-contained.
-> If you don't need the latest version of the document, you can ignore the `Julia` submodule.
+> All those TeX files are **self-contained**.
+> If you don't need the latest version of the document, you can ignore submodules.
 
-**dependency**
-+ TeXLive 2020 (older version is ok)
-+ python3 + `pip install Pygments`
-+ font: `DejaVu Sans` + `DejaVu Sans Mono`
+### Dependency
++ This repo: `git clone https://github.com/inkydragon/Julia-LaTeX-doc.git`
++ LaTeX env, just choose one:
+    + [Tectonic](https://tectonic-typesetting.github.io/book/latest/getting-started/install.html)
+    + TeXLive 2020 (older version is ok)
++ python3 + `pip install Pygments`.
+    for code highlight
++ fonts:
+    + `DejaVu Sans`
+    + `DejaVu Sans Mono`
 
-**make PDF**
-+ `git clone https://github.com/inkydragon/Julia-LaTeX-doc.git`
+### Build
+
+> You can comment some `\input` in `julia-doc-*.tex` to speed up build process, when you only care about style.
+
 **english**
 + `cd Julia-LaTeX-doc/doc-en/`
-+ EN: `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape TheJuliaLanguage.tex`
++ build
+    + Tectonic: `./tectonic.sh`
+    + TeXLive:  (not test) `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape julia-doc-en.tex`
+
 **chinese**
 + `cd Julia-LaTeX-doc/doc-zh/`
-+ Zh-cn: `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape --extra-mem-top=20000000 --pool-size=10000000  julia-doc-zh-cn.tex`
-    You can also use `lualatex`, but it's a little bit slow.
-+ You can comment some `\input` to speed up build process.
++ build
+    + Tectonic: (not test) `tectonic -X compile --keep-logs -Z shell-escape julia-doc-en.tex`
+    + TeXLive:  `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape --extra-mem-top=20000000 --pool-size=10000000  julia-doc-zh-cn.tex`
 
 
 ## Change Notes
