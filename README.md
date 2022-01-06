@@ -20,7 +20,7 @@ Output: [[PDF] TheJuliaLanguage-en-[4 over 4]-1c28e22](https://drive.google.com/
 + EN: `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape TheJuliaLanguage.tex`
 **chinese**
 + `cd Julia-LaTeX-doc/doc-zh/`
-+ Zh-cn: `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape julia-doc-zh-cn.tex`
++ Zh-cn: `latexmk -f -interaction=nonstopmode -view=none -xelatex -shell-escape --extra-mem-top=20000000 --pool-size=10000000  julia-doc-zh-cn.tex`
     You can also use `lualatex`, but it's a little bit slow.
 + You can comment some `\input` to speed up build process.
 
