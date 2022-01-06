@@ -32,6 +32,10 @@ Following 2 PDFs, they should look similar:
 + fonts:
     + `DejaVu Sans`
     + `DejaVu Sans Mono`
+    + **chinese** version only: `Noto Sans Mono CJK SC`
+    + TODO: use `Noto Sans Mono CJK KR` for Korean Characters
+    + TODO: use `Noto Color Emoji` or `OpenMoji-Color` for Emoji
+    + TODO: use `Noto Sans Math` or `STIX Two Math` for mathematical symbols
 
 ### Build
 
