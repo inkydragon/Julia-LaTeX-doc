@@ -94,10 +94,10 @@ Following 2 PDFs, they should look similar:
 
 > I'm using Windows 10 + Ubuntu 20 on WSL2, it's a mix of things.
 > So, I can't give you a step by step instructions to reproduce.
-/
-1. use git Submodules to clone julia Main repo
-    - [Git - Submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
-2. apply diff
+
+1. Clone and update git Submodules:
+    [Git - Submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+2. `apply diff` ***or*** You can set [`ENV["DOCUMENTER_LATEX_DEBUG"]`][debug_env] for Documenter.jl  
     **Chinese doc**
     ```sh
     $ pwd
@@ -108,7 +108,9 @@ Following 2 PDFs, they should look similar:
     $ git apply ../patch/cn0001-gen-tex-file.patch
     ```
 
-3. build & copy
+[debug_env]: https://github.com/JuliaDocs/Documenter.jl/blob/02466fa72517424d1313c4d2845b0dccdacb59cb/src/Writers/LaTeXWriter.jl#L144-L151
+
+3. build & copy  
     **Chinese doc**
     ```sh
     $ pwd
@@ -120,22 +122,4 @@ Following 2 PDFs, they should look similar:
     $ ls build/
     Julia中文文档.tex  assets  base  custom.sty  devdocs  documenter.sty  manual  stdlib
     $ cp build/Julia中文文档.tex ../../doc-zh/Julia-doc-zh-cn-new.tex
-    ```
-
-4. copy `.tex` files
-    ```sh
-    $ pwd
-    ~/GitHub/Julia-LaTeX-doc
-    $ cp -R ./julia/doc/_build/pdf/en/ ./doc-en
-    $ cd doc-en/
-    $ pwd
-    ~/GitHub/Julia-LaTeX-doc/doc-en
-    $ rm -rd assets/ base/ devdocs/ manual/ stdlib/
-    $ ll -h
-    total 3.3M
-    drwxrwxrwx 1 woclass woclass  512 Jun 26 10:39 ./
-    drwxrwxrwx 1 woclass woclass  512 Jun 26 10:39 ../
-    -rwxrwxrwx 1 woclass woclass 3.3M Jun 26 10:39 TheJuliaLanguage.tex*
-    -rwxrwxrwx 1 woclass woclass    0 Jun 26 10:39 custom.sty*
-    -rwxrwxrwx 1 woclass woclass 1.8K Jun 26 10:39 documenter.sty*
     ```
