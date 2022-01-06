@@ -1,0 +1,202 @@
+\part{Developer Documentation}
+  \chapter{Reflection and introspection}
+    \section{Module bindings}
+    \section{DataType fields}
+    \section{Subtypes}
+    \section{DataType layout}
+    \section{Function methods}
+    \section{Expansion and lowering}
+    \section{Intermediate and compiled representations}
+    \subsection{Printing of debug information}
+  \chapter{Documentation of Julia's Internals}
+    \section{Initialization of the Julia runtime}
+    \subsection{\texttt{main()}}
+    \subsection{\texttt{julia\_init()}}
+    \subsection{\texttt{repl\_entrypoint()}}
+    \subsection{\texttt{Base.\_start}}
+    \subsection{\texttt{Core.eval}}
+    \subsection{\texttt{jl\_atexit\_hook()}}
+    \subsection{\texttt{julia\_save()}}
+    \section{Julia ASTs}
+    \subsection{Surface syntax AST}
+    \subsection{Lowered form}
+    \section{More about types}
+    \subsection{Types and sets (and \texttt{Any} and \texttt{Union\{\}}/\texttt{Bottom})}
+    \subsection{UnionAll types}
+    \subsection{Free variables}
+    \subsection{TypeNames}
+    \subsection{Tuple types}
+    \subsection{Diagonal types}
+    \subsection{Subtyping diagonal variables}
+    \subsection{Introduction to the internal machinery}
+    \subsection{Subtyping and method sorting}
+    \section{Memory layout of Julia Objects}
+    \subsection{Object layout (\texttt{jl\_value\_t})}
+    \subsection{Garbage collector mark bits}
+    \subsection{Object allocation}
+    \section{Eval of Julia code}
+    \subsection{Julia Execution}
+    \subsection{Parsing}
+    \subsection{Macro Expansion}
+    \subsection{Type Inference}
+    \subsection{JIT Code Generation}
+    \subsection{System Image}
+    \section{Calling Conventions}
+    \subsection{Julia Native Calling Convention}
+    \subsection{JL Call Convention}
+    \subsection{C ABI}
+    \section{High-level Overview of the Native-Code Generation Process}
+    \subsection{Representation of Pointers}
+    \subsection{Representation of Intermediate Values}
+    \subsection{Union representation}
+    \subsection{Specialized Calling Convention Signature Representation}
+    \section{Julia Functions}
+    \subsection{Method Tables}
+    \subsection{Function calls}
+    \subsection{Adding methods}
+    \subsection{Creating generic functions}
+    \subsection{Closures}
+    \subsection{Constructors}
+    \subsection{Builtins}
+    \subsection{Keyword arguments}
+    \subsection{Compiler efficiency issues}
+    \section{Base.Cartesian}
+    \subsection{Principles of usage}
+    \subsection{Basic syntax}
+    \section{Talking to the compiler (the \texttt{:meta} mechanism)}
+    \section{SubArrays}
+    \subsection{Index replacement}
+    \subsection{SubArray design}
+    \section{isbits Union Optimizations}
+    \subsection{isbits Union Structs}
+    \subsection{isbits Union Arrays}
+    \section{System Image Building}
+    \subsection{Building the Julia system image}
+    \subsection{System image optimized for multiple microarchitectures}
+    \section{Working with LLVM}
+    \subsection{Overview of Julia to LLVM Interface}
+    \subsection{Building Julia with a different version of LLVM}
+    \subsection{Passing options to LLVM}
+    \subsection{Debugging LLVM transformations in isolation}
+    \subsection{Improving LLVM optimizations for Julia}
+    \subsection{The jlcall calling convention}
+    \subsection{GC root placement}
+    \section{printf() and stdio in the Julia runtime}
+    \subsection{Libuv wrappers for stdio}
+    \subsection{Interface between JL\_STD* and Julia code}
+    \subsection{printf() during initialization}
+    \subsection{Legacy \texttt{ios.c} library}
+    \section{Bounds checking}
+    \subsection{Eliding bounds checks}
+    return r
+    \subsection{Propagating inbounds}
+    \subsection{The bounds checking call hierarchy}
+    \subsection{Emit bounds checks}
+    \section{Proper maintenance and care of multi-threading locks}
+    \subsection{Locks}
+    \subsection{Broken Locks}
+    \subsection{Shared Global Data Structures}
+    \section{Arrays with custom indices}
+    \subsection{Generalizing existing code}
+    \subsection{Writing custom array types with non-1 indexing}
+    \section{Module loading}
+    \subsection{Experimental features}
+    \section{Inference}
+    \subsection{How inference works}
+    \subsection{Debugging compiler.jl}
+    \subsection{The inlining algorithm (\texttt{inline\_worthy})}
+    \section{Julia SSA-form IR}
+    \subsection{Background}
+    \subsection{New IR nodes}
+    \subsection{Main SSA data structure}
+    \section{Static analyzer annotations for GC correctness in C code}
+    \subsection{Running the analysis}
+    \subsection{General Overview}
+    \subsection{GC Invariants}
+    \subsection{Static Analysis Algorithm}
+    \subsection{The analyzer annotations}
+    \subsection{Completeness of analysis}
+  \chapter{Developing/debugging Julia's C code}
+    \section{Reporting and analyzing crashes (segfaults)}
+    \subsection{Version/Environment info}
+    \subsection{Segfaults during bootstrap (\texttt{sysimg.jl})}
+    \subsection{Segfaults when running a script}
+    \subsection{Errors during Julia startup}
+    \subsection{Other generic segfaults or unreachables reached}
+    \subsection{Glossary}
+    \section{gdb debugging tips}
+    \subsection{Displaying Julia variables}
+    \subsection{Useful Julia variables for Inspecting}
+    \subsection{Useful Julia functions for Inspecting those variables}
+    \subsection{Inserting breakpoints for inspection from gdb}
+    \subsection{Inserting breakpoints upon certain conditions}
+    \subsection{Dealing with signals}
+    \subsection{Debugging during Julia{\textquotesingle}s build process (bootstrap)}
+    \subsection{Debugging precompilation errors}
+    \subsection{Mozilla{\textquotesingle}s Record and Replay Framework (rr)}
+    \section{Using Valgrind with Julia}
+    \subsection{General considerations}
+    \subsection{Suppressions}
+    \subsection{Running the Julia test suite under Valgrind}
+    \subsection{Caveats}
+    \section{Sanitizer support}
+    \subsection{General considerations}
+    \subsection{Address Sanitizer (ASAN)}
+    \subsection{Memory Sanitizer (MSAN)}
+    \subsection{Thread Sanitizer (TSAN)}
+    \section{Instrumenting Julia with DTrace, and bpftrace}
+    \subsection{Enabling support}
+    Description
+    NT_GNU_BUILD_ID (unique build ID bitstring)
+    Description
+    NT_STAPSDT (SystemTap probe descriptors)
+    NT_STAPSDT (SystemTap probe descriptors)
+    NT_STAPSDT (SystemTap probe descriptors)
+    NT_STAPSDT (SystemTap probe descriptors)
+    \subsection{Adding probes in libjulia}
+    \subsection{Available probes}
+    \subsection{Notes on using \texttt{bpftrace}}
+    @start[pid] = nsecs;
+    \subsection{Useful references:}
+  \chapter{Building Julia}
+    \section{Building Julia (Detailed)}
+    \subsection{Downloading the Julia source code}
+    \subsection{Building Julia}
+    \subsection{Updating an existing source tree}
+    \subsection{General troubleshooting}
+    \subsection{Platform-Specific Notes}
+    \subsection{Required Build Tools and External Libraries}
+    \subsection{Build dependencies}
+    \subsection{Source distributions of releases}
+    \subsection{Building Julia from source with a Git checkout of a stdlib}
+    \section{Linux}
+    \subsection{Architecture Customization}
+    \subsection{Linux Build Troubleshooting}
+    \section{macOS}
+    \section{Windows}
+    \subsection{General Information for Windows}
+    \subsection{Binary distribution}
+    \subsection{Source distribution}
+    \subsection{Debugging a cross-compiled build under wine}
+    \subsection{After compiling}
+    \subsection{Windows Build Debugging}
+    \section{FreeBSD}
+    \section{ARM (Linux)}
+    \subsection{32-bit (ARMv6, ARMv7)}
+    \subsection{AArch64 (ARMv8)}
+    \section{Binary distributions}
+    \subsection{Versioning and Git}
+    \subsection{Target Architectures}
+    \subsection{Linux}
+    \subsection{OS X}
+    \subsection{Windows}
+    \subsection{Notes on BLAS and LAPACK}
+    \section{Point releasing 101}
+    \subsection{Backporting commits}
+    \subsection{Checking for performance regressions}
+    \subsection{Building test binaries}
+    \subsection{Checking for package breakages}
+    \subsection{Merging backports into the release branch}
+    \subsection{Tagging the release}
+    \subsection{Signing binaries}
+    \subsection{Uploading binaries}
