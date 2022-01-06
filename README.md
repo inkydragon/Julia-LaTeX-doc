@@ -52,28 +52,38 @@ Following 2 PDFs, they should look similar:
 
 ## Change Notes
 
-> I made a mistake.
-> I should have split the file first and then changed it. Now they're all in one commit.
-> So It's necessary to make some explanations.
+### Dirs
++ `doc-en/`: English document.
+    + `part/`: The `\part{}` of english document, used by `julia-doc-en.tex`.
+    + `titlepage/`: New front page, will be added to `julia-doc-en.tex`.
+    + `julia-doc-en.tex`: Main TeX file.
+    + `documenter.sty`: Main style file.
+    + `JuliaEnDoc.sty`: New style file, Not used now.
+    + `tectonic.sh`: Use `tectonic` to build `.tex`.
++ `doc-zh`: Chinese doc.
+    + `part/`: The `\part{}` of chinese document.
+    + `table/`: Some attempts to split into separate tables.
+    + `julia-doc-zh-cn.tex`: Main TeX file.
+    + `JuliaCNDoc.sty`: New style file.
+    + `pdf-build.cmd`: Use `latexmk` to build `.tex`.
++ `julia`: git submodule https://github.com/JuliaLang/julia
++ `JuliaZH.jl`: git submodule https://github.com/JuliaCN/JuliaZH.jl
++ `LaTeX-issues`: *standalone* test for specific issue.
++ `patch`: patch for git submodule to generate raw `.tex` files.
+    + `cn0001-gen-tex-file.patch` patch for` JuliaZH.jl/`.
+    + `en0001-gen-tex.patch` patch for `julia/`.
 
-**about those dir**
-+ `doc-en/`: for `TheJuliaLanguage` document in English.
-    + `issues/`: *standalone* test for specific issue.
-    + `part/`: The `\part{}` of english document, used by `TheJuliaLanguage.tex`
-    + `titlepage/`: Front page, used by `TheJuliaLanguage.tex`
-    + `TheJuliaLanguage.tex`: main TeX file.
-    + `documenter.sty`: main style file.
+### Files
 
-**`TheJuliaLanguage.tex`**
-
+**`julia-doc-en.tex`**
 1. I've splited these parts into separate files (`*.tex` in `doc-en/part/`) **without change them**.
     Then there is a lot of `\input` in `TheJuliaLanguage.tex`.
     They simply copy the file contents to main `tex` file.
 2. remove `\usepackage{./custom.sty}`, it's empty.
-3. add `\input{titlepage/title.tex}` to use title page.
-4. add `\cleardoublepage` before TOC.
 
-**`documenter.sty`**
+**`documenter.sty`**: Not changed!
+
+**`JuliaEnDoc.sty`**
 1. use `\documentclass{book}`: We need `{book}` class, because we need `\part{}`.
 2. use `{geometry}` to set page margin.
 3. use `{background}` to make title page like https://julialang.org/.
