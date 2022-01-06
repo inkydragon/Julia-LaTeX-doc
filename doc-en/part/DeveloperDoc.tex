@@ -1,5 +1,4 @@
 
-
 \part{Developer Documentation}
 
 
@@ -95,7 +94,7 @@ The \emph{direct} subtypes of any \texttt{DataType} may be listed using \hyperli
 
 \begin{minted}{jlcon}
 julia> subtypes(AbstractFloat)
-4-element Array{Any,1}:
+4-element Vector{Any}:
  BigFloat
  Float16
  Float32
@@ -115,7 +114,7 @@ Any abstract subtype will also be included in this list, but further subtypes th
 
 
 
-The internal representation of a \texttt{DataType} is critically important when interfacing with C code and several functions are available to inspect these details. \hyperlink{12980593021531333073}{\texttt{isbits(T::DataType)}} returns true if \texttt{T} is stored with C-compatible alignment. \hyperlink{6956980533195055227}{\texttt{fieldoffset(T::DataType, i::Integer)}} returns the (byte) offset for field \emph{i} relative to the start of the type.
+The internal representation of a \texttt{DataType} is critically important when interfacing with C code and several functions are available to inspect these details. \hyperlink{16222127093346839171}{\texttt{isbitstype(T::DataType)}} returns true if \texttt{T} is stored with C-compatible alignment. \hyperlink{6956980533195055227}{\texttt{fieldoffset(T::DataType, i::Integer)}} returns the (byte) offset for field \emph{i} relative to the start of the type.
 
 
 
@@ -161,7 +160,7 @@ Finally, the \hyperlink{6644553029841096787}{\texttt{Meta.lower}} function gives
 \begin{minted}{jlcon}
 julia> Meta.lower(@__MODULE__, :( [1+2, sin(0.5)] ))
 :($(Expr(:thunk, CodeInfo(
-    @ none within `top-level scope'
+    @ none within `top-level scope`
 1 ─ %1 = 1 + 2
 │   %2 = sin(0.5)
 │   %3 = Base.vect(%1, %2)
@@ -193,11 +192,12 @@ For convenience, there are macro versions of the above functions which take stan
 
 \begin{minted}{jlcon}
 julia> @code_llvm +(1,1)
-
-define i64 @"julia_+_130862"(i64, i64) {
+;  @ int.jl:87 within `+`
+; Function Attrs: sspstrong uwtable
+define i64 @"julia_+_476"(i64 signext %0, i64 signext %1) #0 {
 top:
-    %2 = add i64 %1, %0
-    ret i64 %2
+  %2 = add i64 %1, %0
+  ret i64 %2
 }
 \end{minted}
 
@@ -219,18 +219,18 @@ The aforementioned functions and macros take the keyword argument \texttt{debugi
 
 
 
-\begin{lstlisting}
+\begin{minted}{jlcon}
 julia> @code_typed debuginfo=:source +(1,1)
 CodeInfo(
     @ int.jl:53 within `+'
 1 ─ %1 = Base.add_int(x, y)::Int64
 └──      return %1
 ) => Int64
-\end{lstlisting}
+\end{minted}
 
 
 
-Possible values for \texttt{debuginfo} are: \texttt{:none}, \texttt{:source}, and\texttt{:default}. Per default debug information is not printed, but that can be changed by setting \texttt{Base.IRShow.default\_debuginfo[] = :source}.
+Possible values for \texttt{debuginfo} are: \texttt{:none}, \texttt{:source}, and \texttt{:default}. Per default debug information is not printed, but that can be changed by setting \texttt{Base.IRShow.default\_debuginfo[] = :source}.
 
 
 
@@ -255,15 +255,15 @@ How does the Julia runtime execute \texttt{julia -e {\textquotesingle}println({\
 
 
 
-Execution starts at \href{https://github.com/JuliaLang/julia/blob/master/ui/repl.c}{\texttt{main()} in \texttt{ui/repl.c}}.
+Execution starts at \href{https://github.com/JuliaLang/julia/blob/master/cli/loader\_exe.c}{\texttt{main()} in \texttt{cli/loader\_exe.c}}, which calls \texttt{jl\_load\_repl()} in \href{https://github.com/JuliaLang/julia/blob/master/cli/loader\_lib.c}{\texttt{cli/loader\_lib.c}} which loads a few libraries, eventually calling \href{https://github.com/JuliaLang/julia/blob/master/src/jlapi.c}{\texttt{repl\_entrypoint()} in \texttt{src/jlapi.c}}.
 
 
 
-\texttt{main()} calls \href{https://github.com/JuliaLang/julia/blob/master/src/support/libsupportinit.c}{\texttt{libsupport\_init()}} to set the C library locale and to initialize the {\textquotedbl}ios{\textquotedbl} library (see \href{https://github.com/JuliaLang/julia/blob/master/src/support/ios.c}{\texttt{ios\_init\_stdstreams()}} and \hyperlink{3841537160196121279}{Legacy \texttt{ios.c} library}).
+\texttt{repl\_entrypoint()} calls \href{https://github.com/JuliaLang/julia/blob/master/src/support/libsupportinit.c}{\texttt{libsupport\_init()}} to set the C library locale and to initialize the {\textquotedbl}ios{\textquotedbl} library (see \href{https://github.com/JuliaLang/julia/blob/master/src/support/ios.c}{\texttt{ios\_init\_stdstreams()}} and \hyperlink{3841537160196121279}{Legacy \texttt{ios.c} library}).
 
 
 
-Next \href{https://github.com/JuliaLang/julia/blob/master/src/jloptions.c}{\texttt{jl\_parse\_opts()}} is called to process command line options. Note that \texttt{jl\_parse\_opts()} only deals with options that affect code generation or early initialization. Other options are handled later by \href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{process\_options()} in \texttt{base/client.jl}}.
+Next \href{https://github.com/JuliaLang/julia/blob/master/src/jloptions.c}{\texttt{jl\_parse\_opts()}} is called to process command line options. Note that \texttt{jl\_parse\_opts()} only deals with options that affect code generation or early initialization. Other options are handled later by \href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{exec\_options()} in \texttt{base/client.jl}}.
 
 
 
@@ -323,7 +323,7 @@ jl_int32_type = jl_new_primitivetype(jl_symbol("Int32"), core,
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/master/src/codegen.cpp}{\texttt{jl\_init\_codegen()}} initializes the \href{http://llvm.org}{LLVM library}.
+\href{https://github.com/JuliaLang/julia/blob/master/src/codegen.cpp}{\texttt{jl\_init\_codegen()}} initializes the \href{https://llvm.org}{LLVM library}.
 
 
 
@@ -405,7 +405,7 @@ Finally \href{https://github.com/JuliaLang/julia/blob/master/src/signals-unix.c}
 
 
 
-\texttt{\_julia\_init()} then returns \href{https://github.com/JuliaLang/julia/blob/master/ui/repl.c}{back to \texttt{main()} in \texttt{ui/repl.c}} and \texttt{main()} calls \texttt{true\_main(argc, (char**)argv)}.
+\texttt{\_julia\_init()} then returns \href{https://github.com/JuliaLang/julia/blob/master/cli/loader\_exe.c}{back to \texttt{main()} in \texttt{cli/loader\_exe.c}} and \texttt{main()} calls \texttt{repl\_entrypoint(argc, (char**)argv)}.
 
 
 
@@ -421,18 +421,18 @@ Note: \href{https://github.com/JuliaLang/julia/blob/master/src/staticdata.c}{\te
 \end{quote}
 
 
-\hypertarget{8052465870854670365}{}
+\hypertarget{11153303243704616360}{}
 
 
-\subsection{\texttt{true\_main()}}
-
-
-
-\href{https://github.com/JuliaLang/julia/blob/master/ui/repl.c}{\texttt{true\_main()}} loads the contents of \texttt{argv[]} into \hyperlink{2567473177880607455}{\texttt{Base.ARGS}}.
+\subsection{\texttt{repl\_entrypoint()}}
 
 
 
-If a \texttt{.jl} {\textquotedbl}program{\textquotedbl} file was supplied on the command line, then \href{https://github.com/JuliaLang/julia/blob/master/ui/repl.c}{\texttt{exec\_program()}} calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_load(program,len)}} which calls \href{https://github.com/JuliaLang/julia/blob/master/src/ast.c}{\texttt{jl\_parse\_eval\_all}} which repeatedly calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_toplevel\_eval\_flex()}} to execute the program.
+\href{https://github.com/JuliaLang/julia/blob/master/src/jlapi.c}{\texttt{repl\_entrypoint()}} loads the contents of \texttt{argv[]} into \hyperlink{2567473177880607455}{\texttt{Base.ARGS}}.
+
+
+
+If a \texttt{.jl} {\textquotedbl}program{\textquotedbl} file was supplied on the command line, then \href{https://github.com/JuliaLang/julia/blob/master/src/jlapi.c}{\texttt{exec\_program()}} calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_load(program,len)}} which calls \href{https://github.com/JuliaLang/julia/blob/master/src/ast.c}{\texttt{jl\_parse\_eval\_all}} which repeatedly calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_toplevel\_eval\_flex()}} to execute the program.
 
 
 
@@ -447,26 +447,18 @@ However, in our example (\texttt{julia -e {\textquotesingle}println({\textquoted
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{Base.\_start}} calls \href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{Base.process\_options}} which calls \href{https://github.com/JuliaLang/julia/blob/master/src/ast.c}{\texttt{jl\_parse\_input\_line({\textquotedbl}println({\textquotedbl}Hello World!{\textquotedbl}){\textquotedbl})}} to create an expression object and \hyperlink{7507639810592563424}{\texttt{Base.eval()}} to execute it.
+\href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{Base.\_start}} calls \href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{Base.exec\_options}} which calls \href{https://github.com/JuliaLang/julia/blob/master/src/ast.c}{\texttt{jl\_parse\_input\_line({\textquotedbl}println({\textquotedbl}Hello World!{\textquotedbl}){\textquotedbl})}} to create an expression object and \hyperlink{2345597220715550879}{\texttt{Core.eval(Main, ex)}} to execute the parsed expression \texttt{ex} in the module context of \texttt{Main}.
 
 
 
-\hypertarget{5161519074100035363}{}
+\hypertarget{4809506034778288898}{}
 
 
-\subsection{\texttt{Base.eval}}
-
-
-
-\hyperlink{7507639810592563424}{\texttt{Base.eval()}} was \href{https://github.com/JuliaLang/julia/blob/master/src/builtins.c}{mapped to \texttt{jl\_f\_top\_eval}} by \texttt{jl\_init\_primitives()}.
+\subsection{\texttt{Core.eval}}
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/master/src/builtins.c}{\texttt{jl\_f\_top\_eval()}} calls \href{https://github.com/JuliaLang/julia/blob/master/src/builtins.c}{\texttt{jl\_toplevel\_eval\_in(jl\_main\_module, ex)}}, where \texttt{ex} is the parsed expression \texttt{println({\textquotedbl}Hello World!{\textquotedbl})}.
-
-
-
-\href{https://github.com/JuliaLang/julia/blob/master/src/builtins.c}{\texttt{jl\_toplevel\_eval\_in()}} calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_toplevel\_eval\_flex()}} which calls \href{https://github.com/JuliaLang/julia/blob/master/src/interpreter.c}{\texttt{eval()} in \texttt{interpreter.c}}.
+\hyperlink{2345597220715550879}{\texttt{Core.eval(Main, ex)}} calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_toplevel\_eval\_in(m, ex)}}, which calls \href{https://github.com/JuliaLang/julia/blob/master/src/toplevel.c}{\texttt{jl\_toplevel\_eval\_flex}}. \texttt{jl\_toplevel\_eval\_flex} implements a simple heuristic to decide whether to compile a given code thunk or run it by interpreter. When given \texttt{println({\textquotedbl}Hello World!{\textquotedbl})}, it would usually decide to run the code by interpreter, in which case it calls \href{https://github.com/JuliaLang/julia/blob/master/src/interpreter.c}{\texttt{jl\_interpret\_toplevel\_thunk}}, which then calls \href{https://github.com/JuliaLang/julia/blob/master/src/interpreter.c}{\texttt{eval\_body}}.
 
 
 
@@ -540,17 +532,15 @@ Stack frame & Source code & Notes \\
 \hline
 \texttt{do\_call()} & \texttt{interpreter.c} &  \\
 \hline
-\texttt{eval()} & \texttt{interpreter.c} &  \\
+\texttt{eval\_body()} & \texttt{interpreter.c} &  \\
 \hline
-\texttt{jl\_interpret\_toplevel\_expr()} & \texttt{interpreter.c} &  \\
+\texttt{jl\_interpret\_toplevel\_thunk} & \texttt{interpreter.c} &  \\
 \hline
-\texttt{jl\_toplevel\_eval\_flex()} & \texttt{toplevel.c} &  \\
+\texttt{jl\_toplevel\_eval\_flex} & \texttt{toplevel.c} &  \\
 \hline
-\texttt{jl\_toplevel\_eval()} & \texttt{toplevel.c} &  \\
+\texttt{jl\_toplevel\_eval\_in} & \texttt{toplevel.c} &  \\
 \hline
-\texttt{jl\_toplevel\_eval\_in()} & \texttt{builtins.c} &  \\
-\hline
-\texttt{jl\_f\_top\_eval()} & \texttt{builtins.c} &  \\
+\texttt{Core.eval} & \texttt{boot.jl} &  \\
 \hline
 \end{tabulary}
 
@@ -591,7 +581,7 @@ Finally, \texttt{main()} calls \href{https://github.com/JuliaLang/julia/blob/mas
 
 
 
-Julia has two representations of code. First there is a surface syntax AST returned by the parser (e.g. the \hyperlink{10422957797582368651}{\texttt{Meta.parse}} function), and manipulated by macros. It is a structured representation of code as it is written, constructed by \texttt{julia-parser.scm} from a character stream. Next there is a lowered form, or IR (intermediate representation), which is used by type inference and code generation. In the lowered form there are fewer types of nodes, all macros are expanded, and all control flow is converted to explicit branches and sequences of statements. The lowered form is constructed by \texttt{julia-syntax.scm}.
+Julia has two representations of code. First there is a surface syntax AST returned by the parser (e.g. the \hyperlink{9794549254908071788}{\texttt{Meta.parse}} function), and manipulated by macros. It is a structured representation of code as it is written, constructed by \texttt{julia-parser.scm} from a character stream. Next there is a lowered form, or IR (intermediate representation), which is used by type inference and code generation. In the lowered form there are fewer types of nodes, all macros are expanded, and all control flow is converted to explicit branches and sequences of statements. The lowered form is constructed by \texttt{julia-syntax.scm}.
 
 
 
@@ -685,10 +675,6 @@ Input & AST \\
 \hline
 \texttt{a ? 1 : 2} & \texttt{(if a 1 2)} \\
 \hline
-\texttt{a:b} & \texttt{(: a b)} \\
-\hline
-\texttt{a:b:c} & \texttt{(: a b c)} \\
-\hline
 \texttt{a,b} & \texttt{(tuple a b)} \\
 \hline
 \texttt{a==b} & \texttt{(call == a b)} \\
@@ -727,6 +713,8 @@ Input & AST \\
 \hline
 \texttt{t[a b; c d]} & \texttt{(typed\_vcat t (row a b) (row c d))} \\
 \hline
+\texttt{t[a b;;; c d]} & \texttt{(typed\_ncat t 3 (row a b) (row c d))} \\
+\hline
 \texttt{a\{b\}} & \texttt{(curly a b)} \\
 \hline
 \texttt{a\{b;c\}} & \texttt{(curly a (parameters c) b)} \\
@@ -741,13 +729,15 @@ Input & AST \\
 \hline
 \texttt{[x y; z t]} & \texttt{(vcat (row x y) (row z t))} \\
 \hline
-\texttt{[x for y in z, a in b]} & \texttt{(comprehension x (= y z) (= a b))} \\
+\texttt{[x;y;; z;t;;;]} & \texttt{(ncat 3 (nrow 2 (nrow 1 x y) (nrow 1 z t)))} \\
 \hline
-\texttt{T[x for y in z]} & \texttt{(typed\_comprehension T x (= y z))} \\
+\texttt{[x for y in z, a in b]} & \texttt{(comprehension (generator x (= y z) (= a b)))} \\
+\hline
+\texttt{T[x for y in z]} & \texttt{(typed\_comprehension T (generator x (= y z)))} \\
 \hline
 \texttt{(a, b, c)} & \texttt{(tuple a b c)} \\
 \hline
-\texttt{(a; b; c)} & \texttt{(block a (block b c))} \\
+\texttt{(a; b; c)} & \texttt{(block a b c)} \\
 \hline
 \end{tabulary}
 
@@ -883,11 +873,11 @@ Julia supports more number types than many scheme implementations, so not all nu
 \hline
 Input & AST \\
 \hline
-\texttt{11111111111111111111} & \texttt{(macrocall @int128\_str (null) {\textquotedbl}11111111111111111111{\textquotedbl})} \\
+\texttt{11111111111111111111} & \texttt{(macrocall @int128\_str nothing {\textquotedbl}11111111111111111111{\textquotedbl})} \\
 \hline
-\texttt{0xfffffffffffffffff} & \texttt{(macrocall @uint128\_str (null) {\textquotedbl}0xfffffffffffffffff{\textquotedbl})} \\
+\texttt{0xfffffffffffffffff} & \texttt{(macrocall @uint128\_str nothing {\textquotedbl}0xfffffffffffffffff{\textquotedbl})} \\
 \hline
-\texttt{1111...many digits...} & \texttt{(macrocall @big\_str (null) {\textquotedbl}1111....{\textquotedbl})} \\
+\texttt{1111...many digits...} & \texttt{(macrocall @big\_str nothing {\textquotedbl}1111....{\textquotedbl})} \\
 \hline
 \end{tabulary}
 
@@ -931,7 +921,7 @@ parses as:
 \begin{lstlisting}
 (if a (block (line 2) b)
     (elseif (block (line 3) c) (block (line 4) d)
-            (block (line 5 e))))
+            (block (line 6 e))))
 \end{lstlisting}
 
 
@@ -1080,7 +1070,7 @@ Has a node type indicated by the \texttt{head} field, and an \texttt{args} field
 
 \item \texttt{Slot}
 
-Identifies arguments and local variables by consecutive numbering. \texttt{Slot} is an abstract type with subtypes \texttt{SlotNumber} and \texttt{TypedSlot}. Both types have an integer-valued \texttt{id} field giving the slot index. Most slots have the same type at all uses, and so are represented with \texttt{SlotNumber}. The types of these slots are found in the \texttt{slottypes} field of their \texttt{MethodInstance} object. Slots that require per-use type annotations are represented with \texttt{TypedSlot}, which has a \texttt{typ} field.
+Identifies arguments and local variables by consecutive numbering. \texttt{Slot} is an abstract type with subtypes \texttt{SlotNumber} and \texttt{TypedSlot}. Both types have an integer-valued \texttt{id} field giving the slot index. Most slots have the same type at all uses, and so are represented with \texttt{SlotNumber}. The types of these slots are found in the \texttt{slottypes} field of their \texttt{CodeInfo} object. Slots that require per-use type annotations are represented with \texttt{TypedSlot}, which has a \texttt{typ} field.
 
 
 \item \texttt{Argument}
@@ -1173,7 +1163,7 @@ The 3-argument form has the following arguments:
 \begin{itemize}
 \item \texttt{args[1]}
 
-A function name, or \texttt{false} if unknown. If a symbol, then the expression first behaves like the 1-argument form above. This argument is ignored from then on. When this is \texttt{false}, it means a method is being added strictly by type, \texttt{(::T)(x) = x}.
+A function name, or \texttt{nothing} if unknown or unneeded. If a symbol, then the expression first behaves like the 1-argument form above. This argument is ignored from then on. It can be \texttt{nothing} when methods are added strictly by type, \texttt{(::T)(x) = x}, or when a method is being added to an existing function, \texttt{MyModule.f(x) = x}.
 
 
 \item \texttt{args[2]}
@@ -1274,6 +1264,11 @@ Similar to \texttt{new}, except field values are passed as a single tuple. Works
 Yields the caught exception inside a \texttt{catch} block, as returned by \texttt{jl\_current\_exception()}.
 
 
+\item \texttt{undefcheck}
+
+Temporary node inserted by the compiler and will be processed in \texttt{type\_lift\_pass!}.
+
+
 \item \texttt{enter}
 
 Enters an exception handler (\texttt{setjmp}). \texttt{args[1]} is the label of the catch block to jump to on error.  Yields a token which is consumed by \texttt{pop\_exception}.
@@ -1354,16 +1349,58 @@ The number of required arguments for a varargs function definition.
 The calling convention for the call.
 
 
-\item \texttt{args[6:length(args[3])]} : arguments
+\item \texttt{args[6:5+length(args[3])]} : arguments
 
 The values for all the arguments (with types of each given in args[3]).
 
 
-\item \texttt{args[(length(args[3]) + 1):end]} : gc-roots
+\item \texttt{args[6+length(args[3])+1:end]} : gc-roots
 
 The additional objects that may need to be gc-rooted for the duration of the call. See \hyperlink{16487312531471662451}{Working with LLVM} for where these are derived from and how they get handled.
 
 \end{itemize}
+
+\item \texttt{new\_opaque\_closure}
+
+Constructs a new opaque closure. The fields are:
+
+\begin{itemize}
+\item \texttt{args[1]} : signature
+
+The function signature of the opaque closure. Opaque closures don{\textquotesingle}t participate in dispatch, but the input types can be restricted.
+
+
+\item \texttt{args[2]} : isva
+
+Indicates whether the closure accepts varargs.
+
+
+\item \texttt{args[3]} : lb
+
+Lower bound on the output type. (Defaults to \texttt{Union\{\}})
+
+
+\item \texttt{args[4]} : ub
+
+Upper bound on the output type. (Defaults to \texttt{Any})
+
+
+\item \texttt{args[5]} : method
+
+The actual method as an \texttt{opaque\_closure\_method} expression.
+
+
+\item \texttt{args[6:end]} : captures
+
+The values captured by the opaque closure.
+
+\end{itemize}
+\begin{quote}
+\textbf{Julia 1.7}
+
+Opaque closures were added in Julia 1.7
+
+\end{quote}
 \end{itemize}
 
 
@@ -1455,7 +1492,7 @@ The uncompressed source code for a toplevel thunk. Additionally, for a generated
 
 \item \texttt{backedges}
 
-We store the reverse-list of cache dependencies for efficient tracking of incremental reanalysis/recompilation work that may be needed after a new method definitions. This works by keeping a list of the other \texttt{MethodInstance} that have been inferred or optimized to contain a possible call to this \texttt{MethodInstance}. Those optimization results might be stored somewhere in the \texttt{cache}, or it might have been the result of something we didn{\textquotesingle}t want to cache, such as constant propagation. Thus we merge all of those backedges to various cache entries here (there{\textquotesingle}s almost always only the one applicable cache entry with a sentinal value for max\_world anyways).
+We store the reverse-list of cache dependencies for efficient tracking of incremental reanalysis/recompilation work that may be needed after a new method definitions. This works by keeping a list of the other \texttt{MethodInstance} that have been inferred or optimized to contain a possible call to this \texttt{MethodInstance}. Those optimization results might be stored somewhere in the \texttt{cache}, or it might have been the result of something we didn{\textquotesingle}t want to cache, such as constant propagation. Thus we merge all of those backedges to various cache entries here (there{\textquotesingle}s almost always only the one applicable cache entry with a sentinel value for max\_world anyways).
 
 
 \item \texttt{cache}
@@ -1717,14 +1754,14 @@ Union{UInt8, Signed}
 julia> typejoin(Signed, Union{UInt8, Int8})
 Integer
 
-julia> typeintersect(Tuple{Integer,Float64}, Tuple{Int,Real})
-Tuple{Int64,Float64}
+julia> typeintersect(Tuple{Integer, Float64}, Tuple{Int, Real})
+Tuple{Int64, Float64}
 
-julia> Union{Tuple{Integer,Float64}, Tuple{Int,Real}}
-Union{Tuple{Int64,Real}, Tuple{Integer,Float64}}
+julia> Union{Tuple{Integer, Float64}, Tuple{Int, Real}}
+Union{Tuple{Int64, Real}, Tuple{Integer, Float64}}
 
-julia> typejoin(Tuple{Integer,Float64}, Tuple{Int,Real})
-Tuple{Integer,Real}
+julia> typejoin(Tuple{Integer, Float64}, Tuple{Int, Real})
+Tuple{Integer, Real}
 \end{minted}
 
 
@@ -1787,7 +1824,7 @@ UnionAll
       name: Symbol N
       lb: Union{}
       ub: Any
-    body: Array{T,N} <: DenseArray{T,N}
+    body: Array{T, N} <: DenseArray{T, N}
 \end{minted}
 
 
@@ -1871,8 +1908,8 @@ julia> TV, NV = TypeVar(:T), TypeVar(:N)
 julia> Array
 Array
 
-julia> Array{TV,NV}
-Array{T,N}
+julia> Array{TV, NV}
+Array{T, N}
 \end{minted}
 
 
@@ -1898,7 +1935,7 @@ TypeName
         name: Symbol N
         lb: Union{}
         ub: Any
-      body: Array{T,N} <: DenseArray{T,N}
+      body: Array{T, N} <: DenseArray{T, N}
   cache: SimpleVector
     ...
 
@@ -1953,10 +1990,10 @@ What about the other fields? \texttt{hash} assigns an integer to each type.  To 
 julia> struct MyType{T,N} end
 
 julia> MyType{Int,2}
-MyType{Int64,2}
+MyType{Int64, 2}
 
 julia> MyType{Float32, 5}
-MyType{Float32,5}
+MyType{Float32, 5}
 \end{minted}
 
 
@@ -1982,7 +2019,7 @@ julia> Tuple
 Tuple
 
 julia> Tuple.parameters
-svec(Vararg{Any,N} where N)
+svec(Vararg{Any})
 \end{minted}
 
 
@@ -1994,10 +2031,10 @@ Unlike other types, tuple types are covariant in their parameters, so this defin
 
 \begin{minted}{jlcon}
 julia> typeintersect(Tuple, Tuple{Int,Float64})
-Tuple{Int64,Float64}
+Tuple{Int64, Float64}
 
 julia> typeintersect(Tuple{Vararg{Any}}, Tuple{Int,Float64})
-Tuple{Int64,Float64}
+Tuple{Int64, Float64}
 \end{minted}
 
 
@@ -2009,7 +2046,7 @@ However, if a variadic (\texttt{Vararg}) tuple type has free variables it can de
 
 \begin{minted}{jlcon}
 julia> typeintersect(Tuple{Vararg{T} where T}, Tuple{Int,Float64})
-Tuple{Int64,Float64}
+Tuple{Int64, Float64}
 
 julia> typeintersect(Tuple{Vararg{T}} where T, Tuple{Int,Float64})
 Union{}
@@ -2109,7 +2146,7 @@ f(a::Array{T}, x::T, y::T) where {T} = ...
 
 
 
-In this case, \texttt{T} occurs in invariant position inside \texttt{Array\{T\}}. That means whatever type of array is passed unambiguously determines the value of \texttt{T} – we say \texttt{T} has an \emph{equality constraint} on it. Therefore in this case the diagonal rule is not really necessary, since the array determines \texttt{T} and we can then allow \texttt{x} and \texttt{y} to be of any subtypes of \texttt{T}. So variables that occur in invariant position are never considered diagonal. This choice of behavior is slightly controversial –- some feel this definition should be written as
+In this case, \texttt{T} occurs in invariant position inside \texttt{Array\{T\}}. That means whatever type of array is passed unambiguously determines the value of \texttt{T} – we say \texttt{T} has an \emph{equality constraint} on it. Therefore in this case the diagonal rule is not really necessary, since the array determines \texttt{T} and we can then allow \texttt{x} and \texttt{y} to be of any subtypes of \texttt{T}. So variables that occur in invariant position are never considered diagonal. This choice of behavior is slightly controversial – some feel this definition should be written as
 
 
 
@@ -2170,19 +2207,25 @@ However, appearing in \emph{invariant} position disqualifies a variable from bei
 
 
 
-Tuple\{Int,Int8,Vector\{Integer\}\} <: Tuple\{T,T,Vector\{Union\{Integer,T\}\}\} where T
+
+\begin{minted}{julia}
+Tuple{Int,Int8,Vector{Integer}} <: Tuple{T,T,Vector{Union{Integer,T}}} where T
+\end{minted}
 
 
 
-If the \texttt{T} inside the Union is ignored, then \texttt{T} is concrete and the answer is {\textquotedbl}false{\textquotedbl} since the first two types aren{\textquotesingle}t the same. But consider instead
+If the \texttt{T} inside the \texttt{Union} is ignored, then \texttt{T} is concrete and the answer is {\textquotedbl}false{\textquotedbl} since the first two types aren{\textquotesingle}t the same. But consider instead
 
 
 
-Tuple\{Int,Int8,Vector\{Any\}\} <: Tuple\{T,T,Vector\{Union\{Integer,T\}\}\} where T
+
+\begin{minted}{julia}
+Tuple{Int,Int8,Vector{Any}} <: Tuple{T,T,Vector{Union{Integer,T}}} where T
+\end{minted}
 
 
 
-Now we cannot ignore the \texttt{T} in the Union (we must have T == Any), so \texttt{T} is not concrete and the answer is {\textquotedbl}true{\textquotedbl}. That would make the concreteness of \texttt{T} depend on the other type, which is not acceptable since a type must have a clear meaning on its own. Therefore the appearance of \texttt{T} inside \texttt{Vector} is considered in both cases.
+Now we cannot ignore the \texttt{T} in the \texttt{Union} (we must have \texttt{T == Any}), so \texttt{T} is not concrete and the answer is {\textquotedbl}true{\textquotedbl}. That would make the concreteness of \texttt{T} depend on the other type, which is not acceptable since a type must have a clear meaning on its own. Therefore the appearance of \texttt{T} inside \texttt{Vector} is considered in both cases.
 
 
 
@@ -2224,7 +2267,7 @@ Most operations for dealing with types are found in the files \texttt{jltypes.c}
 
 
 
-Because the subtyping code is used heavily in the REPL itself–and hence breakpoints in this code get triggered often–it will be easiest if you make the following definition:
+Because the subtyping code is used heavily in the REPL itself – and hence breakpoints in this code get triggered often – it will be easiest if you make the following definition:
 
 
 
@@ -2248,7 +2291,7 @@ As a warm-up, try the following:
 
 
 \begin{minted}{julia}
-mysubtype(Tuple{Int,Float64}, Tuple{Integer,Real})
+mysubtype(Tuple{Int, Float64}, Tuple{Integer, Real})
 \end{minted}
 
 
@@ -2652,7 +2695,7 @@ The 10,000 foot view of the whole process is as follows:
 \item[1.  ] The user starts \texttt{julia}.
 
 
-\item[2.  ] The C function \texttt{main()} from \texttt{ui/repl.c} gets called. This function processes the command line arguments, filling in the \texttt{jl\_options} struct and setting the variable \texttt{ARGS}. It then initializes Julia (by calling \href{https://github.com/JuliaLang/julia/blob/master/src/task.c}{\texttt{julia\_init} in \texttt{task.c}}, which may load a previously compiled \hyperlink{6082338945993475185}{sysimg}). Finally, it passes off control to Julia by calling \href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{Base.\_start()}}.
+\item[2.  ] The C function \texttt{main()} from \texttt{cli/loader\_exe.c} gets called. This function processes the command line arguments, filling in the \texttt{jl\_options} struct and setting the variable \texttt{ARGS}. It then initializes Julia (by calling \href{https://github.com/JuliaLang/julia/blob/master/src/task.c}{\texttt{julia\_init} in \texttt{task.c}}, which may load a previously compiled \hyperlink{6082338945993475185}{sysimg}). Finally, it passes off control to Julia by calling \href{https://github.com/JuliaLang/julia/blob/master/base/client.jl}{\texttt{Base.\_start()}}.
 
 
 \item[3.  ] When \texttt{\_start()} takes over control, the subsequent sequence of commands depends on the command line arguments given. For example, if a filename was supplied, it will proceed to execute that file. Otherwise, it will start an interactive REPL.
@@ -2676,7 +2719,7 @@ The 10,000 foot view of the whole process is as follows:
 \item[9.  ] \texttt{jl\_toplevel\_eval\_flex()} then \hyperlink{16669853702383402486}{expands} the code to eliminate any macros and to {\textquotedbl}lower{\textquotedbl} the AST to make it simpler to execute.
 
 
-\item[10. ] \texttt{jl\_toplevel\_eval\_flex()} then uses some simple heuristics to decide whether to JIT compiler the  AST or to interpret it directly.
+\item[10. ] \texttt{jl\_toplevel\_eval\_flex()} then uses some simple heuristics to decide whether to JIT compile the  AST or to interpret it directly.
 
 
 \item[11. ] The bulk of the work to interpret code is handled by \href{https://github.com/JuliaLang/julia/blob/master/src/interpreter.c}{\texttt{eval} in \texttt{interpreter.c}}.
@@ -3674,7 +3717,7 @@ Anonymous-function expressions have many uses in practice.
 \paragraph{Macro reference}
 
 
-\hypertarget{4938945836201444124}{} 
+\hypertarget{4938945836201444124}{}
 \hyperlink{4938945836201444124}{\texttt{Base.Cartesian.@nloops}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3714,11 +3757,11 @@ If you want just a post-expression, supply \hyperlink{9331422207248206047}{\text
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L9-L37}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L9-L37}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{5318613607184308860}{} 
+\hypertarget{5318613607184308860}{}
 \hyperlink{5318613607184308860}{\texttt{Base.Cartesian.@nref}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3740,11 +3783,11 @@ julia> @macroexpand Base.Cartesian.@nref 3 A i
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L72-L83}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L72-L83}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{5592996802344748158}{} 
+\hypertarget{5592996802344748158}{}
 \hyperlink{5592996802344748158}{\texttt{Base.Cartesian.@nextract}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3775,11 +3818,11 @@ x_3 = y[5]
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L132-L149}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L132-L149}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{17386123129446980507}{} 
+\hypertarget{17386123129446980507}{}
 \hyperlink{17386123129446980507}{\texttt{Base.Cartesian.@nexprs}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3806,11 +3849,11 @@ end
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L111-L126}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L111-L126}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{16431416314224139891}{} 
+\hypertarget{16431416314224139891}{}
 \hyperlink{16431416314224139891}{\texttt{Base.Cartesian.@ncall}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3838,11 +3881,11 @@ func(a, b, c[1], c[2])
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L89-L103}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L89-L103}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{4425932542618492714}{} 
+\hypertarget{4425932542618492714}{}
 \hyperlink{4425932542618492714}{\texttt{Base.Cartesian.@ntuple}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3856,11 +3899,11 @@ Generates an \texttt{N}-tuple. \texttt{@ntuple 2 i} would generate \texttt{(i\_1
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L193-L198}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L193-L198}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{5463798602076286002}{} 
+\hypertarget{5463798602076286002}{}
 \hyperlink{5463798602076286002}{\texttt{Base.Cartesian.@nall}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3876,11 +3919,11 @@ Check whether all of the expressions generated by the anonymous-function express
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L160-L168}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L160-L168}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{11114957141394185901}{} 
+\hypertarget{11114957141394185901}{}
 \hyperlink{11114957141394185901}{\texttt{Base.Cartesian.@nany}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3896,11 +3939,11 @@ Check whether any of the expressions generated by the anonymous-function express
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L177-L184}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L177-L184}{\texttt{source}}
 
 
 \end{adjustwidth}
-\hypertarget{2428714678347040919}{} 
+\hypertarget{2428714678347040919}{}
 \hyperlink{2428714678347040919}{\texttt{Base.Cartesian.@nif}}  -- {Macro.}
 
 \begin{adjustwidth}{2em}{0pt}
@@ -3933,7 +3976,7 @@ end
 
 
 
-\href{https://github.com/JuliaLang/julia/blob/44fa15b1502a45eac76c9017af94332d4557b251/base/cartesian.jl#L204-L221}{\texttt{source}}
+\href{https://github.com/JuliaLang/julia/blob/2d472c633d66e7697dda5aff75d2367b823048b8/base/cartesian.jl#L204-L221}{\texttt{source}}
 
 
 \end{adjustwidth}
@@ -4036,15 +4079,15 @@ Consider making 2d slices of a 3d array:
 julia> A = rand(2,3,4);
 
 julia> S1 = view(A, :, 1, 2:3)
-2×2 view(::Array{Float64,3}, :, 1, 2:3) with eltype Float64:
- 0.200586  0.066423
- 0.298614  0.956753
+2×2 view(::Array{Float64, 3}, :, 1, 2:3) with eltype Float64:
+ 0.839622  0.711389
+ 0.967143  0.103929
 
 julia> S2 = view(A, 1, :, 2:3)
-3×2 view(::Array{Float64,3}, 1, :, 2:3) with eltype Float64:
- 0.200586  0.066423
- 0.246837  0.646691
- 0.648882  0.276021
+3×2 view(::Array{Float64, 3}, 1, :, 2:3) with eltype Float64:
+ 0.839622  0.711389
+ 0.789764  0.806704
+ 0.566704  0.962715
 \end{minted}
 
 
@@ -4211,7 +4254,7 @@ julia> A = reshape(1:4*2, 4, 2)
  4  8
 
 julia> diff(A[2:2:4,:][:])
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  2
  2
  2
@@ -4234,7 +4277,7 @@ julia> A = reshape(1:5*2, 5, 2)
  5  10
 
 julia> diff(A[2:2:4,:][:])
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  2
  3
  2
@@ -4325,7 +4368,7 @@ Julia now includes an optimization wherein {\textquotedbl}isbits Union{\textquot
 
 
 
-Julia can now also store {\textquotedbl}isbits Union{\textquotedbl} values inline in an Array, as opposed to requiring an indirection box. The optimization is accomplished by storing an extra {\textquotedbl}type tag array{\textquotedbl} of bytes, one byte per array element, alongside the bytes of the actual array data. This type tag array serves the same function as the type field case: its value signals the type of the actual stored Union value in the array. In terms of layout, a Julia Array can include extra {\textquotedbl}buffer{\textquotedbl} space before and after its actual data values, which are tracked in the \texttt{a->offset} and \texttt{a->maxsize} fields of the \texttt{jl\_array\_t*} type. The {\textquotedbl}type tag array{\textquotedbl} is treated exactly as another \texttt{jl\_array\_t*}, but which shares the same \texttt{a->offset}, \texttt{a->maxsize}, and \texttt{a->len} fields. So the formula to access an isbits Union Array{\textquotesingle}s type tag bytes is \texttt{a->data + (a->maxsize - a->offset) * a->elsize + a->offset}; i.e. the Array{\textquotesingle}s \texttt{a->data} pointer is already shifted by \texttt{a->offset}, so correcting for that, we follow the data all the way to the max of what it can hold \texttt{a->maxsize}, then adjust by \texttt{a->ofset} more bytes to account for any present {\textquotedbl}front buffering{\textquotedbl} the array might be doing. This layout in particular allows for very efficient resizing operations as the type tag data only ever has to move when the actual array{\textquotesingle}s data has to move.
+Julia can now also store {\textquotedbl}isbits Union{\textquotedbl} values inline in an Array, as opposed to requiring an indirection box. The optimization is accomplished by storing an extra {\textquotedbl}type tag array{\textquotedbl} of bytes, one byte per array element, alongside the bytes of the actual array data. This type tag array serves the same function as the type field case: its value signals the type of the actual stored Union value in the array. In terms of layout, a Julia Array can include extra {\textquotedbl}buffer{\textquotedbl} space before and after its actual data values, which are tracked in the \texttt{a->offset} and \texttt{a->maxsize} fields of the \texttt{jl\_array\_t*} type. The {\textquotedbl}type tag array{\textquotedbl} is treated exactly as another \texttt{jl\_array\_t*}, but which shares the same \texttt{a->offset}, \texttt{a->maxsize}, and \texttt{a->len} fields. So the formula to access an isbits Union Array{\textquotesingle}s type tag bytes is \texttt{a->data + (a->maxsize - a->offset) * a->elsize + a->offset}; i.e. the Array{\textquotesingle}s \texttt{a->data} pointer is already shifted by \texttt{a->offset}, so correcting for that, we follow the data all the way to the max of what it can hold \texttt{a->maxsize}, then adjust by \texttt{a->offset} more bytes to account for any present {\textquotedbl}front buffering{\textquotedbl} the array might be doing. This layout in particular allows for very efficient resizing operations as the type tag data only ever has to move when the actual array{\textquotesingle}s data has to move.
 
 
 
@@ -4525,11 +4568,11 @@ The difference between an intrinsic and a builtin is that a builtin is a first c
 
 
 
-Julia currently uses LLVM{\textquotesingle}s \href{http://llvm.org/docs/LangRef.html\#tbaa-metadata}{Type Based Alias Analysis}. To find the comments that document the inclusion relationships, look for \texttt{static MDNode*} in \texttt{src/codegen.cpp}.
+Julia currently uses LLVM{\textquotesingle}s \href{https://llvm.org/docs/LangRef.html\#tbaa-metadata}{Type Based Alias Analysis}. To find the comments that document the inclusion relationships, look for \texttt{static MDNode*} in \texttt{src/codegen.cpp}.
 
 
 
-The \texttt{-O} option enables LLVM{\textquotesingle}s \href{http://llvm.org/docs/AliasAnalysis.html\#the-basicaa-pass}{Basic Alias Analysis}.
+The \texttt{-O} option enables LLVM{\textquotesingle}s \href{https://llvm.org/docs/AliasAnalysis.html\#the-basic-aa-pass}{Basic Alias Analysis}.
 
 
 
@@ -4546,16 +4589,16 @@ The default version of LLVM is specified in \texttt{deps/Versions.make}. You can
 
 
 \begin{lstlisting}
-LLVM_VER = 6.0.1
+LLVM_VER = 12.0.1
 \end{lstlisting}
 
 
 
-Besides the LLVM release numerals, you can also use \texttt{LLVM\_VER = svn} to build against the latest development version of LLVM.
+Besides the LLVM release numerals, you can also use \texttt{DEPS\_GIT = llvm} in combination with \texttt{USE\_BINARYBUILDER\_LLVM = 0} to build against the latest development version of LLVM.
 
 
 
-You can also specify to build a debug version of LLVM, by setting either \texttt{LLVM\_DEBUG = 1} or \texttt{LLVM\_DEBUG = Release} in your \texttt{Make.user} file. The former will be a fully unoptimized build of LLVM and the latter will produce an optimized build of LLVM. Depending on your needs the latter will suffice and it quite a bit faster. If you use \texttt{LLVM\_DEBUG = Release} you will also want to set \texttt{LLVM\_ASSERTIONS = 1} to enable diagonstics for different passes. Only \texttt{LLVM\_DEBUG = 1} implies that option by default.
+You can also specify to build a debug version of LLVM, by setting either \texttt{LLVM\_DEBUG = 1} or \texttt{LLVM\_DEBUG = Release} in your \texttt{Make.user} file. The former will be a fully unoptimized build of LLVM and the latter will produce an optimized build of LLVM. Depending on your needs the latter will suffice and it quite a bit faster. If you use \texttt{LLVM\_DEBUG = Release} you will also want to set \texttt{LLVM\_ASSERTIONS = 1} to enable diagnostics for different passes. Only \texttt{LLVM\_DEBUG = 1} implies that option by default.
 
 
 
@@ -4571,10 +4614,10 @@ You can pass options to LLVM via the environment variable \texttt{JULIA\_LLVM\_A
 
 
 \begin{itemize}
-\item \texttt{export JULIA\_LLVM\_ARGS = -print-after-all} dumps IR after each pass.
+\item \texttt{export JULIA\_LLVM\_ARGS=-print-after-all} dumps IR after each pass.
 
 
-\item \texttt{export JULIA\_LLVM\_ARGS = -debug-only=loop-vectorize} dumps LLVM \texttt{DEBUG(...)} diagnostics for loop vectorizer. If you get warnings about {\textquotedbl}Unknown command line argument{\textquotedbl}, rebuild LLVM with \texttt{LLVM\_ASSERTIONS = 1}.
+\item \texttt{export JULIA\_LLVM\_ARGS=-debug-only=loop-vectorize} dumps LLVM \texttt{DEBUG(...)} diagnostics for loop vectorizer. If you get warnings about {\textquotedbl}Unknown command line argument{\textquotedbl}, rebuild LLVM with \texttt{LLVM\_ASSERTIONS = 1}.
 
 \end{itemize}
 
@@ -4592,7 +4635,7 @@ On occasion, it can be useful to debug LLVM{\textquotesingle}s transformations i
 
 
 \begin{lstlisting}
-opt -load libjulia.so -julia -o opt.bc unopt.bc
+opt -enable-new-pm=0 -load libjulia-internal.so -julia -o opt.bc unopt.bc
 llc -o sys.o opt.bc
 cc -shared -o sys.so sys.o
 \end{lstlisting}
@@ -4600,10 +4643,6 @@ cc -shared -o sys.so sys.o
 
 
 This system image can then be loaded by \texttt{julia} as usual.
-
-
-
-Alternatively, you can use \texttt{--output-jit-bc jit.bc} to obtain a trace of all IR passed to the JIT. This is useful for code that cannot be run as part of the sysimg generation process (e.g. because it creates unserializable state). However, the resulting \texttt{jit.bc} does not include sysimage data, and can thus not be used as such.
 
 
 
@@ -4637,7 +4676,7 @@ Improving LLVM code generation usually involves either changing Julia lowering t
 
 
 
-If you are planning to improve a pass, be sure to read the \href{http://llvm.org/docs/DeveloperPolicy.html}{LLVM developer policy}. The best strategy is to create a code example in a form where you can use LLVM{\textquotesingle}s \texttt{opt} tool to study it and the pass of interest in isolation.
+If you are planning to improve a pass, be sure to read the \href{https://llvm.org/docs/DeveloperPolicy.html}{LLVM developer policy}. The best strategy is to create a code example in a form where you can use LLVM{\textquotesingle}s \texttt{opt} tool to study it and the pass of interest in isolation.
 
 
 
@@ -4645,7 +4684,7 @@ If you are planning to improve a pass, be sure to read the \href{http://llvm.org
 \item[1. ] Create an example Julia code of interest.
 
 
-\item[2. ] Use \texttt{JULIA\_LLVM\_ARGS = -print-after-all} to dump the IR.
+\item[2. ] Use \texttt{JULIA\_LLVM\_ARGS=-print-after-all} to dump the IR.
 
 
 \item[3. ] Pick out the IR at the point just before the pass of interest runs.
@@ -4937,7 +4976,7 @@ void @llvm.julia.gc_preserve_end(token)
 
 
 
-\texttt{julia.h} defines \href{http://docs.libuv.org}{libuv} wrappers for the \texttt{stdio.h} streams:
+\texttt{julia.h} defines \href{https://docs.libuv.org}{libuv} wrappers for the \texttt{stdio.h} streams:
 
 
 
@@ -4962,7 +5001,7 @@ int jl_vprintf(uv_stream_t *s, const char *format, va_list args);
 
 
 
-These \texttt{printf} functions are used by the \texttt{.c} files in the \texttt{src/} and \texttt{ui/} directories wherever stdio is needed to ensure that output buffering is handled in a unified way.
+These \texttt{printf} functions are used by the \texttt{.c} files in the \texttt{src/} and \texttt{cli/} directories wherever stdio is needed to ensure that output buffering is handled in a unified way.
 
 
 
@@ -5120,7 +5159,7 @@ The \texttt{@boundscheck(...)} macro marks blocks of code that perform bounds ch
 \begin{minted}{julia}
 function sum(A::AbstractArray)
     r = zero(eltype(A))
-    for i = 1:length(A)
+    for i in eachindex(A)
         @inbounds r += A[i]
     end
     return r
@@ -5141,6 +5180,48 @@ With a custom array-like type \texttt{MyArray} having:
 
 
 Then when \texttt{getindex} is inlined into \texttt{sum}, the call to \texttt{checkbounds(A,i)} will be elided. If your function contains multiple layers of inlining, only \texttt{@boundscheck} blocks at most one level of inlining deeper are eliminated. The rule prevents unintended changes in program behavior from code further up the stack.
+
+
+
+\hypertarget{13791305586943178951}{}
+
+
+\subsubsection{Caution!}
+
+
+
+It is easy to accidentally expose unsafe operations with \texttt{@inbounds}. You might be tempted to write the above example as
+
+
+
+
+\begin{minted}{julia}
+function sum(A::AbstractArray)
+    r = zero(eltype(A))
+    for i in 1:length(A)
+        @inbounds r += A[i]
+    end
+	return r
+end
+\end{minted}
+
+
+
+Which quietly assumes 1-based indexing and therefore exposes unsafe memory access when used with \hyperlink{6526948166346290584}{\texttt{OffsetArrays}}:
+
+
+
+
+\begin{minted}{jlcon}
+julia> using OffsetArrays
+
+julia> sum(OffsetArray([1,2,3], -10))
+9164911648 # inconsistent results or segfault
+\end{minted}
+
+
+
+While the original source of the error here is \texttt{1:length(A)}, the use of \texttt{@inbounds} increases the consequences from a bounds error to a less easily caught and debugged unsafe memory access. It is often difficult or impossible to prove that a method which uses \texttt{@inbounds} is safe, so one must weigh the benefits of performance improvements against the risk of segfaults and silent misbehavior, especially in public facing APIs.
 
 
 
@@ -5220,6 +5301,17 @@ Note this hierarchy has been designed to reduce the likelihood of method ambigui
 
 
 
+\hypertarget{15511139749343586557}{}
+
+
+\subsection{Emit bounds checks}
+
+
+
+Julia can be launched with \texttt{--check-bounds=\{yes|no|auto\}} to emit bounds checks always, never, or respect @inbounds declarations.
+
+
+
 \hypertarget{17038639605096915302}{}
 
 
@@ -5284,6 +5376,9 @@ While holding this lock, the code must not do any allocation or hit any safepoin
 
 
 \item flisp
+
+
+\item jl\emph{in}stackwalk (Win32)
 
 \begin{quote}
 flisp itself is already threadsafe, this lock only protects the \texttt{jl\_ast\_context\_list\_t} pool
@@ -5672,7 +5767,7 @@ This code implicitly assumes that vectors are indexed from 1; if \texttt{dest} s
 
 
 
-\texttt{axes(A)} (reminiscent of \texttt{size(A)}) returns a tuple of \texttt{AbstractUnitRange} objects, specifying the range of valid indices along each dimension of \texttt{A}.  When \texttt{A} has unconventional indexing, the ranges may not start at 1.  If you just want the range for a particular dimension \texttt{d}, there is \texttt{axes(A, d)}.
+\texttt{axes(A)} (reminiscent of \texttt{size(A)}) returns a tuple of \texttt{AbstractUnitRange\{<:Integer\}} objects, specifying the range of valid indices along each dimension of \texttt{A}.  When \texttt{A} has unconventional indexing, the ranges may not start at 1.  If you just want the range for a particular dimension \texttt{d}, there is \texttt{axes(A, d)}.
 
 
 
@@ -5980,7 +6075,7 @@ end
 
 
 
-\href{https://en.wikipedia.org/wiki/Type\_inference}{Type inference} refers to the process of deducing the types of later values from the types of input values. Julia{\textquotesingle}s approach to inference has been described in blog posts (\href{https://juliacomputing.com/blog/2016/04/04/inference-convergence.html}{1}, \href{https://juliacomputing.com/blog/2017/05/15/inference-converage2.html}{2}).
+\href{https://en.wikipedia.org/wiki/Type\_inference}{Type inference} refers to the process of deducing the types of later values from the types of input values. Julia{\textquotesingle}s approach to inference has been described in blog posts (\href{https://juliacomputing.com/blog/2016/04/inference-convergence/}{1}, \href{https://juliacomputing.com/blog/2017/05/inference-converage2/}{2}).
 
 
 
@@ -6014,9 +6109,8 @@ m = first(mths)
 interp = Core.Compiler.NativeInterpreter()
 sparams = Core.svec()      # this particular method doesn't have type-parameters
 optimize = true            # run all inference optimizations
-cached = false             # force inference to happen (do not use cached results)
 types = Tuple{typeof(convert), atypes.parameters...} # Tuple{typeof(convert), Type{Int}, UInt}
-Core.Compiler.typeinf_code(interp, types, sparams, optimize, cached)
+Core.Compiler.typeinf_code(interp, m, types, sparams, optimize)
 \end{minted}
 
 
@@ -6036,11 +6130,11 @@ ci = (@code_typed convert(Int, UInt(1)))[1]
 \hypertarget{3650644351684738912}{}
 
 
-\subsection{The inlining algorithm (inline\_worthy)}
+\subsection{The inlining algorithm (\texttt{inline\_worthy})}
 
 
 
-Much of the hardest work for inlining runs in \texttt{inlining\_pass}. However, if your question is {\textquotedbl}why didn{\textquotesingle}t my function inline?{\textquotedbl} then you will most likely be interested in \texttt{isinlineable} and its primary callee, \texttt{inline\_worthy}. \texttt{isinlineable} handles a number of special cases (e.g., critical functions like \texttt{next} and \texttt{done}, incorporating a bonus for functions that return tuples, etc.). The main decision-making happens in \texttt{inline\_worthy}, which returns \texttt{true} if the function should be inlined.
+Much of the hardest work for inlining runs in \texttt{ssa\_inlining\_pass!}. However, if your question is {\textquotedbl}why didn{\textquotesingle}t my function inline?{\textquotedbl} then you will most likely be interested in \texttt{inline\_worthy}, which makes a decision to inline the function call or not.
 
 
 
@@ -6052,58 +6146,34 @@ The foundation of the cost-model is a lookup table, implemented in \texttt{add\_
 
 
 
-We supplement this low-level lookup table with a number of special cases. For example, an \texttt{:invoke} expression (a call for which all input and output types were inferred in advance) is assigned a fixed cost (currently 20 cycles). In contrast, a \texttt{:call} expression, for functions other than intrinsics/builtins, indicates that the call will require dynamic dispatch, in which case we assign a cost set by \texttt{Params.inline\_nonleaf\_penalty} (currently set at 1000). Note that this is not a {\textquotedbl}first-principles{\textquotedbl} estimate of the raw cost of dynamic dispatch, but a mere heuristic indicating that dynamic dispatch is extremely expensive.
+We supplement this low-level lookup table with a number of special cases. For example, an \texttt{:invoke} expression (a call for which all input and output types were inferred in advance) is assigned a fixed cost (currently 20 cycles). In contrast, a \texttt{:call} expression, for functions other than intrinsics/builtins, indicates that the call will require dynamic dispatch, in which case we assign a cost set by \texttt{Params.inline\_nonleaf\_penalty} (currently set at \texttt{1000}). Note that this is not a {\textquotedbl}first-principles{\textquotedbl} estimate of the raw cost of dynamic dispatch, but a mere heuristic indicating that dynamic dispatch is extremely expensive.
 
 
 
-Each statement gets analyzed for its total cost in a function called \texttt{statement\_cost}. You can run this yourself by following the sketch below, where \texttt{f} is your function and \texttt{tt} is the Tuple-type of the arguments:
+Each statement gets analyzed for its total cost in a function called \texttt{statement\_cost}. You can display the cost associated with each statement as follows:
 
 
 
 
-\begin{minted}{julia}
-# A demo on `fill(3.5, (2, 3))`
-f = fill
-tt = Tuple{Float64, Tuple{Int,Int}}
-# Create the objects we need to interact with the compiler
-opt_params = Core.Compiler.OptimizationParams()
-mi = Base.method_instances(f, tt)[1]
-ci = code_typed(f, tt)[1][1]
-interp = Core.Compiler.NativeInterpreter()
-opt = Core.Compiler.OptimizationState(mi, opt_params, interp)
-# Calculate cost of each statement
-cost(stmt::Expr) = Core.Compiler.statement_cost(stmt, -1, ci, opt.sptypes, opt.slottypes, opt.params)
-cost(stmt) = 0
-cst = map(cost, ci.code)
-
-# output
-
-31-element Array{Int64,1}:
-  0
-  0
- 20
-  4
-  1
-  1
-  1
-  0
-  0
-  0
-  ⋮
-  0
-  0
-  0
-  0
-  0
-  0
-  0
-  0
-  0
+\begin{minted}{jlcon}
+julia> Base.print_statement_costs(stdout, map, (typeof(sqrt), Tuple{Int},)) # map(sqrt, (2,))
+map(f, t::Tuple{Any}) in Base at tuple.jl:179
+  0 1 ─ %1  = Base.getfield(_3, 1, true)::Int64
+  1 │   %2  = Base.sitofp(Float64, %1)::Float64
+  2 │   %3  = Base.lt_float(%2, 0.0)::Bool
+  0 └──       goto #3 if not %3
+  0 2 ─       invoke Base.Math.throw_complex_domainerror(:sqrt::Symbol, %2::Float64)::Union{}
+  0 └──       unreachable
+ 20 3 ─ %7  = Base.Math.sqrt_llvm(%2)::Float64
+  0 └──       goto #4
+  0 4 ─       goto #5
+  0 5 ─ %10 = Core.tuple(%7)::Tuple{Float64}
+  0 └──       return %10
 \end{minted}
 
 
 
-The output is a \texttt{Vector\{Int\}} holding the estimated cost of each statement in \texttt{ci.code}.  Note that \texttt{ci} includes the consequences of inlining callees, and consequently the costs do too.
+The line costs are in the left column. This includes the consequences of inlining and other forms of optimization.
 
 
 
@@ -6121,7 +6191,7 @@ The output is a \texttt{Vector\{Int\}} holding the estimated cost of each statem
 
 
 
-Beginning in Julia 0.7, parts of the compiler use a new \href{https://en.wikipedia.org/wiki/Static\_single\_assignment\_form}{SSA-form} intermediate representation. Historically, the compiler used to directly generate LLVM IR, from a lowered form of the Julia AST. This form had most syntactic abstractions removed, but still looked a lot like an abstract syntax tree. Over time, in order to facilitate optimizations, SSA values were introduced to this IR and the IR was linearized (i.e. a form where function arguments may only be SSA values or constants). However, non-SSA values (slots) remained in the IR due to the lack of Phi nodes in the IR (necessary for back-edges and re-merging of conditional control flow), negating much of the usefulfulness of the SSA form representation to perform middle end optimizations. Some heroic effort was put into making these optimizations work without a complete SSA form representation, but the lack of such a representation ultimately proved prohibitive.
+Beginning in Julia 0.7, parts of the compiler use a new \href{https://en.wikipedia.org/wiki/Static\_single\_assignment\_form}{SSA-form} intermediate representation. Historically, the compiler would directly generate LLVM IR from a lowered form of the Julia AST. This form had most syntactic abstractions removed, but still looked a lot like an abstract syntax tree. Over time, in order to facilitate optimizations, SSA values were introduced to this IR and the IR was linearized (i.e. turned into a form where function arguments could only be SSA values or constants). However, non-SSA values (slots) remained in the IR due to the lack of Phi nodes in the IR (necessary for back-edges and re-merging of conditional control flow). This negated much of the usefulness of SSA form representation when performing middle end optimizations. Some heroic effort was put into making these optimizations work without a complete SSA form representation, but the lack of such a representation ultimately proved prohibitive.
 
 
 
@@ -6206,7 +6276,7 @@ Pi nodes are generally ignored in the interpreter, since they don{\textquotesing
 
 
 
-Exception handling complicates the SSA story moderately, because exception handling introduces additional control flow edges into the IR across which values must be tracked. One approach to do so, which is followed by LLVM is to make calls which may throw exceptions into basic block terminators and add an explicit control flow edge to the catch handler:
+Exception handling complicates the SSA story moderately, because exception handling introduces additional control flow edges into the IR across which values must be tracked. One approach to do so, which is followed by LLVM, is to make calls which may throw exceptions into basic block terminators and add an explicit control flow edge to the catch handler:
 
 
 
@@ -6223,7 +6293,11 @@ catch:
 
 
 
-However, this is problematic in a language like julia where at the start of the optimization pipeline, we do not know which calls throw. We would have to conservatively assume that every call (which in julia is every statement) throws. This would have several negative effects. On the one hand, it would essentially recuce the scope of every basic block to a single call, defeating the purpose of having operations be performed at the basic block level. On the other hand, every catch basic block would have \texttt{n*m} phi node arguments (\texttt{n}, the number of statements in the critical region, \texttt{m} the number of live values through the catch block). To work around this, we use a combination of \texttt{Upsilon} and \texttt{PhiC} (the C standing for \texttt{catch}, written \texttt{φᶜ} in the IR pretty printer, because unicode subscript c is not available) nodes. There are several ways to think of these nodes, but perhaps the easiest is to think of each \texttt{PhiC} as a load from a unique store-many, read-once slot, with \texttt{Upsilon} being the corresponding store operation. The \texttt{PhiC} has an operand list of all the upsilon nodes that store to its implicit slot. The \texttt{Upsilon} nodes however, do not record which \texttt{PhiC} node they store to. This is done for more natural integration with the rest of the SSA IR. E.g. if there are no more uses of a \texttt{PhiC} node, it is safe to delete it, and the same is true of an \texttt{Upsilon} node. In most IR passes, \texttt{PhiC} nodes can be treated like \texttt{Phi} nodes. One can follow use-def chains through them, and they can be lifted to new \texttt{PhiC} nodes and new \texttt{Upsilon} nodes (in the same places as the original \texttt{Upsilon} nodes). The result of this scheme is that the number of \texttt{Upsilon} nodes (and \texttt{PhiC} arguments) is proportional to the number of assigned values to a particular variable (before SSA conversion), rather than the number of statements in the critical region.
+However, this is problematic in a language like Julia, where at the start of the optimization pipeline, we do not know which calls throw. We would have to conservatively assume that every call (which in Julia is every statement) throws. This would have several negative effects. On the one hand, it would essentially reduce the scope of every basic block to a single call, defeating the purpose of having operations be performed at the basic block level. On the other hand, every catch basic block would have \texttt{n*m} phi node arguments (\texttt{n}, the number of statements in the critical region, \texttt{m} the number of live values through the catch block).
+
+
+
+To work around this, we use a combination of \texttt{Upsilon} and \texttt{PhiC} nodes (the C standing for \texttt{catch}, written \texttt{φᶜ} in the IR pretty printer, because unicode subscript c is not available). There are several ways to think of these nodes, but perhaps the easiest is to think of each \texttt{PhiC} as a load from a unique store-many, read-once slot, with \texttt{Upsilon} being the corresponding store operation. The \texttt{PhiC} has an operand list of all the upsilon nodes that store to its implicit slot. The \texttt{Upsilon} nodes however, do not record which \texttt{PhiC} node they store to. This is done for more natural integration with the rest of the SSA IR. E.g. if there are no more uses of a \texttt{PhiC} node, it is safe to delete it, and the same is true of an \texttt{Upsilon} node. In most IR passes, \texttt{PhiC} nodes can be treated like \texttt{Phi} nodes. One can follow use-def chains through them, and they can be lifted to new \texttt{PhiC} nodes and new \texttt{Upsilon} nodes (in the same places as the original \texttt{Upsilon} nodes). The result of this scheme is that the number of \texttt{Upsilon} nodes (and \texttt{PhiC} arguments) is proportional to the number of assigned values to a particular variable (before SSA conversion), rather than the number of statements in the critical region.
 
 
 
@@ -6270,7 +6344,7 @@ The corresponding IR (with irrelevant types stripped) is:
 └──       $(Expr(:unreachable))::Union{}
 4 ┄ %13 = φᶜ (%3, %6, %9)::Bool
 │   %14 = φᶜ (%4, %7, %10)::Core.Compiler.MaybeUndef(Int64)
-│   %15 = φᶜ (%5)::Core.Compiler.Const(1, false)
+│   %15 = φᶜ (%5)::Core.Const(1)
 └──       $(Expr(:leave, 1))
 5 ─       $(Expr(:pop_exception, :(%2)))::Any
 │         $(Expr(:throw_undef_if_not, :y, :(%13)))::Any
@@ -6300,7 +6374,7 @@ Instead, we do the following:
 
 
 \begin{itemize}
-\item We keep a separate buffer of nodes to insert (including the position to insert them at, the type of the corresponding value and the node itself). These nodes are numbered by their occurrence in the insertion buffer, allowing their values to be immediately used elesewhere in the IR (i.e. if there are 12 statements in the original statement list, the first new statement will be accessible as \texttt{SSAValue(13)}).
+\item We keep a separate buffer of nodes to insert (including the position to insert them at, the type of the corresponding value and the node itself). These nodes are numbered by their occurrence in the insertion buffer, allowing their values to be immediately used elsewhere in the IR (i.e. if there are 12 statements in the original statement list, the first new statement will be accessible as \texttt{SSAValue(13)}).
 
 
 \item RAUW style operations are performed by setting the corresponding statement index to the replacement value.
@@ -6761,6 +6835,9 @@ If you{\textquotesingle}ve been directed to this page, find the symptom that bes
 
 \item \hyperlink{15906783386188107842}{Errors during Julia startup}
 
+
+\item \hyperlink{9648352711765890842}{Other generic segfaults or unreachables reached}
+
 \end{itemize}
 
 
@@ -6779,15 +6856,16 @@ No matter the error, we will always need to know what version of Julia you are r
 \begin{minted}{jlcon}
 julia> using InteractiveUtils
 
+
 julia> versioninfo()
-Julia Version 1.4.2
-Commit 44fa15b150* (2020-05-23 18:35 UTC)
+Julia Version 1.8.0-DEV.1223
+Commit 2d472c633d* (2022-01-06 07:43 UTC)
 Platform Info:
   OS: Windows (x86_64-w64-mingw32)
-  CPU: Intel(R) Core(TM) i7-5600U CPU @ 2.60GHz
+  CPU: Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz
   WORD_SIZE: 64
   LIBM: libopenlibm
-  LLVM: libLLVM-8.0.1 (ORCJIT, broadwell)
+  LLVM: libLLVM-12.0.1 (ORCJIT, skylake)
 \end{minted}
 
 
@@ -6912,6 +6990,39 @@ $ dtruss -f julia
 
 
 Create a \href{https://gist.github.com}{gist} with the \texttt{strace}/ \texttt{dtruss} output, the \hyperlink{4601189142062189569}{version info}, and any other pertinent information and open a new \href{https://github.com/JuliaLang/julia/issues?q=is\%3Aopen}{issue} on Github with a link to the gist.
+
+
+
+\hypertarget{15486738137712275027}{}
+
+
+\subsection{Other generic segfaults or unreachables reached}
+
+
+
+As mentioned elsewhere, \texttt{julia} has good integration with \texttt{rr} for generating traces; this includes, on Linux, the ability to automatically run \texttt{julia} under \texttt{rr} and share the trace after a crash. This can be immensely helpful when debugging such crashes and is strongly encouraged when reporting crash issues to the JuliaLang/julia repo. To run \texttt{julia} under \texttt{rr} automatically, do:
+
+
+
+
+\begin{minted}{julia}
+julia --bug-report=rr
+\end{minted}
+
+
+
+To generate the \texttt{rr} trace locally, but not share, you can do:
+
+
+
+
+\begin{minted}{julia}
+julia --bug-report=rr-local
+\end{minted}
+
+
+
+Note that this is only works on Linux. The blog post on \href{https://julialang.org/blog/2020/05/rr/}{Time Travelling Bug Reporting} has many more details.
 
 
 
@@ -7144,7 +7255,7 @@ Since this function is used for every call, you will make everything 1000x slowe
 
 
 
-Julia requires a few signal to function property. The profiler uses \texttt{SIGUSR2} for sampling and the garbage collector uses \texttt{SIGSEGV} for threads synchronization. If you are debugging some code that uses the profiler or multiple threads, you may want to let the debugger ignore these signals since they can be triggered very often during normal operations. The command to do this in GDB is (replace \texttt{SIGSEGV} with \texttt{SIGUSRS} or other signals you want to ignore):
+Julia requires a few signals to function properly. The profiler uses \texttt{SIGUSR2} for sampling and the garbage collector uses \texttt{SIGSEGV} for threads synchronization. If you are debugging some code that uses the profiler or multiple threads, you may want to let the debugger ignore these signals since they can be triggered very often during normal operations. The command to do this in GDB is (replace \texttt{SIGSEGV} with \texttt{SIGUSR2} or other signals you want to ignore):
 
 
 
@@ -7330,7 +7441,7 @@ Then run a script/command to start precompilation. As described earlier, use con
 
 
 
-Julia now works out of the box with \href{http://rr-project.org/}{rr}, the lightweight recording and deterministic debugging framework from Mozilla. This allows you to replay the trace of an execution deterministically.  The replayed execution{\textquotesingle}s address spaces, register contents, syscall data etc are exactly the same in every run.
+Julia now works out of the box with \href{https://rr-project.org/}{rr}, the lightweight recording and deterministic debugging framework from Mozilla. This allows you to replay the trace of an execution deterministically.  The replayed execution{\textquotesingle}s address spaces, register contents, syscall data etc are exactly the same in every run.
 
 
 
@@ -7356,7 +7467,7 @@ rr simulates a single-threaded machine by default. In order to debug concurrent 
 
 
 
-\href{http://valgrind.org/}{Valgrind} is a tool for memory debugging, memory leak detection, and profiling.  This section describes things to keep in mind when using Valgrind to debug memory issues with Julia.
+\href{https://valgrind.org/}{Valgrind} is a tool for memory debugging, memory leak detection, and profiling.  This section describes things to keep in mind when using Valgrind to debug memory issues with Julia.
 
 
 
@@ -7386,6 +7497,10 @@ Another thing to note: if your program uses multiple workers processes, it is li
 
 
 
+Yet another thing to note: if using \texttt{valgrind} errors with \texttt{Unable to find compatible target in system image}, try rebuilding the sysimage with target \texttt{generic} or julia with \texttt{JULIA\_CPU\_TARGET=generic}.
+
+
+
 \hypertarget{9183907630008953484}{}
 
 
@@ -7393,7 +7508,7 @@ Another thing to note: if your program uses multiple workers processes, it is li
 
 
 
-Valgrind will typically display spurious warnings as it runs.  To reduce the number of such warnings, it helps to provide a \href{http://valgrind.org/docs/manual/manual-core.html\#manual-core.suppress}{suppressions file} to Valgrind.  A sample suppressions file is included in the Julia source distribution at \texttt{contrib/valgrind-julia.supp}.
+Valgrind will typically display spurious warnings as it runs.  To reduce the number of such warnings, it helps to provide a \href{https://valgrind.org/docs/manual/manual-core.html\#manual-core.suppress}{suppressions file} to Valgrind.  A sample suppressions file is included in the Julia source distribution at \texttt{contrib/valgrind-julia.supp}.
 
 
 
@@ -7463,11 +7578,40 @@ In general, if after setting \texttt{--smc-check=all-non-file} you find that you
 
 
 
-Using Clang{\textquotesingle}s sanitizers obviously require you to use Clang (\texttt{USECLANG=1}), but there{\textquotesingle}s another catch: most sanitizers require a run-time library, provided by the host compiler, while the instrumented code generated by Julia{\textquotesingle}s JIT relies on functionality from that library. This implies that the LLVM version of your host compiler matches that of the LLVM library used within Julia.
+Using Clang{\textquotesingle}s sanitizers obviously requires you to use Clang (\texttt{USECLANG=1}), but there{\textquotesingle}s another catch: most sanitizers require a run-time library, provided by the host compiler, while the instrumented code generated by Julia{\textquotesingle}s JIT relies on functionality from that library. This implies that the LLVM version of your host compiler must match that of the LLVM library used within Julia.
 
 
 
-An easy solution is to have an dedicated build folder for providing a matching toolchain, by building with \texttt{BUILD\_LLVM\_CLANG=1}. You can then refer to this toolchain from another build folder by specifying \texttt{USECLANG=1} while overriding the \texttt{CC} and \texttt{CXX} variables.
+An easy solution is to have a dedicated build folder for providing a matching toolchain, by building with \texttt{BUILD\_LLVM\_CLANG=1}. You can then refer to this toolchain from another build folder by specifying \texttt{USECLANG=1} while overriding the \texttt{CC} and \texttt{CXX} variables.
+
+
+
+The sanitizers error out when they detect a shared library being opened using \texttt{RTLD\_DEEPBIND} (ref: \href{https://github.com/google/sanitizers/issues/611}{google/sanitizers\#611}). Since \href{https://github.com/staticfloat/libblastrampoline}{libblastrampoline} by default uses \texttt{RTLD\_DEEPBIND}, we need to set the environment variable \texttt{LBT\_USE\_RTLD\_DEEPBIND=0} when using a sanitizer.
+
+
+
+To use one of of the sanitizers set \texttt{SANITIZE=1} and then the appropriate flag for the sanitizer you want to use.
+
+
+
+On macOS, this might need some extra flags also to work. Altogether, it might look like this, plus one or more of the \texttt{SANITIZE\_*} flags listed below:
+
+
+
+
+\begin{lstlisting}
+make -C deps USE_BINARYBUILDER_LLVM=0 LLVM_VER=svn stage-llvm
+
+make -C src SANITIZE=1 USECLANG=1 \
+    CC=~+/deps/scratch/llvm-svn/build_Release/bin/clang \
+    CXX=~+/deps/scratch/llvm-svn/build_Release/bin/clang++ \
+    CPPFLAGS="-isysroot $(xcode-select -p)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk" \
+    CXXFLAGS="-isystem $(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"
+\end{lstlisting}
+
+
+
+(or put these into your \texttt{Make.user}, so you don{\textquotesingle}t need to remember them every time).
 
 
 
@@ -7478,11 +7622,112 @@ An easy solution is to have an dedicated build folder for providing a matching t
 
 
 
-For detecting or debugging memory bugs, you can use Clang{\textquotesingle}s \href{http://clang.llvm.org/docs/AddressSanitizer.html}{address sanitizer (ASAN)}. By compiling with \texttt{SANITIZE=1} you enable ASAN for the Julia compiler and its generated code. In addition, you can specify \texttt{LLVM\_SANITIZE=1} to sanitize the LLVM library as well. Note that these options incur a high performance and memory cost. For example, using ASAN for Julia and LLVM makes \texttt{testall1} takes 8-10 times as long while using 20 times as much memory (this can be reduced to respectively a factor of 3 and 4 by using the options described below).
+For detecting or debugging memory bugs, you can use Clang{\textquotesingle}s \href{https://clang.llvm.org/docs/AddressSanitizer.html}{address sanitizer (ASAN)}. By compiling with \texttt{SANITIZE\_ADDRESS=1} you enable ASAN for the Julia compiler and its generated code. In addition, you can specify \texttt{LLVM\_SANITIZE=1} to sanitize the LLVM library as well. Note that these options incur a high performance and memory cost. For example, using ASAN for Julia and LLVM makes \texttt{testall1} take 8-10 times as long while using 20 times as much memory (this can be reduced to respectively a factor of 3 and 4 by using the options described below).
 
 
 
 By default, Julia sets the \texttt{allow\_user\_segv\_handler=1} ASAN flag, which is required for signal delivery to work properly. You can define other options using the \texttt{ASAN\_OPTIONS} environment flag, in which case you{\textquotesingle}ll need to repeat the default option mentioned before. For example, memory usage can be reduced by specifying \texttt{fast\_unwind\_on\_malloc=0} and \texttt{malloc\_context\_size=2}, at the cost of backtrace accuracy. For now, Julia also sets \texttt{detect\_leaks=0}, but this should be removed in the future.
+
+
+
+\hypertarget{3406286911383043950}{}
+
+
+\subsubsection{Example setup}
+
+
+
+\hypertarget{442822451198415909}{}
+
+
+\paragraph{Step 1: Install toolchain}
+
+
+
+Checkout a Git worktree (or create out-of-tree build directory) at \texttt{\$TOOLCHAIN\_WORKTREE} and create a config file \texttt{\$TOOLCHAIN\_WORKTREE/Make.user} with
+
+
+
+
+\begin{lstlisting}
+USE_BINARYBUILDER_LLVM=1
+BUILD_LLVM_CLANG=1
+\end{lstlisting}
+
+
+
+Run:
+
+
+
+
+\begin{lstlisting}
+cd $TOOLCHAIN_WORKTREE
+make -C deps install-llvm install-clang install-llvm-tools
+\end{lstlisting}
+
+
+
+to install toolchain binaries in \texttt{\$TOOLCHAIN\_WORKTREE/usr/tools}
+
+
+
+\hypertarget{11712997947190658584}{}
+
+
+\paragraph{Step 2: Build Julia with ASAN}
+
+
+
+Checkout a Git worktree (or create out-of-tree build directory) at \texttt{\$BUILD\_WORKTREE} and create a config file \texttt{\$BUILD\_WORKTREE/Make.user} with
+
+
+
+
+\begin{lstlisting}
+TOOLCHAIN=$(TOOLCHAIN_WORKTREE)/usr/tools
+
+# use our new toolchain
+USECLANG=1
+override CC=$(TOOLCHAIN)/clang
+override CXX=$(TOOLCHAIN)/clang++
+export ASAN_SYMBOLIZER_PATH=$(TOOLCHAIN)/llvm-symbolizer
+
+USE_BINARYBUILDER_LLVM=1
+
+override SANITIZE=1
+override SANITIZE_ADDRESS=1
+
+# make the GC use regular malloc/frees, which are hooked by ASAN
+override WITH_GC_DEBUG_ENV=1
+
+# default to a debug build for better line number reporting
+override JULIA_BUILD_MODE=debug
+
+# make ASAN consume less memory
+export ASAN_OPTIONS=detect_leaks=0:fast_unwind_on_malloc=0:allow_user_segv_handler=1:malloc_context_size=2
+
+JULIA_PRECOMPILE=1
+
+# tell libblastrampoline to not use RTLD_DEEPBIND
+export LBT_USE_RTLD_DEEPBIND=0
+\end{lstlisting}
+
+
+
+Run:
+
+
+
+
+\begin{lstlisting}
+cd $BUILD_WORKTREE
+make debug
+\end{lstlisting}
+
+
+
+to build \texttt{julia-debug} with ASAN.
 
 
 
@@ -7493,8 +7738,2128 @@ By default, Julia sets the \texttt{allow\_user\_segv\_handler=1} ASAN flag, whic
 
 
 
-For detecting use of uninitialized memory, you can use Clang{\textquotesingle}s \href{http://clang.llvm.org/docs/MemorySanitizer.html}{memory sanitizer (MSAN)} by compiling with \texttt{SANITIZE\_MEMORY=1}.
+For detecting use of uninitialized memory, you can use Clang{\textquotesingle}s \href{https://clang.llvm.org/docs/MemorySanitizer.html}{memory sanitizer (MSAN)} by compiling with \texttt{SANITIZE\_MEMORY=1}.
 
 
 
-\hypertarget{8961334306702327363}{}
+\hypertarget{14311970646292028418}{}
+
+
+\subsection{Thread Sanitizer (TSAN)}
+
+
+
+For debugging data-races and other threading related issues you can use Clang{\textquotesingle}s \href{https://clang.llvm.org/docs/ThreadSanitizer.html}{thread sanitizer (TSAN)} by compiling with \texttt{SANITIZE\_THREAD=1}.
+
+
+
+\hypertarget{4644242585410635176}{}
+
+
+\section{Instrumenting Julia with DTrace, and bpftrace}
+
+
+
+DTrace and bpftrace are tools that enable lightweight instrumentation of processes. You can turn the instrumentation on and off while the process is running, and with instrumentation off the overhead is minimal.
+
+
+
+\begin{quote}
+\textbf{Julia 1.8}
+
+Support for probes was added in Julia 1.8
+
+\end{quote}
+
+
+\begin{quote}
+\textbf{Note}
+
+This documentation has been written from a Linux perspective, most of this should hold on Mac OS/Darwin and FreeBSD.
+
+\end{quote}
+
+
+\hypertarget{10219409411331572644}{}
+
+
+\subsection{Enabling support}
+
+
+
+On Linux install the \texttt{systemtap} package that has a version of \texttt{dtrace}.
+
+
+
+
+\begin{lstlisting}
+WITH_DTRACE=1
+\end{lstlisting}
+
+
+
+\hypertarget{9303790172260158252}{}
+
+
+\subsubsection{Verifying}
+
+
+
+
+\begin{lstlisting}
+> readelf -n usr/lib/libjulia-internal.so.1
+
+Displaying notes found in: .note.gnu.build-id
+  Owner                Data size 	Description
+  GNU                  0x00000014	NT_GNU_BUILD_ID (unique build ID bitstring)
+    Build ID: 57161002f35548772a87418d2385c284ceb3ead8
+
+Displaying notes found in: .note.stapsdt
+  Owner                Data size 	Description
+  stapsdt              0x00000029	NT_STAPSDT (SystemTap probe descriptors)
+    Provider: julia
+    Name: gc__begin
+    Location: 0x000000000013213e, Base: 0x00000000002bb4da, Semaphore: 0x0000000000346cac
+    Arguments:
+  stapsdt              0x00000032	NT_STAPSDT (SystemTap probe descriptors)
+    Provider: julia
+    Name: gc__stop_the_world
+    Location: 0x0000000000132144, Base: 0x00000000002bb4da, Semaphore: 0x0000000000346cae
+    Arguments:
+  stapsdt              0x00000027	NT_STAPSDT (SystemTap probe descriptors)
+    Provider: julia
+    Name: gc__end
+    Location: 0x000000000013214a, Base: 0x00000000002bb4da, Semaphore: 0x0000000000346cb0
+    Arguments:
+  stapsdt              0x0000002d	NT_STAPSDT (SystemTap probe descriptors)
+    Provider: julia
+    Name: gc__finalizer
+    Location: 0x0000000000132150, Base: 0x00000000002bb4da, Semaphore: 0x0000000000346cb2
+    Arguments:
+\end{lstlisting}
+
+
+
+\hypertarget{11396479853674722935}{}
+
+
+\subsection{Adding probes in libjulia}
+
+
+
+Probes are declared in dtraces format in the file \texttt{src/uprobes.d}. The generated header file is included in \texttt{src/julia\_internal.h} and if you add probes you should provide a noop implementation there.
+
+
+
+The header will contain a semaphore \texttt{*\_ENABLED} and the actual call to the probe. If the probe arguments are expensive to compute you should first check if the probe is enabled and then compute the arguments and call the probe.
+
+
+
+
+\begin{lstlisting}
+  if (JL_PROBE_{PROBE}_ENABLED())
+    auto expensive_arg = ...;
+    JL_PROBE_{PROBE}(expensive_arg);
+\end{lstlisting}
+
+
+
+If your probe has no arguments it is preferred to not include the semaphore check. With USDT probes enabled the cost of a semaphore is a memory load, irrespective of the fact that the probe is enabled or not.
+
+
+
+
+\begin{lstlisting}
+#define JL_PROBE_GC_BEGIN_ENABLED() __builtin_expect (julia_gc__begin_semaphore, 0)
+__extension__ extern unsigned short julia_gc__begin_semaphore __attribute__ ((unused)) __attribute__ ((section (".probes")));
+\end{lstlisting}
+
+
+
+Whereas the probe itself is a noop sled that will be patched to a trampoline to the probe handler.
+
+
+
+\hypertarget{5986924530124409558}{}
+
+
+\subsection{Available probes}
+
+
+
+\hypertarget{15347650561970213123}{}
+
+
+\subsubsection{GC probes}
+
+
+
+\begin{itemize}
+\item[1. ] \texttt{julia:gc\_\_begin}: GC begins running on one thread and triggers stop-the-world.
+
+
+\item[2. ] \texttt{julia:gc\_\_stop\_the\_world}: All threads have reached a safepoint and GC runs.
+
+
+\item[3. ] \texttt{julia:gc\_\_mark\_\_begin}: Beginning the mark phase
+
+
+\item[4. ] \texttt{julia:gc\_\_mark\_end(scanned\_bytes, perm\_scanned)}: Mark phase ended
+
+
+\item[5. ] \texttt{julia:gc\_\_sweep\_begin(full)}: Starting sweep
+
+
+\item[6. ] \texttt{julia:gc\_\_sweep\_end()}: Sweep phase finished
+
+
+\item[7. ] \texttt{julia:gc\_\_end}: GC is finished, other threads continue work
+
+
+\item[8. ] \texttt{julia:gc\_\_finalizer}: Initial GC thread has finished running finalizers
+
+\end{itemize}
+
+
+\hypertarget{2953811662478296787}{}
+
+
+\paragraph{GC stop-the-world latency}
+
+
+
+An example \texttt{bpftrace} script is given in \texttt{contrib/gc\_stop\_the\_world\_latency.bt} and it creates a histogram of the latency for all threads to reach a safepoint.
+
+
+
+Running this Julia code, with \texttt{julia -t 2}
+
+
+
+
+\begin{lstlisting}
+using Base.Threads
+
+fib(x) = x <= 1 ? 1 : fib(x-1) + fib(x-2)
+
+beaver = @spawn begin
+    while true
+        fib(30)
+        # This safepoint is necessary until #41616, since otherwise this
+        # loop will never yield to GC.
+        GC.safepoint()
+    end
+end
+
+allocator = @spawn begin
+    while true
+        zeros(1024)
+    end
+end
+
+wait(allocator)
+\end{lstlisting}
+
+
+
+and in a second terminal
+
+
+
+
+\begin{lstlisting}
+> sudo contrib/bpftrace/gc_stop_the_world_latency.bt
+Attaching 4 probes...
+Tracing Julia GC Stop-The-World Latency... Hit Ctrl-C to end.
+^C
+
+
+@usecs[1743412]:
+[4, 8)               971 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[8, 16)              837 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        |
+[16, 32)             129 |@@@@@@                                              |
+[32, 64)              10 |                                                    |
+[64, 128)              1 |                                                    |
+\end{lstlisting}
+
+
+
+We can see the latency distribution of the stop-the-world phase in the executed Julia process.
+
+
+
+\hypertarget{8894559035613839694}{}
+
+
+\subsection{Notes on using \texttt{bpftrace}}
+
+
+
+An example probe in the bpftrace format looks like:
+
+
+
+
+\begin{lstlisting}
+usdt:usr/lib/libjulia-internal.so:julia:gc__begin
+{
+	@start[pid] = nsecs;
+}
+\end{lstlisting}
+
+
+
+The probe declaration takes the kind \texttt{usdt}, then either the path to the library or the PID, the provider name \texttt{julia} and the probe name \texttt{gc\_\_begin}. Note that I am using a relative path to the \texttt{libjulia-internal.so}, but this might need to be an absolute path on a production system.
+
+
+
+\hypertarget{17401464672027654977}{}
+
+
+\subsection{Useful references:}
+
+
+
+\begin{itemize}
+\item \href{https://jvns.ca/blog/2017/07/05/linux-tracing-systems}{Julia Evans blog on Linux tracing systems}
+
+
+\item \href{https://lwn.net/Articles/753601/}{LWN article on USDT and BPF}
+
+
+\item \href{https://sourceware.org/gdb/onlinedocs/gdb/Static-Probe-Points.html}{GDB support for probes}
+
+
+\item \href{https://www.brendangregg.com/linuxperf.html}{Brendan Gregg – Linux Performance}
+
+\end{itemize}
+
+
+\chapter{Building Julia}
+
+
+\hypertarget{16968142636188277999}{}
+
+
+\section{Building Julia (Detailed)}
+
+
+
+\hypertarget{18173005634014884273}{}
+
+
+\subsection{Downloading the Julia source code}
+
+
+
+If you are behind a firewall, you may need to use the \texttt{https} protocol instead of the \texttt{git} protocol:
+
+
+
+
+\begin{lstlisting}
+git config --global url."https://".insteadOf git://
+\end{lstlisting}
+
+
+
+Be sure to also configure your system to use the appropriate proxy settings, e.g. by setting the \texttt{https\_proxy} and \texttt{http\_proxy} variables.
+
+
+
+\hypertarget{9756497403871169155}{}
+
+
+\subsection{Building Julia}
+
+
+
+When compiled the first time, the build will automatically download pre-built \href{\#required-build-tools-and-external-libraries}{external dependencies}. If you prefer to build all the dependencies on your own, or are building on a system that cannot access the network during the build process, add the following in \texttt{Make.user}:
+
+
+
+
+\begin{lstlisting}
+USE_BINARYBUILDER=0
+\end{lstlisting}
+
+
+
+Building Julia requires 5GiB if building all dependencies and approximately 4GiB of virtual memory.
+
+
+
+To perform a parallel build, use \texttt{make -j N} and supply the maximum number of concurrent processes. If the defaults in the build do not work for you, and you need to set specific make parameters, you can save them in \texttt{Make.user}, and place the file in the root of your Julia source. The build will automatically check for the existence of \texttt{Make.user} and use it if it exists.
+
+
+
+You can create out-of-tree builds of Julia by specifying \texttt{make O=<build-directory> configure} on the command line. This will create a directory mirror, with all of the necessary Makefiles to build Julia, in the specified directory. These builds will share the source files in Julia and \texttt{deps/srccache}. Each out-of-tree build directory can have its own \texttt{Make.user} file to override the global \texttt{Make.user} file in the top-level folder.
+
+
+
+If everything works correctly, you will see a Julia banner and an interactive prompt into which you can enter expressions for evaluation. (Errors related to libraries might be caused by old, incompatible libraries sitting around in your PATH. In this case, try moving the \texttt{julia} directory earlier in the PATH). Note that most of the instructions above apply to unix systems.
+
+
+
+To run julia from anywhere you can:
+
+
+
+\begin{itemize}
+\item add an alias (in \texttt{bash}: \texttt{echo {\textquotedbl}alias julia={\textquotesingle}/path/to/install/folder/bin/julia{\textquotesingle}{\textquotedbl} >> {\textasciitilde}/.bashrc \&\& source {\textasciitilde}/.bashrc}), or
+
+
+\item add a soft link to the \texttt{julia} executable in the \texttt{julia} directory to \texttt{/usr/local/bin} (or any suitable directory already in your path), or
+
+
+\item add the \texttt{julia} directory to your executable path for this shell session (in \texttt{bash}: \texttt{export PATH={\textquotedbl}\$(pwd):\$PATH{\textquotedbl}} ; in \texttt{csh} or \texttt{tcsh}:
+
+\end{itemize}
+
+
+\texttt{set path= ( \$path \$cwd )} ), or
+
+
+
+\begin{itemize}
+\item add the \texttt{julia} directory to your executable path permanently (e.g. in \texttt{.bash\_profile}), or
+
+
+\item write \texttt{prefix=/path/to/install/folder} into \texttt{Make.user} and then run \texttt{make install}. If there is a version of Julia already installed in this folder, you should delete it before running \texttt{make install}.
+
+\end{itemize}
+
+
+Now you should be able to run Julia like this:
+
+
+
+
+\begin{lstlisting}
+julia
+\end{lstlisting}
+
+
+
+If you are building a Julia package for distribution on Linux, macOS, or Windows, take a look at the detailed notes in \href{https://github.com/JuliaLang/julia/blob/master/doc/src/devdocs/build/distributing.md}{distributing.md}.
+
+
+
+\hypertarget{10318125723095277293}{}
+
+
+\subsection{Updating an existing source tree}
+
+
+
+If you have previously downloaded \texttt{julia} using \texttt{git clone}, you can update the existing source tree using \texttt{git pull} rather than starting anew:
+
+
+
+
+\begin{lstlisting}
+cd julia
+git pull && make
+\end{lstlisting}
+
+
+
+Assuming that you had made no changes to the source tree that will conflict with upstream updates, these commands will trigger a build to update to the latest version.
+
+
+
+\hypertarget{10270356017395204247}{}
+
+
+\subsection{General troubleshooting}
+
+
+
+\begin{itemize}
+\item[1. ] Over time, the base library may accumulate enough changes such that the bootstrapping process in building the system image will fail. If this happens, the build may fail with an error like
+
+
+\begin{lstlisting}
+ *** This error is usually fixed by running 'make clean'. If the error persists, try 'make cleanall' ***
+\end{lstlisting}
+
+As described, running \texttt{make clean \&\& make} is usually sufficient. Occasionally, the stronger cleanup done by \texttt{make cleanall} is needed.
+
+
+\item[2. ] New versions of external dependencies may be introduced which may occasionally cause conflicts with existing builds of older versions.
+
+a. Special \texttt{make} targets exist to help wipe the existing build of a    dependency. For example, \texttt{make -C deps clean-llvm} will clean out the    existing build of \texttt{llvm} so that \texttt{llvm} will be rebuilt from the    downloaded source distribution the next time \texttt{make} is called.    \texttt{make -C deps distclean-llvm} is a stronger wipe which will also delete    the downloaded source distribution, ensuring that a fresh copy of the    source distribution will be downloaded and that any new patches will be    applied the next time \texttt{make} is called.
+
+b. To delete existing binaries of \texttt{julia} and all its dependencies,    delete the \texttt{./usr} directory \emph{in the source tree}.
+
+
+\item[3. ] If you{\textquotesingle}ve updated macOS recently, be sure to run \texttt{xcode-select --install} to update the command line tools. Otherwise, you could run into errors for missing headers and libraries, such as \texttt{ld: library not found for -lcrt1.10.6.o}.
+
+
+\item[4. ] If you{\textquotesingle}ve moved the source directory, you might get errors such as  \texttt{CMake Error: The current CMakeCache.txt directory ... is different than the directory ... where     CMakeCache.txt was created.}, in which case you may delete the offending dependency under \texttt{deps}
+
+
+\item[5. ] In extreme cases, you may wish to reset the source tree to a pristine state. The following git commands may be helpful:
+
+
+\begin{lstlisting}
+ git reset --hard #Forcibly remove any changes to any files under version control
+ git clean -x -f -d #Forcibly remove any file or directory not under version control
+\end{lstlisting}
+
+\emph{To avoid losing work, make sure you know what these commands do before you run them. \texttt{git} will not be able to undo these changes!}
+
+\end{itemize}
+
+
+\hypertarget{12302666080168492498}{}
+
+
+\subsection{Platform-Specific Notes}
+
+
+
+Notes for various operating systems:
+
+
+
+\begin{itemize}
+\item \href{https://github.com/JuliaLang/julia/blob/master/doc/src/devdocs/build/linux.md}{Linux}
+
+
+\item \href{https://github.com/JuliaLang/julia/blob/master/doc/src/devdocs/build/macos.md}{macOS}
+
+
+\item \href{https://github.com/JuliaLang/julia/blob/master/doc/src/devdocs/build/windows.md}{Windows}
+
+
+\item \href{https://github.com/JuliaLang/julia/blob/master/doc/src/devdocs/build/freebsd.md}{FreeBSD}
+
+\end{itemize}
+
+
+Notes for various architectures:
+
+
+
+\begin{itemize}
+\item \href{https://github.com/JuliaLang/julia/blob/master/doc/src/devdocs/build/arm.md}{ARM}
+
+\end{itemize}
+
+
+\hypertarget{13972737225468149107}{}
+
+
+\subsection{Required Build Tools and External Libraries}
+
+
+
+Building Julia requires that the following software be installed:
+
+
+
+\begin{itemize}
+\item \textbf{[GNU make]}                — building dependencies.
+
+
+\item \textbf{[gcc \& g++][gcc]} (>= 5.1) or \textbf{[Clang][clang]} (>= 3.5, >= 6.0 for Apple Clang) — compiling and linking C, C++.
+
+
+\item \textbf{[libatomic][gcc]}          — provided by \textbf{[gcc]} and needed to support atomic operations.
+
+
+\item \textbf{[python]} (>=2.7)          — needed to build LLVM.
+
+
+\item \textbf{[gfortran]}                — compiling and linking Fortran libraries.
+
+
+\item \textbf{[perl]}                    — preprocessing of header files of libraries.
+
+
+\item \textbf{[wget]}, \textbf{[curl]}, or \textbf{[fetch]} (FreeBSD) — to automatically download external libraries.
+
+
+\item \textbf{[m4]}                      — needed to build GMP.
+
+
+\item \textbf{[awk]}                     — helper tool for Makefiles.
+
+
+\item \textbf{[patch]}                   — for modifying source code.
+
+
+\item \textbf{[cmake]} (>= 3.4.3)        — needed to build \texttt{libgit2}.
+
+
+\item \textbf{[pkg-config]}              — needed to build \texttt{libgit2} correctly, especially for proxy support.
+
+
+\item \textbf{[powershell]} (>= 3.0)     — necessary only on Windows.
+
+
+\item \textbf{[which]}                   — needed for checking build dependencies.
+
+\end{itemize}
+
+
+On Debian-based distributions (e.g. Ubuntu), you can easily install them with \texttt{apt-get}:
+
+
+
+
+\begin{lstlisting}
+sudo apt-get install build-essential libatomic1 python gfortran perl wget m4 cmake pkg-config curl
+\end{lstlisting}
+
+
+
+Julia uses the following external libraries, which are automatically downloaded (or in a few cases, included in the Julia source repository) and then compiled from source the first time you run \texttt{make}. The specific version numbers of these libraries that Julia uses are listed in \href{https://github.com/JuliaLang/julia/blob/master/deps/Versions.make}{\texttt{deps/Versions.make}}:
+
+
+
+\begin{itemize}
+\item \textbf{[LLVM]} (9.0 + \href{https://github.com/JuliaLang/julia/tree/master/deps/patches}{patches}) — compiler infrastructure (see \href{\#llvm}{note below}).
+
+
+\item \textbf{[FemtoLisp]}            — packaged with Julia source, and used to implement the compiler front-end.
+
+
+\item \textbf{[libuv]}  (custom fork) — portable, high-performance event-based I/O library.
+
+
+\item \textbf{[OpenLibm]}             — portable libm library containing elementary math functions.
+
+
+\item \textbf{[DSFMT]}                — fast Mersenne Twister pseudorandom number generator library.
+
+
+\item \textbf{[OpenBLAS]}             — fast, open, and maintained [basic linear algebra subprograms (BLAS)]
+
+
+\item \textbf{[LAPACK]}               — library of linear algebra routines for solving systems of simultaneous linear equations, least-squares solutions of linear systems of equations, eigenvalue problems, and singular value problems.
+
+
+\item \textbf{[MKL]} (optional)       – OpenBLAS and LAPACK may be replaced by Intel{\textquotesingle}s MKL library.
+
+
+\item \textbf{[SuiteSparse]}          — library of linear algebra routines for sparse matrices.
+
+
+\item \textbf{[PCRE]}                 — Perl-compatible regular expressions library.
+
+
+\item \textbf{[GMP]}                  — GNU multiple precision arithmetic library, needed for \texttt{BigInt} support.
+
+
+\item \textbf{[MPFR]}                 — GNU multiple precision floating point library, needed for arbitrary precision floating point (\texttt{BigFloat}) support.
+
+
+\item \textbf{[libgit2]}              — Git linkable library, used by Julia{\textquotesingle}s package manager.
+
+
+\item \textbf{[curl]}                 — libcurl provides download and proxy support.
+
+
+\item \textbf{[libssh2]}              — library for SSH transport, used by libgit2 for packages with SSH remotes.
+
+
+\item \textbf{[mbedtls]}              — library used for cryptography and transport layer security, used by libssh2
+
+
+\item \textbf{[utf8proc]}             — a library for processing UTF-8 encoded Unicode strings.
+
+
+\item \textbf{[LLVM libunwind]}       — LLVM{\textquotesingle}s fork of [libunwind], a library that determines the call-chain of a program.
+
+\end{itemize}
+
+
+[GNU make]:     https://www.gnu.org/software/make [patch]:        https://www.gnu.org/software/patch [wget]:         https://www.gnu.org/software/wget [m4]:           https://www.gnu.org/software/m4 [awk]:          https://www.gnu.org/software/gawk [gcc]:          https://gcc.gnu.org [clang]:        https://clang.llvm.org [python]:       https://www.python.org/ [gfortran]:     https://gcc.gnu.org/fortran/ [curl]:         https://curl.haxx.se [fetch]:        https://www.freebsd.org/cgi/man.cgi?fetch(1) [perl]:         https://www.perl.org [cmake]:        https://www.cmake.org [OpenLibm]:     https://github.com/JuliaLang/openlibm [DSFMT]:        https://github.com/MersenneTwister-Lab/dSFMT [OpenBLAS]:     https://github.com/xianyi/OpenBLAS [LAPACK]:       https://www.netlib.org/lapack [MKL]:          https://software.intel.com/en-us/articles/intel-mkl [SuiteSparse]:  https://people.engr.tamu.edu/davis/suitesparse.html [PCRE]:         https://www.pcre.org [LLVM]:         https://www.llvm.org [LLVM libunwind]: https://github.com/llvm/llvm-project/tree/main/libunwind [FemtoLisp]:    https://github.com/JeffBezanson/femtolisp [GMP]:          https://gmplib.org [MPFR]:         https://www.mpfr.org [libuv]:        https://github.com/JuliaLang/libuv [libgit2]:      https://libgit2.org/ [utf8proc]:     https://julialang.org/utf8proc/ [libunwind]:    https://www.nongnu.org/libunwind [libssh2]:      https://www.libssh2.org [mbedtls]:      https://tls.mbed.org/ [pkg-config]:   https://www.freedesktop.org/wiki/Software/pkg-config/ [powershell]:   https://docs.microsoft.com/en-us/powershell/scripting/wmf/overview [which]:        https://carlowood.github.io/which/
+
+
+
+\hypertarget{14428860566813867056}{}
+
+
+\subsection{Build dependencies}
+
+
+
+If you already have one or more of these packages installed on your system, you can prevent Julia from compiling duplicates of these libraries by passing \texttt{USE\_SYSTEM\_...=1} to \texttt{make} or adding the line to \texttt{Make.user}. The complete list of possible flags can be found in \texttt{Make.inc}.
+
+
+
+Please be aware that this procedure is not officially supported, as it introduces additional variability into the installation and versioning of the dependencies, and is recommended only for system package maintainers. Unexpected compile errors may result, as the build system will do no further checking to ensure the proper packages are installed.
+
+
+
+\hypertarget{2251940844893656958}{}
+
+
+\subsubsection{LLVM}
+
+
+
+The most complicated dependency is LLVM, for which we require additional patches from upstream (LLVM is not backward compatible).
+
+
+
+For packaging Julia with LLVM, we recommend either:
+
+
+
+\begin{itemize}
+\item bundling a Julia-only LLVM library inside the Julia package, or
+
+
+\item adding the patches to the LLVM package of the distribution.
+
+\begin{itemize}
+\item A complete list of patches is available in \texttt{deps/llvm.mk}, and the patches themselves are in \texttt{deps/patches/}.
+
+
+\item The only Julia-specific patch is the lib renaming (\texttt{llvm-symver-jlprefix.patch}), which should \emph{not} be applied to a system LLVM.
+
+
+\item The remaining patches are all upstream bug fixes, and have been contributed into upstream LLVM.
+
+\end{itemize}
+\end{itemize}
+
+
+Using an unpatched or different version of LLVM will result in errors and/or poor performance. Though Julia can be built with newer LLVM versions, support for this should be regarded as experimental and not suitable for packaging.
+
+
+
+\hypertarget{4646697391847551863}{}
+
+
+\subsubsection{libuv}
+
+
+
+Julia uses a custom fork of libuv. It is a small dependency, and can be safely bundled in the same package as Julia, and will not conflict with the system library. Julia builds should \emph{not} try to use the system libuv.
+
+
+
+\hypertarget{16914034871400552403}{}
+
+
+\subsubsection{BLAS and LAPACK}
+
+
+
+As a high-performance numerical language, Julia should be linked to a multi-threaded BLAS and LAPACK, such as OpenBLAS or ATLAS, which will provide much better performance than the reference \texttt{libblas} implementations which may be default on some systems.
+
+
+
+\hypertarget{14353796440229471494}{}
+
+
+\subsection{Source distributions of releases}
+
+
+
+Each pre-release and release of Julia has a {\textquotedbl}full{\textquotedbl} source distribution and a {\textquotedbl}light{\textquotedbl} source distribution.
+
+
+
+The full source distribution contains the source code for Julia and all dependencies so that it can be built from source without an internet connection. The light source distribution does not include the source code of dependencies.
+
+
+
+For example, \texttt{julia-1.0.0.tar.gz} is the light source distribution for the \texttt{v1.0.0} release of Julia, while \texttt{julia-1.0.0-full.tar.gz} is the full source distribution.
+
+
+
+\hypertarget{12404192935650271562}{}
+
+
+\subsection{Building Julia from source with a Git checkout of a stdlib}
+
+
+
+If you need to build Julia from source with a Git checkout of a stdlib, then use \texttt{make DEPS\_GIT=NAME\_OF\_STDLIB} when building Julia.
+
+
+
+For example, if you need to build Julia from source with a Git checkout of Pkg, then use \texttt{make DEPS\_GIT=Pkg} when building Julia. The \texttt{Pkg} repo is in \texttt{stdlib/Pkg}, and created initially with a detached \texttt{HEAD}. If you{\textquotesingle}re doing this from a pre-existing Julia repository, you may need to \texttt{make clean} beforehand.
+
+
+
+If you need to build Julia from source with Git checkouts of more than one stdlib, then \texttt{DEPS\_GIT} should be a space-separated list of the stdlib names. For example, if you need to build Julia from source with a Git checkout of Pkg, Tar, and Downloads, then use \texttt{make DEPS\_GIT={\textquotesingle}Pkg Tar Downloads{\textquotesingle}} when building Julia.
+
+
+
+\hypertarget{17775253147870272772}{}
+
+
+\section{Linux}
+
+
+
+\begin{itemize}
+\item GCC version 4.7 or later is required to build Julia.
+
+
+\item To use external shared libraries not in the system library search path, set \texttt{USE\_SYSTEM\_XXX=1} and \texttt{LDFLAGS=-Wl,-rpath,/path/to/dir/contains/libXXX.so} in \texttt{Make.user}.
+
+
+\item Instead of setting \texttt{LDFLAGS}, putting the library directory into the environment variable \texttt{LD\_LIBRARY\_PATH} (at both compile and run time) also works.
+
+
+\item The \texttt{USE\_SYSTEM\_*} flags should be used with caution. These are meant only for troubleshooting, porting, and packaging, where package maintainers work closely with the Julia developers to make sure that Julia is built correctly. Production use cases should use the officially provided binaries. Issues arising from the use of these flags will generally not be accepted.
+
+
+\item See also the \hyperlink{4364585969841474105}{external dependencies}.
+
+\end{itemize}
+
+
+\hypertarget{7684914430795515278}{}
+
+
+\subsection{Architecture Customization}
+
+
+
+Julia can be built for a non-generic architecture by configuring the \texttt{ARCH} Makefile variable in a \texttt{Make.user} file. See the appropriate section of \texttt{Make.inc} for additional customization options, such as \texttt{MARCH} and \texttt{JULIA\_CPU\_TARGET}.
+
+
+
+For example, to build for Pentium 4, set \texttt{MARCH=pentium4} and install the necessary system libraries for linking. On Ubuntu, these may include lib32gfortran-6-dev, lib32gcc1, and lib32stdc++6, among others.
+
+
+
+You can also set \texttt{MARCH=native} in \texttt{Make.user} for a maximum-performance build customized for the current machine CPU.
+
+
+
+\hypertarget{15149557091365000286}{}
+
+
+\subsection{Linux Build Troubleshooting}
+
+
+
+
+\begin{table}[h]
+
+\begin{tabulary}{\linewidth}{|R|R|}
+\hline
+Problem & Possible Solution \\
+\hline
+OpenBLAS build failure & Set one of the following build options in \texttt{Make.user} and build again: <ul><li> \texttt{OPENBLAS\_TARGET\_ARCH=BARCELONA} (AMD CPUs) or \texttt{OPENBLAS\_TARGET\_ARCH=NEHALEM} (Intel CPUs)<ul>Set \texttt{OPENBLAS\_DYNAMIC\_ARCH = 0} to disable compiling multiple architectures in a single binary.</ul></li><li> \texttt{OPENBLAS\_NO\_AVX2 = 1} disables AVX2 instructions, allowing OpenBLAS to compile with \texttt{OPENBLAS\_DYNAMIC\_ARCH = 1} using old versions of binutils </li><li> \texttt{USE\_SYSTEM\_BLAS=1} uses the system provided \texttt{libblas} <ul><li>Set \texttt{LIBBLAS=-lopenblas} and \texttt{LIBBLASNAME=libopenblas} to force the use of the system provided OpenBLAS when multiple BLAS versions are installed. </li></ul></li></ul><p> If you get an error that looks like \texttt{../kernel/x86\_64/dgemm\_kernel\_4x4\_haswell.S:1709: Error: no such instruction: `vpermpd \$ 0xb1,\%ymm0,\%ymm0{\textquotesingle}}, then you need to set \texttt{OPENBLAS\_DYNAMIC\_ARCH = 0} or \texttt{OPENBLAS\_NO\_AVX2 = 1}, or you need a newer version of \texttt{binutils} (2.18 or newer). (\href{https://github.com/JuliaLang/julia/issues/7653}{Issue \#7653})</p><p> If the linker cannot find \texttt{gfortran} and you get an error like \texttt{julia /usr/bin/x86\_64-linux-gnu-ld: cannot find -lgfortran}, check the path with \texttt{gfortran -print-file-name=libgfortran.so} and use the output to export something similar to this: \texttt{export LDFLAGS=-L/usr/lib/gcc/x86\_64-linux-gnu/8/}. See \href{https://github.com/JuliaLang/julia/issues/6150\#issuecomment-37546803}{Issue \#6150}.</p> \\
+\hline
+Illegal Instruction error & Check if your CPU supports AVX while your OS does not (e.g. through virtualization, as described in \href{https://github.com/JuliaLang/julia/issues/3263}{this issue}). \\
+\hline
+\end{tabulary}
+
+\end{table}
+
+
+
+\hypertarget{12383401899447558259}{}
+
+
+\section{macOS}
+
+
+
+You need to have the current Xcode command line utilities installed: run \texttt{xcode-select --install} in the terminal. You will need to rerun this terminal command after each macOS update, otherwise you may run into errors involving missing libraries or headers.
+
+
+
+The dependent libraries are now built with \href{https://binarybuilder.org}{BinaryBuilder} and will be automatically downloaded. This is the preferred way to build Julia source. In case you want to build them all on your own, you will need a 64-bit gfortran to compile Julia dependencies.
+
+
+
+
+\begin{lstlisting}
+brew install gcc
+\end{lstlisting}
+
+
+
+If you have set \texttt{LD\_LIBRARY\_PATH} or \texttt{DYLD\_LIBRARY\_PATH} in your \texttt{.bashrc} or equivalent, Julia may be unable to find various libraries that come bundled with it. These environment variables need to be unset for Julia to work.
+
+
+
+\hypertarget{16271249808016261018}{}
+
+
+\section{Windows}
+
+
+
+This file describes how to install, or build, and use Julia on Windows.
+
+
+
+For more general information about Julia, please see the \href{https://github.com/JuliaLang/julia/blob/master/README.md}{main README} or the \href{https://docs.julialang.org}{documentation}.
+
+
+
+\hypertarget{9379381249768363825}{}
+
+
+\subsection{General Information for Windows}
+
+
+
+We highly recommend running Julia using a modern terminal application, in particular Windows Terminal, which can be installed from the \href{https://aka.ms/terminal}{Microsoft Store}.
+
+
+
+\hypertarget{14641683579495570257}{}
+
+
+\subsubsection{Line endings}
+
+
+
+Julia uses binary-mode files exclusively. Unlike many other Windows programs, if you write \texttt{{\textbackslash}n} to a file, you get a \texttt{{\textbackslash}n} in the file, not some other bit pattern. This matches the behavior exhibited by other operating systems. If you have installed Git for Windows, it is suggested, but not required, that you configure your system Git to use the same convention:
+
+
+
+
+\begin{lstlisting}
+git config --global core.eol lf
+git config --global core.autocrlf input
+\end{lstlisting}
+
+
+
+or edit \texttt{\%USERPROFILE\%{\textbackslash}.gitconfig} and add/edit the lines:
+
+
+
+
+\begin{lstlisting}
+[core]
+    eol = lf
+    autocrlf = input
+\end{lstlisting}
+
+
+
+\hypertarget{14077789474605882353}{}
+
+
+\subsection{Binary distribution}
+
+
+
+For the binary distribution installation notes on Windows please see the instructions at \href{https://julialang.org/downloads/platform/\#windows}{https://julialang.org/downloads/platform/\#windows}.
+
+
+
+\hypertarget{11651987673758849221}{}
+
+
+\subsection{Source distribution}
+
+
+
+\hypertarget{7881402461160500543}{}
+
+
+\subsubsection{Cygwin-to-MinGW cross-compiling}
+
+
+
+The recommended way of compiling Julia from source on Windows is by cross compiling from \href{https://www.cygwin.com}{Cygwin}, using versions of the MinGW-w64 compilers available through Cygwin{\textquotesingle}s package manager.
+
+
+
+\begin{itemize}
+\item[1. ] Download and run Cygwin setup for \href{https://cygwin.com/setup-x86.exe}{32 bit} or \href{https://cygwin.com/setup-x86\_64.exe}{64 bit}. Note, that you can compile either 32 or 64 bit Julia from either 32 or 64 bit Cygwin. 64 bit Cygwin has a slightly smaller but often more up-to-date selection of packages.
+
+Advanced: you may skip steps 2-4 by running:
+
+
+\begin{lstlisting}
+setup-x86_64.exe -s <url> -q -P cmake,gcc-g++,git,make,patch,curl,m4,python3,p7zip,mingw64-i686-gcc-g++,mingw64-i686-gcc-fortran,mingw64-x86_64-gcc-g++,mingw64-x86_64-gcc-fortran
+:: replace <url> with a site from https://cygwin.com/mirrors.html
+:: or run setup manually first and select a mirror
+\end{lstlisting}
+
+
+\item[2. ] Select installation location and download mirror.
+
+
+\item[3. ] At the {\textquotesingle}\emph{Select Packages{\textquotesingle}} step, select the following:
+
+\begin{itemize}
+\item[1. ] From the \emph{Devel} category: \texttt{cmake}, \texttt{gcc-g++}, \texttt{git}, \texttt{make}, \texttt{patch}
+
+
+\item[2. ] From the \emph{Net} category: \texttt{curl}
+
+
+\item[3. ] From \emph{Interpreters} (or \emph{Python}) category: \texttt{m4}, \texttt{python3}
+
+
+\item[4. ] From the \emph{Archive} category: \texttt{p7zip}
+
+
+\item[5. ] For 32 bit Julia, and also from the \emph{Devel} category:  \texttt{mingw64-i686-gcc-g++} and \texttt{mingw64-i686-gcc-fortran}
+
+
+\item[6. ] For 64 bit Julia, and also from the \emph{Devel} category:  \texttt{mingw64-x86\_64-gcc-g++} and \texttt{mingw64-x86\_64-gcc-fortran}
+
+\end{itemize}
+
+\item[4. ] At the \emph{{\textquotesingle}Resolving Dependencies{\textquotesingle}} step, be sure to leave \emph{{\textquotesingle}Select required packages (RECOMMENDED){\textquotesingle}} enabled.
+
+
+\item[5. ] Allow Cygwin installation to finish, then start from the installed shortcut a \emph{{\textquotesingle}Cygwin Terminal{\textquotesingle}}, or \emph{{\textquotesingle}Cygwin64 Terminal{\textquotesingle}}, respectively.
+
+
+\item[6. ] Build Julia and its dependencies from source:
+
+\begin{itemize}
+\item[1. ] Get the Julia sources
+
+
+\begin{lstlisting}
+git clone https://github.com/JuliaLang/julia.git
+cd julia
+\end{lstlisting}
+
+Tip: If you get an \texttt{error: cannot fork() for fetch-pack: Resource temporarily unavailable} from git, add \texttt{alias git={\textquotedbl}env PATH=/usr/bin git{\textquotedbl}} to \texttt{{\textasciitilde}/.bashrc} and restart Cygwin.
+
+
+\item[2. ] Set the \texttt{XC\_HOST} variable in \texttt{Make.user} to indicate MinGW-w64 cross compilation
+
+
+\begin{lstlisting}
+echo 'XC_HOST = i686-w64-mingw32' > Make.user     # for 32 bit Julia
+# or
+echo 'XC_HOST = x86_64-w64-mingw32' > Make.user   # for 64 bit Julia
+\end{lstlisting}
+
+
+\item[3. ] Start the build
+
+
+\begin{lstlisting}
+make -j 4   # Adjust the number of threads (4) to match your build environment.
+\end{lstlisting}
+
+\end{itemize}
+\end{itemize}
+
+
+
+\begin{lstlisting}
+> Protip: build both!
+> ```sh
+> make O=julia-win32 configure
+> make O=julia-win64 configure
+> echo 'XC_HOST = i686-w64-mingw32' > julia-win32/Make.user
+> echo 'XC_HOST = x86_64-w64-mingw32' > julia-win64/Make.user
+> echo 'ifeq ($(BUILDROOT),$(JULIAHOME))
+>         $(error "in-tree build disabled")
+>       endif' >> Make.user
+> make -C julia-win32  # build for Windows x86 in julia-win32 folder
+> make -C julia-win64  # build for Windows x86-64 in julia-win64 folder
+> ```
+\end{lstlisting}
+
+
+
+\begin{itemize}
+\item[7. ] Run Julia using the Julia executables directly
+
+
+\begin{lstlisting}
+usr/bin/julia.exe
+usr/bin/julia-debug.exe
+\end{lstlisting}
+
+\end{itemize}
+
+
+\hypertarget{5433981816410773170}{}
+
+
+\subsubsection{Compiling with MinGW/MSYS2}
+
+
+
+Compiling Julia from source using \href{https://msys2.github.io}{MSYS2} has worked in the past but is not actively supported. Pull requests to restore support would be welcome. See a \href{https://github.com/JuliaLang/julia/blob/v0.6.0/README.windows.md}{past version of this file} for the former instructions for compiling using MSYS2.
+
+
+
+\hypertarget{16470279549755078624}{}
+
+
+\subsubsection{Cross-compiling from Unix (Linux/Mac/WSL)}
+
+
+
+You can also use MinGW-w64 cross compilers to build a Windows version of Julia from Linux, Mac, or the Windows Subsystem for Linux (WSL).
+
+
+
+First, you will need to ensure your system has the required dependencies. We need wine (>=1.7.5), a system compiler, and some downloaders. Note: a cygwin install might interfere with this method if using WSL.
+
+
+
+\textbf{On Ubuntu} (on other Linux systems the dependency names are likely to be similar):
+
+
+
+
+\begin{lstlisting}
+apt-get install wine-stable gcc wget p7zip-full winbind mingw-w64 gfortran-mingw-w64
+dpkg --add-architecture i386 && apt-get update && apt-get install wine32 # add sudo to each if needed
+# switch all of the following to their "-posix" variants (interactively):
+for pkg in i686-w64-mingw32-g++ i686-w64-mingw32-gcc i686-w64-mingw32-gfortran x86_64-w64-mingw32-g++ x86_64-w64-mingw32-gcc x86_64-w64-mingw32-gfortran; do sudo update-alternatives --config $pkg; done
+\end{lstlisting}
+
+
+
+\textbf{On Mac}: Install XCode, XCode command line tools, X11 (now \href{https://www.xquartz.org/}{XQuartz}), and \href{https://www.macports.org/install.php}{MacPorts} or \href{https://brew.sh/}{Homebrew}.  Then run \texttt{port install wine wget mingw-w64}, or \texttt{brew install wine wget mingw-w64}, as appropriate.
+
+
+
+\textbf{Then run the build:}
+
+
+
+\begin{itemize}
+\item[1. ] \texttt{git clone https://github.com/JuliaLang/julia.git julia-win32}
+
+
+\item[2. ] \texttt{cd julia-win32}
+
+
+\item[3. ] \texttt{echo override XC\_HOST = i686-w64-mingw32 >> Make.user}
+
+
+\item[4. ] \texttt{make}
+
+
+\item[5. ] \texttt{make win-extras} (Necessary before running \texttt{make binary-dist})
+
+
+\item[6. ] \texttt{make binary-dist} then \texttt{make exe} to create the Windows installer.
+
+
+\item[7. ] move the \texttt{julia-*.exe} installer to the target machine
+
+\end{itemize}
+
+
+If you are building for 64-bit windows, the steps are essentially the same. Just replace \texttt{i686} in \texttt{XC\_HOST} with \texttt{x86\_64}. (note: on Mac, wine only runs in 32-bit mode).
+
+
+
+\hypertarget{18405518002992942783}{}
+
+
+\subsection{Debugging a cross-compiled build under wine}
+
+
+
+The most effective way to debug a cross-compiled version of Julia on the cross-compilation host is to install a windows version of gdb and run it under wine as usual. The pre-built packages available \href{https://sourceforge.net/projects/msys2/files/REPOS/MINGW/}{as part of the MSYS2 project} are known to work. Apart from the GDB package you may also need the python and termcap packages. Finally, GDB{\textquotesingle}s prompt may not work when launch from the command line. This can be worked around by prepending \texttt{wineconsole} to the regular GDB invocation.
+
+
+
+\hypertarget{10640396420501361633}{}
+
+
+\subsection{After compiling}
+
+
+
+Compiling using one of the options above creates a basic Julia build, but not some extra components that are included if you run the full Julia binary installer. If you need these components, the easiest way to get them is to build the installer yourself using \texttt{make win-extras} followed by \texttt{make binary-dist} and \texttt{make exe}. Then running the resulting installer.
+
+
+
+\hypertarget{10585766524694478249}{}
+
+
+\subsection{Windows Build Debugging}
+
+
+
+\hypertarget{12675452062080563616}{}
+
+
+\subsubsection{GDB hangs with cygwin mintty}
+
+
+
+\begin{itemize}
+\item Run gdb under the windows console (cmd) instead. gdb \href{https://www.cygwin.com/ml/cygwin/2009-02/msg00531.html}{may not function properly} under mintty with non- cygwin applications. You can use \texttt{cmd /c start} to start the windows console from mintty if necessary.
+
+\end{itemize}
+
+
+\hypertarget{8856415863446835392}{}
+
+
+\subsubsection{GDB not attaching to the right process}
+
+
+
+\begin{itemize}
+\item Use the PID from the windows task manager or \texttt{WINPID} from the \texttt{ps} command instead of the PID from unix style command line tools (e.g. \texttt{pgrep}).  You may need to add the PID column if it is not shown by default in the windows task manager.
+
+\end{itemize}
+
+
+\hypertarget{8463982529066496058}{}
+
+
+\subsubsection{GDB not showing the right backtrace}
+
+
+
+\begin{itemize}
+\item When attaching to the julia process, GDB may not be attaching to the right thread.  Use \texttt{info threads} command to show all the threads and \texttt{thread <threadno>} to switch threads.
+
+
+\item Be sure to use a 32 bit version of GDB to debug a 32 bit build of Julia, or a 64 bit version of GDB to debug a 64 bit build of Julia.
+
+\end{itemize}
+
+
+\hypertarget{8099613672189184632}{}
+
+
+\subsubsection{Build process is slow/eats memory/hangs my computer}
+
+
+
+\begin{itemize}
+\item Disable the Windows \href{https://en.wikipedia.org/wiki/Windows\_Vista\_I/O\_technologies\#SuperFetch}{Superfetch} and \href{https://blogs.msdn.com/b/cjacks/archive/2011/11/22/managing-the-windows-7-program-compatibility-assistant-pca.aspx}{Program Compatibility Assistant} services, as they are known to have \href{https://cygwin.com/ml/cygwin/2011-12/msg00058.html}{spurious interactions} with MinGW/Cygwin.
+
+As mentioned in the link above: excessive memory use by \texttt{svchost} specifically may be investigated in the Task Manager by clicking on the high-memory \texttt{svchost.exe} process and selecting \texttt{Go to Services}. Disable child services one-by-one until a culprit is found.
+
+
+\item Beware of \href{https://cygwin.com/faq/faq.html\#faq.using.bloda}{BLODA}. The \href{https://technet.microsoft.com/en-us/sysinternals/dd535533.aspx}{vmmap} tool is indispensable for identifying such software conflicts. Use vmmap to inspect the list of loaded DLLs for bash, mintty, or another persistent process used to drive the build. Essentially \emph{any} DLL outside of the Windows System directory is potential BLODA.
+
+\end{itemize}
+
+
+\hypertarget{3581420464307357684}{}
+
+
+\section{FreeBSD}
+
+
+
+Clang is the default compiler on FreeBSD 11.0-RELEASE and above. The remaining build tools are available from the Ports Collection, and can be installed using \texttt{pkg install git gcc gmake cmake pkgconf}. To build Julia, simply run \texttt{gmake}. (Note that \texttt{gmake} must be used rather than \texttt{make}, since \texttt{make} on FreeBSD corresponds to the incompatible BSD Make rather than GNU Make.)
+
+
+
+As mentioned above, it is important to note that the \texttt{USE\_SYSTEM\_*} flags should be used with caution on FreeBSD. This is because many system libraries, and even libraries from the Ports Collection, link to the system{\textquotesingle}s \texttt{libgcc\_s.so.1}, or to another library which links to the system \texttt{libgcc\_s}. This library declares its GCC version to be 4.6, which is too old to build Julia, and conflicts with other libraries when linking. Thus it is highly recommended to simply allow Julia to build all of its dependencies. If you do choose to use the \texttt{USE\_SYSTEM\_*} flags, note that \texttt{/usr/local} is not on the compiler path by default, so you may need to add \texttt{LDFLAGS=-L/usr/local/lib} and \texttt{CPPFLAGS=-I/usr/local/include} to your \texttt{Make.user}, though doing so may interfere with other dependencies.
+
+
+
+Note that the x86 architecture does not support threading due to lack of compiler runtime library support, so you may need to set \texttt{JULIA\_THREADS=0} in your \texttt{Make.user} if you{\textquotesingle}re on a 32-bit system.
+
+
+
+\hypertarget{7093051588243331933}{}
+
+
+\section{ARM (Linux)}
+
+
+
+Julia fully supports ARMv8 (AArch64) processors, and supports ARMv7 and ARMv6 (AArch32) with some caveats. This file provides general guidelines for compilation, in addition to instructions for specific devices.
+
+
+
+A list of \href{https://github.com/JuliaLang/julia/labels/arm}{known issues} for ARM is available. If you encounter difficulties, please create an issue including the output from \texttt{cat /proc/cpuinfo}.
+
+
+
+\hypertarget{6625901791414385042}{}
+
+
+\subsection{32-bit (ARMv6, ARMv7)}
+
+
+
+Julia has been successfully compiled on several variants of the following ARMv6 \& ARMv7 devices:
+
+
+
+\begin{itemize}
+\item ARMv7 / Cortex A15 Samsung Chromebooks running Ubuntu Linux under Crouton;
+
+
+\item \href{https://www.raspberrypi.org}{Raspberry Pi}.
+
+
+\item \href{https://www.hardkernel.com}{Odroid}.
+
+\end{itemize}
+
+
+Julia requires at least the \texttt{armv6} and \texttt{vfpv2} instruction sets. It{\textquotesingle}s recommended to use  \texttt{armv7-a}. \texttt{armv5} or soft float are not supported.
+
+
+
+\hypertarget{10466379612209245112}{}
+
+
+\subsubsection{Raspberry Pi 1 / Raspberry Pi Zero}
+
+
+
+If the type of ARM CPU used in the Raspberry Pi is not detected by LLVM, then explicitly set the CPU target by adding the following to \texttt{Make.user}:
+
+
+
+
+\begin{lstlisting}
+JULIA_CPU_TARGET=arm1176jzf-s
+\end{lstlisting}
+
+
+
+To complete the build, you may need to increase the swap file size. To do so, edit \texttt{/etc/dphys-swapfile}, changing the line:
+
+
+
+
+\begin{lstlisting}
+CONF_SWAPSIZE=100
+\end{lstlisting}
+
+
+
+to:
+
+
+
+
+\begin{lstlisting}
+CONF_SWAPSIZE=512
+\end{lstlisting}
+
+
+
+before restarting the swapfile service:
+
+
+
+
+\begin{lstlisting}
+sudo /etc/init.d/dphys-swapfile stop
+sudo /etc/init.d/dphys-swapfile start
+\end{lstlisting}
+
+
+
+\hypertarget{17980381388168105915}{}
+
+
+\subsubsection{Raspberry Pi 2}
+
+
+
+The type of ARM CPU used in the Raspberry Pi 2 is not detected by LLVM. Explicitly set the CPU target by adding the following to \texttt{Make.user}:
+
+
+
+\texttt{JULIA\_CPU\_TARGET=cortex-a7}
+
+
+
+Depending on the exact compiler and distribution, there might be a build failure due to unsupported inline assembly. In that case, add \texttt{MCPU=armv7-a} to \texttt{Make.user}.
+
+
+
+\hypertarget{17302249718319781638}{}
+
+
+\subsection{AArch64 (ARMv8)}
+
+
+
+Julia has been successfully built on the following ARMv8 devices:
+
+
+
+\begin{itemize}
+\item \href{https://www.nvidia.com/object/embedded-systems-dev-kits-modules.html}{nVidia Jetson TX1 \& TX2};
+
+
+\item \href{https://www.apm.com/products/data-center/x-gene-family/x-gene/}{X-Gene 1};
+
+
+\item \href{https://softiron.com/products/overdrive-3000/}{Overdrive 3000};
+
+
+\item \href{https://www.cavium.com/ThunderX\_ARM\_Processors.html}{Cavium ThunderX} on \href{https://www.packet.net}{packet.net}.
+
+\end{itemize}
+
+
+Compilation on \texttt{ARMv8-A} requires that \texttt{Make.user} is configured as follows:
+
+
+
+
+\begin{lstlisting}
+MCPU=armv8-a
+\end{lstlisting}
+
+
+
+\hypertarget{1712927129164502401}{}
+
+
+\subsubsection{nVidia Jetson TX2}
+
+
+
+Julia builds and runs on the \href{https://www.nvidia.com/object/embedded-systems-dev-kits-modules.html}{nVidia Jetson TX2} platform with minimal configuration changes.
+
+
+
+After configuring \texttt{Make.user} as per the \texttt{AArch64} instructions in this document, follow the general \href{https://github.com/JuliaLang/julia/blob/master/README.md}{build instructions}. The majority of the build dependencies specified in the instructions are installed by the default configuration flashed by \href{https://developer.nvidia.com/embedded/jetpack}{Jetpack 3.0}. The remaining tools can be installed by issuing the following command:
+
+
+
+
+\begin{lstlisting}
+sudo apt-get install gfortran wget cmake
+\end{lstlisting}
+
+
+
+A full parallel build, including LLVM, will complete in around two hours. All tests pass and CUDA functionality is available through, e.g., \href{https://github.com/JuliaGPU/CUDAdrv.jl}{CUDAdrv}.
+
+
+
+\hypertarget{10368093425134318336}{}
+
+
+\section{Binary distributions}
+
+
+
+These notes are for those wishing to compile a binary distribution of Julia for distribution on various platforms.  We love users spreading Julia as far and wide as they can, trying it out on as wide an array of operating systems and hardware configurations as possible.  As each platform has specific gotchas and processes that must be followed in order to create a portable, working Julia distribution, we have separated most of the notes by OS.
+
+
+
+Note that while the code for Julia is \href{https://github.com/JuliaLang/julia/blob/master/LICENSE.md}{MIT-licensed, with a few exceptions}, the distribution created by the techniques described herein will be GPL licensed, as various dependent libraries such as \texttt{SuiteSparse} are GPL licensed. We do hope to have a non-GPL distribution of Julia in the future.
+
+
+
+\hypertarget{10631287561622970973}{}
+
+
+\subsection{Versioning and Git}
+
+
+
+The Makefile uses both the \texttt{VERSION} file and commit hashes and tags from the git repository to generate the \texttt{base/version\_git.jl} with information we use to fill the splash screen and the \texttt{versioninfo()} output. If you for some reason don{\textquotesingle}t want to have the git repository available when building you should pregenerate the \texttt{base/version\_git.jl} file with:
+
+
+
+
+\begin{lstlisting}
+make -C base version_git.jl.phony
+\end{lstlisting}
+
+
+
+Julia has lots of build dependencies where we use patched versions that has not yet been included by the popular package managers. These dependencies will usually be automatically downloaded when you build, but if you want to be able to build Julia on a computer without internet access you should create a full-source-dist archive with the special make target
+
+
+
+
+\begin{lstlisting}
+make full-source-dist
+\end{lstlisting}
+
+
+
+that creates a julia-version-commit.tar.gz archive with all required dependencies.
+
+
+
+When compiling a tagged release in the git repository, we don{\textquotesingle}t display the branch/commit hash info in the splash screen. You can use this line to show a release description of up to 45 characters. To set this line you have to create a Make.user file containing:
+
+
+
+
+\begin{lstlisting}
+override TAGGED_RELEASE_BANNER = "my-package-repository build"
+\end{lstlisting}
+
+
+
+\hypertarget{15292951791170792274}{}
+
+
+\subsection{Target Architectures}
+
+
+
+By default, Julia optimizes its system image to the native architecture of the build machine. This is usually not what you want when building packages, as it will make Julia fail at startup on any machine with incompatible CPUs (in particular older ones with more restricted instruction sets).
+
+
+
+We therefore recommend that you pass the \texttt{MARCH} variable when calling \texttt{make}, setting it to the baseline target you intend to support. This will determine the target CPU for both the Julia executable and libraries, and the system image (the latter can also be set using \texttt{JULIA\_CPU\_TARGET}). Typically useful values for x86 CPUs are \texttt{x86-64} and \texttt{core2} (for 64-bit builds) and \texttt{pentium4} (for 32-bit builds). Unfortunately, CPUs older than Pentium 4 are currently not supported (see \href{https://github.com/JuliaLang/julia/issues/7185}{this issue}).
+
+
+
+The full list of CPU targets supported by LLVM can be obtained by running \texttt{llc -mattr=help}.
+
+
+
+\hypertarget{17775253147870272772}{}
+
+
+\subsection{Linux}
+
+
+
+On Linux, \texttt{make binary-dist} creates a tarball that contains a fully functional Julia installation. If you wish to create a distribution package such as a \texttt{.deb}, or \texttt{.rpm}, some extra effort is needed. See the \href{https://github.com/staticfloat/julia-debian}{julia-debian} repository for an example of what metadata is needed for creating \texttt{.deb} packages for Debian and Ubuntu-based systems. See the \href{https://src.fedoraproject.org/rpms/julia}{Fedora package} for RPM-based distributions. Although we have not yet experimented with it, \href{https://wiki.debian.org/Alien}{Alien} could be used to generate Julia packages for various Linux distributions.
+
+
+
+Julia supports overriding standard installation directories via \texttt{prefix} and other environment variables you can pass when calling \texttt{make} and \texttt{make install}. See Make.inc for their list. \texttt{DESTDIR} can also be used to force the installation into a temporary directory.
+
+
+
+By default, Julia loads \texttt{\$prefix/etc/julia/startup.jl} as an installation-wide initialization file. This file can be used by distribution managers to set up custom paths or initialization code. For Linux distribution packages, if \texttt{\$prefix} is set to \texttt{/usr}, there is no \texttt{/usr/etc} to look into. This requires the path to Julia{\textquotesingle}s private \texttt{etc} directory to be changed.  This can be done via the \texttt{sysconfdir} make variable when building.  Simply pass \texttt{sysconfdir=/etc} to \texttt{make} when building and Julia will first check \texttt{/etc/julia/startup.jl} before trying \texttt{\$prefix/etc/julia/startup.jl}.
+
+
+
+\hypertarget{1900796573592861142}{}
+
+
+\subsection{OS X}
+
+
+
+To create a binary distribution on OSX, build Julia first, then cd to \texttt{contrib/mac/app}, and run \texttt{make} with the same makevars that were used with \texttt{make} when building Julia proper.  This will then create a \texttt{.dmg} file in the \texttt{contrib/mac/app} directory holding a completely self-contained Julia.app.
+
+
+
+Alternatively, Julia may be built as a framework by invoking \texttt{make} with the \texttt{darwinframework} target and \texttt{DARWIN\_FRAMEWORK=1} set.  For example, \texttt{make DARWIN\_FRAMEWORK=1 darwinframework}.
+
+
+
+\hypertarget{16271249808016261018}{}
+
+
+\subsection{Windows}
+
+
+
+Instructions for reating a Julia distribution on Windows are described in the \href{https://github.com/JuliaLang/julia/blob/master/doc/src/devdocs/build/windows.md}{build devdocs for Windows}.
+
+
+
+\hypertarget{12663593244703205925}{}
+
+
+\subsection{Notes on BLAS and LAPACK}
+
+
+
+Julia builds OpenBLAS by default, which includes the BLAS and LAPACK libraries. On 32-bit architectures, Julia builds OpenBLAS to use 32-bit integers, while on 64-bit architectures, Julia builds OpenBLAS to use 64-bit integers (ILP64). It is essential that all Julia functions that call BLAS and LAPACK API routines use integers of the correct width.
+
+
+
+Most BLAS and LAPACK distributions provided on linux distributions, and even commercial implementations ship libraries that use 32-bit APIs. In many cases, a 64-bit API is provided as a separate library.
+
+
+
+When using vendor provided or OS provided libraries, a \texttt{make} option called \texttt{USE\_BLAS64} is available as part of the Julia build. When doing \texttt{make USE\_BLAS64=0}, Julia will call BLAS and LAPACK assuming a 32-bit API, where all integers are 32-bit wide, even on a 64-bit architecture.
+
+
+
+Other libraries that Julia uses, such as SuiteSparse also use BLAS and LAPACK internally. The APIs need to be consistent across all libraries that depend on BLAS and LAPACK. The Julia build process will build all these libraries correctly, but when overriding defaults and using system provided libraries, this consistency must be ensured.
+
+
+
+Also note that Linux distributions sometimes ship several versions of OpenBLAS, some of which enable multithreading, and others only working in a serial fashion. For example, in Fedora, \texttt{libopenblasp.so} is threaded, but \texttt{libopenblas.so} is not. We recommend using the former for optimal performance. To choose an OpenBLAS library whose name is different from the default \texttt{libopenblas.so}, pass \texttt{LIBBLAS=-l\$(YOURBLAS)} and \texttt{LIBBLASNAME=lib\$(YOURBLAS)} to \texttt{make}, replacing \texttt{\$(YOURBLAS)} with the name of your library. You can also add \texttt{.so.0} to the name of the library if you want your package to work without requiring the unversioned \texttt{.so} symlink.
+
+
+
+Finally, OpenBLAS includes its own optimized version of LAPACK. If you set \texttt{USE\_SYSTEM\_BLAS=1} and \texttt{USE\_SYSTEM\_LAPACK=1}, you should also set \texttt{LIBLAPACK=-l\$(YOURBLAS)} and \texttt{LIBLAPACKNAME=lib\$(YOURBLAS)}. Else, the reference LAPACK will be used and performance will typically be much lower.
+
+
+
+Starting with Julia 1.7, Julia uses \href{https://github.com/JuliaLinearAlgebra/libblastrampoline}{libblastrampoline} to pick a different BLAS at runtime.
+
+
+
+\hypertarget{13254364787517196998}{}
+
+
+\section{Point releasing 101}
+
+
+
+Creating a point/patch release consists of several distinct steps.
+
+
+
+\hypertarget{12357762204955987571}{}
+
+
+\subsection{Backporting commits}
+
+
+
+Some pull requests are labeled {\textquotedbl}backport pending x.y{\textquotedbl}, e.g. {\textquotedbl}backport pending 0.6{\textquotedbl}. This designates that the next subsequent release tagged from the release-x.y branch should include the commit(s) in that pull request. Once the pull request is merged into master, each of the commits should be \href{https://git-scm.com/docs/git-cherry-pick}{cherry picked} to a dedicated branch that will ultimately be merged into release-x.y.
+
+
+
+\hypertarget{4966159163932283918}{}
+
+
+\subsubsection{Creating a backports branch}
+
+
+
+First, create a new branch based on release-x.y. The typical convention for Julia branches is to prefix the branch name with your initials if it{\textquotesingle}s intended to be a personal branch. For the sake of example, we{\textquotesingle}ll say that the author of the branch is Jane Smith.
+
+
+
+
+\begin{lstlisting}
+git fetch origin
+git checkout release-x.y
+git rebase origin/release-x.y
+git checkout -b js/backport-x.y
+\end{lstlisting}
+
+
+
+This ensures that your local copy of release-x.y is up to date with origin before you create a new branch from it.
+
+
+
+\hypertarget{6792962923353110702}{}
+
+
+\subsubsection{Cherry picking commits}
+
+
+
+Now we do the actual backporting. Find all merged pull requests labeled {\textquotedbl}backport pending x.y{\textquotedbl} in the GitHub web UI. For each of these, scroll to the bottom where it says {\textquotedbl}someperson merged commit \texttt{123abc} into \texttt{master} XX minutes ago{\textquotedbl}. Note that the commit name is a link; if you click it, you{\textquotesingle}ll be shown the contents of the commit. If this page shows that \texttt{123abc} is a merge commit, go back to the PR page–-we don{\textquotesingle}t want merge commits, we want the actual commits. However, if this does not show a merge commit, it means that the PR was squash-merged. In that case, use the git SHA of the commit, listed next to commit on this page.
+
+
+
+Once you have the SHA of the commit, cherry-pick it onto the backporting branch:
+
+
+
+
+\begin{lstlisting}
+git cherry-pick -x -e <sha>
+\end{lstlisting}
+
+
+
+There may be conflicts which need to be resolved manually. Once conflicts are resolved (if applicable), add a reference to the GitHub pull request that introduced the commit in the body of the commit message.
+
+
+
+After all of the relevant commits are on the backports branch, push the branch to GitHub.
+
+
+
+\hypertarget{14599065304395472247}{}
+
+
+\subsection{Checking for performance regressions}
+
+
+
+Point releases should never introduce performance regressions. Luckily the Julia benchmarking bot, Nanosoldier, can run benchmarks against any branch, not just master. In this case we want to check the benchmark results of js/backport-x.y against release-x.y. To do this, awaken the Nanosoldier from his robotic slumber using a comment on your backporting pull request:
+
+
+
+
+\begin{lstlisting}
+@nanosoldier `runbenchmarks(ALL, vs=":release-x.y")`
+\end{lstlisting}
+
+
+
+This will run all registered benchmarks on release-x.y and js/backport-x.y and produce a summary of results, marking all improvements and regressions.
+
+
+
+If Nanosoldier finds any regressions, try verifying locally and rerun Nanosoldier if necessary. If the regressions are deemed to be real rather than just noise, you{\textquotesingle}ll have to find a commit on master to backport that fixes it if one exists, otherwise you should determine what caused the regression and submit a patch (or get someone who knows the code to submit a patch) to master, then backport the commit once that{\textquotesingle}s merged. (Or submit a patch directly to the backport branch if appropriate.)
+
+
+
+\hypertarget{11019808236351530595}{}
+
+
+\subsection{Building test binaries}
+
+
+
+After the backport PR has been merged into the \texttt{release-x.y} branch, update your local clone of Julia, then get the SHA of the branch using
+
+
+
+
+\begin{lstlisting}
+git rev-parse origin/release-x.y
+\end{lstlisting}
+
+
+
+Keep that handy, as it{\textquotesingle}s what you{\textquotesingle}ll enter in the {\textquotedbl}Revision{\textquotedbl} field in the buildbot UI.
+
+
+
+For now, all you need are binaries for Linux x86-64, since this is what{\textquotesingle}s used for running PackageEvaluator. Go to https://buildog.julialang.org, submit a job for \texttt{nuke\_linux64}, then queue up a job for \texttt{package\_linux64}, providing the SHA as the revision. When the packaging job completes, it will upload the binary to the \texttt{julialang2} bucket on AWS. Retrieve the URL, as it will be used for PackageEvaluator.
+
+
+
+\hypertarget{18088580952798281058}{}
+
+
+\subsection{Checking for package breakages}
+
+
+
+Point releases should never break packages, with the possible exception of packages that are doing some seriously questionable hacks using Base internals that are not intended to be user-facing. (In those cases, maybe have a word with the package author.)
+
+
+
+Checking whether changes made in the forthcoming new version will break packages can be accomplished using \href{https://github.com/JuliaCI/PackageEvaluator.jl}{PackageEvaluator}, often called {\textquotedbl}PkgEval{\textquotedbl} for short. PkgEval is what populates the status badges on GitHub repos and on pkg.julialang.org. It typically runs on one of the non-benchmarking nodes of Nanosoldier and uses Vagrant to perform its duties in separate, parallel VirtualBox virtual machines.
+
+
+
+\hypertarget{8830711245206929156}{}
+
+
+\subsubsection{Setting up PackageEvaluator}
+
+
+
+Clone PackageEvaluator and create a branch called \texttt{backport-x.y.z}, and check it out. Note that the required changes are a little hacky and confusing, and hopefully that will be addressed in a future version of PackageEvaluator. The changes to make will be modeled off of \href{https://github.com/JuliaCI/PackageEvaluator.jl/commit/5ba6a3b000e7a3793391d16f695c8704b91d6016}{this commit}.
+
+
+
+The setup script takes its first argument as the version of Julia to run and the second as the range of package names (AK for packages named A-K, LZ for L-Z). The basic idea is that we{\textquotesingle}re going to tweak that a bit to run only two versions of Julia, the current x.y release and our backport version, each with three ranges of packages.
+
+
+
+In the linked diff, we{\textquotesingle}re saying that if the second argument is LZ, use the binaries built from our backport branch, otherwise (AK) use the release binaries. Then we{\textquotesingle}re using the first argument to run a section of the package list: A-F for input 0.4, G-N for 0.5, and O-Z for 0.6.
+
+
+
+\hypertarget{12273793797160936753}{}
+
+
+\subsubsection{Running PackageEvaluator}
+
+
+
+To run PkgEval, find a hefty enough machine (such as Nanosoldier node 1), then run
+
+
+
+
+\begin{lstlisting}
+git clone https://github.com/JuliaCI/PackageEvaluator.jl.git
+cd PackageEvaluator.jl/scripts
+git checkout backport-x.y.z
+./runvagrant.sh
+\end{lstlisting}
+
+
+
+This produces some folders in the scripts/ directory. The folder names and their contents are decoded below:
+
+
+
+
+\begin{table}[h]
+
+\begin{tabulary}{\linewidth}{|C|C|C|}
+\hline
+Folder name & Julia version & Package range \\
+\hline
+0.4AK & Release & A-F \\
+\hline
+0.4LZ & Backport & A-F \\
+\hline
+0.5AK & Release & G-N \\
+\hline
+0.5LZ & Backport & G-N \\
+\hline
+0.6AK & Release & O-Z \\
+\hline
+0.6LZ & Backport & O-Z \\
+\hline
+\end{tabulary}
+
+\end{table}
+
+
+
+\hypertarget{9508198716944071618}{}
+
+
+\subsubsection{Investigating results}
+
+
+
+Once that{\textquotesingle}s done, you can use \texttt{./summary.sh} from that same directory to produce a summary report of the findings. We{\textquotesingle}ll do so for each of the folders to aggregate overall results by version.
+
+
+
+
+\begin{lstlisting}
+./summary.sh 0.4AK/*.json > summary_release.txt
+./summary.sh 0.5AK/*.json >> summary_release.txt
+./summary.sh 0.6AK/*.json >> summary_release.txt
+./summary.sh 0.4LZ/*.json > summary_backport.txt
+./summary.sh 0.5LZ/*.json >> summary_backport.txt
+./summary.sh 0.6LZ/*.json >> summary_backport.txt
+\end{lstlisting}
+
+
+
+Now we have two files, \texttt{summary\_release.txt} and \texttt{summary\_backport.txt}, containing the PackageEvaluator test results (pass/fail) for each package for the two versions.
+
+
+
+To make these easier to ingest into a Julia, we{\textquotesingle}ll convert them into CSV files then use the DataFrames package to process the results. To convert to CSV, copy each .txt file to a corresponding .csv file, then enter Vim and execute \texttt{ggVGI{\textquotedbl}<esc>} then \texttt{:\%s/{\textbackslash}.json /{\textquotedbl},/g}. (You don{\textquotesingle}t have to use Vim; this just is one way to do it.) Now process the results with Julia code similar to the following.
+
+
+
+
+\begin{minted}{julia}
+using DataFrames
+
+release = readtable("summary_release.csv", header=false, names=[:package, :release])
+backport = readtable("summary_backport.csv", header=false, names=[:package, :backport])
+
+results = join(release, backport, on=:package, kind=:outer)
+
+for result in eachrow(results)
+    a = result[:release]
+    b = result[:backport]
+    if (isna(a) && !isna(b)) || (isna(b) && !isna(a))
+        color = :yellow
+    elseif a != b && occursin("pass", b)
+        color = :green
+    elseif a != b
+        color = :red
+    else
+        continue
+    end
+    printstyled(result[:package], ": Release ", a, " -> Backport ", b, "\n", color=color)
+end
+\end{minted}
+
+
+
+This will write color-coded lines to \texttt{stdout}. All lines in red must be investigated as they signify potential breakages caused by the backport version. Lines in yellow should be looked into since it means a package ran on one version but not on the other for some reason. If you find that your backported branch is causing breakages, use \texttt{git bisect} to identify the problematic commits, \texttt{git revert} those commits, and repeat the process.
+
+
+
+\hypertarget{10606148317076151231}{}
+
+
+\subsection{Merging backports into the release branch}
+
+
+
+After you have ensured that
+
+
+
+\begin{itemize}
+\item the backported commits pass all of Julia{\textquotesingle}s unit tests,
+
+
+\item there are no performance regressions introduced by the backported commits as compared to the release branch, and
+
+
+\item the backported commits do not break any registered packages,
+
+\end{itemize}
+
+
+then the backport branch is ready to be merged into release-x.y. Once it{\textquotesingle}s merged, go through and remove the {\textquotedbl}backport pending x.y{\textquotedbl} label from all pull requests containing the commits that have been backported. Do not remove the label from PRs that have not been backported.
+
+
+
+The release-x.y branch should now contain all of the new commits. The last thing we want to do to the branch is to adjust the version number. To do this, submit a PR against release-x.y that edits the VERSION file to remove \texttt{-pre} from the version number. Once that{\textquotesingle}s merged, we{\textquotesingle}re ready to tag.
+
+
+
+\hypertarget{17687518186078684350}{}
+
+
+\subsection{Tagging the release}
+
+
+
+It{\textquotesingle}s time! Check out the release-x.y branch and make sure that your local copy of the branch is up to date with the remote branch. At the command line, run
+
+
+
+
+\begin{lstlisting}
+git tag v$(cat VERSION)
+git push --tags
+\end{lstlisting}
+
+
+
+This creates the tag locally and pushes it to GitHub.
+
+
+
+After tagging the release, submit another PR to release-x.y to bump the patch number and add \texttt{-pre} back to the end. This denotes that the branch state reflects a prerelease version of the next point release in the x.y series.
+
+
+
+Follow the remaining directions in the Makefile.
+
+
+
+\hypertarget{3023354583729859190}{}
+
+
+\subsection{Signing binaries}
+
+
+
+Some of these steps will require secure passwords. To obtain the appropriate passwords, contact Elliot Saba (staticfloat) or Alex Arslan (ararslan). Note that code signing for each platform must be performed on that platform (e.g. Windows signing must be done on Windows, etc.).
+
+
+
+\hypertarget{3777966428630428250}{}
+
+
+\subsubsection{Linux}
+
+
+
+Code signing must be done manually on Linux, but it{\textquotesingle}s quite simple. First obtain the file \texttt{julia.key} from the CodeSigning folder in the \texttt{juliasecure} AWS bucket. Add this to your GnuPG keyring using
+
+
+
+
+\begin{lstlisting}
+gpg --import julia.key
+\end{lstlisting}
+
+
+
+This will require entering a password that you must obtain from Elliot or Alex. Next, set the trust level for the key to maximum. Start by entering a \texttt{gpg} session:
+
+
+
+
+\begin{lstlisting}
+gpg --edit-key julia
+\end{lstlisting}
+
+
+
+At the prompt, type \texttt{trust}, then when asked for a trust level, provide the maximum available (likely 5). Exit GnuPG.
+
+
+
+Now, for each of the Linux tarballs that were built on the buildbots, enter
+
+
+
+
+\begin{lstlisting}
+gpg -u julia --armor --detach-sig julia-x.y.z-linux-<arch>.tar.gz
+\end{lstlisting}
+
+
+
+This will produce a corresponding .asc file for each tarball. And that{\textquotesingle}s it!
+
+
+
+\hypertarget{12383401899447558259}{}
+
+
+\subsubsection{macOS}
+
+
+
+Code signing should happen automatically on the macOS buildbots. However, it{\textquotesingle}s important to verify that it was successful. On a system or virtual machine running macOS, download the .dmg file that was built on the buildbots. For the sake of example, say that the .dmg file is called \texttt{julia-x.y.z-osx.dmg}. Run
+
+
+
+
+\begin{lstlisting}
+mkdir ./jlmnt
+hdiutil mount -readonly -mountpoint ./jlmnt julia-x.y.z-osx.dmg
+codesign -v jlmnt/Julia-x.y.app
+\end{lstlisting}
+
+
+
+Be sure to note the name of the mounted disk listed when mounting! For the sake of example, we{\textquotesingle}ll assume this is \texttt{disk3}. If the code signing verification exited successfully, there will be no output from the \texttt{codesign} step. If it was indeed successful, you can detach the .dmg now:
+
+
+
+
+\begin{lstlisting}
+hdiutil eject /dev/disk3
+rm -rf ./jlmnt
+\end{lstlisting}
+
+
+
+If you get a message like
+
+
+
+\begin{quote}
+Julia-x.y.app: code object is not signed at all
+
+\end{quote}
+
+
+then you{\textquotesingle}ll need to sign manually.
+
+
+
+To sign manually, first retrieve the OS X certificates from the CodeSigning folder in the \texttt{juliasecure} bucket on AWS. Add the .p12 file to your keychain using Keychain.app. Ask Elliot Saba (staticfloat) or Alex Arslan (ararslan) for the password for the key. Now run
+
+
+
+
+\begin{lstlisting}
+hdiutil convert julia-x.y.z-osx.dmg -format UDRW -o julia-x.y.z-osx_writable.dmg
+mkdir ./jlmnt
+hdiutil mount -mountpoint julia-x.y.z-osx_writable.dmg
+codesign -s "AFB379C0B4CBD9DB9A762797FC2AB5460A2B0DBE" --deep jlmnt/Julia-x.y.app
+\end{lstlisting}
+
+
+
+This may fail with a message like
+
+
+
+\begin{quote}
+Julia-x.y.app: resource fork, Finder information, or similar detritus not allowed
+
+\end{quote}
+
+
+If that{\textquotesingle}s the case, you{\textquotesingle}ll need to remove extraneous attributes:
+
+
+
+
+\begin{lstlisting}
+xattr -cr jlmnt/Julia-x.y.app
+\end{lstlisting}
+
+
+
+Then retry code signing. If that produces no errors, retry verification. If all is now well, unmount the writable .dmg and convert it back to read-only:
+
+
+
+
+\begin{lstlisting}
+hdiutil eject /dev/disk3
+rm -rf ./jlmnt
+hdiutil convert julia-x.y.z-osx_writable.dmg -format UDZO -o julia-x.y.z-osx_fixed.dmg
+\end{lstlisting}
+
+
+
+Verify that the resulting .dmg is in fact fixed by double clicking it. If everything looks good, eject it then drop the \texttt{\_fixed} suffix from the name. And that{\textquotesingle}s it!
+
+
+
+\hypertarget{4146385850442974710}{}
+
+
+\subsubsection{Windows}
+
+
+
+Signing must be performed manually on Windows. First obtain the Windows 10 SDK, which contains the necessary signing utilities, from the Microsoft website. We need the \texttt{SignTool} utility which should have been installed somewhere like \texttt{C:{\textbackslash}Program Files (x86){\textbackslash}Windows Kits{\textbackslash}10{\textbackslash}App Certification Kit}. Grab the Windows certificate files from CodeSigning on \texttt{juliasecure} and put them in the same directory as the executables. Open a Windows CMD window, \texttt{cd} to where all the files are, and run
+
+
+
+
+\begin{lstlisting}
+set PATH=%PATH%;C:\Program Files (x86)\Windows Kits\10\App Certification Kit;
+signtool sign /f julia-windows-code-sign_2017.p12 /p "PASSWORD" ^
+   /t http://timestamp.verisign.com/scripts/timstamp.dll ^
+   /v julia-x.y.z-win32.exe
+\end{lstlisting}
+
+
+
+Note that \texttt{{\textasciicircum}} is a line continuation character in Windows CMD and \texttt{PASSWORD} is a placeholder for the password for this certificate. As usual, contact Elliot or Alex for passwords. If there are no errors, we{\textquotesingle}re all good!
+
+
+
+\hypertarget{13693621271485293889}{}
+
+
+\subsection{Uploading binaries}
+
+
+
+Now that everything is signed, we need to upload the binaries to AWS. You can use a program like Cyberduck or the \texttt{aws} command line utility. The binaries should go in the \texttt{julialang2} bucket in the appropriate folders. For example, Linux x86-64 goes in \texttt{julialang2/bin/linux/x.y}. Be sure to delete the current \texttt{julia-x.y-latest-linux-<arch>.tar.gz} file and replace it with a duplicate of \texttt{julia-x.y.z-linux-<arch>.tar.gz}.
+
+
+
+We also need to upload the checksums for everything we{\textquotesingle}ve built, including the source tarballs and all release binaries. This is simple:
+
+
+
+
+\begin{lstlisting}
+shasum -a 256 julia-x.y.z* | grep -v -e sha256 -e md5 -e asc > julia-x.y.z.sha256
+md5sum julia-x.y.z* | grep -v -e sha256 -e md5 -e asc > julia-x.y.z.md5
+\end{lstlisting}
+
+
+
+Note that if you{\textquotesingle}re running those commands on macOS, you{\textquotesingle}ll get very slightly different output, which can be reformatted by looking at an existing file. Mac users will also need to use \texttt{md5 -r} instead of \texttt{md5sum}. Upload the .md5 and .sha256 files to \texttt{julialang2/bin/checksums} on AWS.
+
+
+
+Ensure that the permissions on AWS for all uploaded files are set to {\textquotedbl}Everyone: READ.{\textquotedbl}
+
+
+
+For each file we{\textquotesingle}ve uploaded, we need to purge the Fastly cache so that the links on the website point to the updated files. As an example:
+
+
+
+
+\begin{lstlisting}
+curl -X PURGE https://julialang-s3.julialang.org/bin/checksums/julia-x.y.z.sha256
+\end{lstlisting}
+
+
+
+Sometimes this isn{\textquotesingle}t necessary but it{\textquotesingle}s good to do anyway.

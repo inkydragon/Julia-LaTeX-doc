@@ -1,6 +1,5 @@
 
-
-\part{Julia v1.6 Release Notes}
+\part{Julia v1.8 Release Notes}
 
 
 
@@ -12,7 +11,31 @@
 
 
 \begin{itemize}
-\item Types written with \texttt{where} syntax can now be used to define constructors, e.g. \texttt{(Foo\{T\} where T)(x) = ...}.
+\item \texttt{Module(:name, false, false)} can be used to create a \texttt{module} that contains no names (it does not import \texttt{Base} or \texttt{Core} and does not contain a reference to itself). ([\#40110, \#42154])
+
+
+\item \texttt{@inline} and \texttt{@noinline} annotations can be used within a function body to give an extra hint about the inlining cost to the compiler. (\href{https://github.com/JuliaLang/julia/issues/41312}{\#41312})
+
+
+\item \texttt{@inline} and \texttt{@noinline} annotations can now be applied to a function callsite or block to enforce the involved function calls to be (or not to be) inlined. (\href{https://github.com/JuliaLang/julia/issues/41312}{\#41312})
+
+
+\item The default behavior of observing \texttt{@inbounds} declarations is now an option via \texttt{auto} in \texttt{--check-bounds=yes|no|auto} (\href{https://github.com/JuliaLang/julia/issues/41551}{\#41551})
+
+
+\item New function \texttt{eachsplit(str)} for iteratively performing \texttt{split(str)}.
+
+
+\item \texttt{∀}, \texttt{∃}, and \texttt{∄} are now allowed as identifier characters (\href{https://github.com/JuliaLang/julia/issues/42314}{\#42314}).
+
+
+\item Support for Unicode 14.0.0 (\href{https://github.com/JuliaLang/julia/issues/43443}{\#43443}).
+
+
+\item \texttt{try}-blocks can now optionally have an \texttt{else}-block which is executed right after the main body only if no errors were thrown. (\href{https://github.com/JuliaLang/julia/issues/42211}{\#42211})
+
+
+\item Mutable struct fields may now be annotated as \texttt{const} to prevent changing them after construction, providing for greater clarity and optimization ability of these objects (\href{https://github.com/JuliaLang/julia/issues/43305}{\#43305}).
 
 \end{itemize}
 
@@ -24,6 +47,27 @@
 
 
 
+\begin{itemize}
+\item Newly created Task objects (\texttt{@spawn}, \texttt{@async}, etc.) now adopt the world-age for methods from their parent Task upon creation, instead of using the global latest world at start. This is done to enable inference to eventually optimize these calls. Places that wish for the old behavior may use \texttt{Base.invokelatest}. (\href{https://github.com/JuliaLang/julia/issues/41449}{\#41449})
+
+
+\item \texttt{@time} and \texttt{@timev} now take an optional description to allow annotating the source of time reports. i.e. \texttt{@time {\textquotedbl}Evaluating foo{\textquotedbl} foo()} (\href{https://github.com/JuliaLang/julia/issues/42431}{\#42431})
+
+
+\item New \texttt{@showtime} macro to show both the line being evaluated and the \texttt{@time} report (\href{https://github.com/JuliaLang/julia/issues/42431}{\#42431})
+
+
+\item Iterating an \texttt{Iterators.Reverse} now falls back on reversing the eachindex interator, if possible (\href{https://github.com/JuliaLang/julia/issues/43110}{\#43110}).
+
+
+\item Unbalanced Unicode bidirectional formatting directives are now disallowed within strings and comments, to mitigate the \href{https://www.trojansource.codes}{{\textquotedbl}trojan source{\textquotedbl}} vulnerability (\href{https://github.com/JuliaLang/julia/issues/42918}{\#42918}).
+
+
+\item \texttt{Base.ifelse} is now defined as a generic function rather than a builtin one, allowing packages to extend its definition (\href{https://github.com/JuliaLang/julia/issues/37343}{\#37343}).
+
+\end{itemize}
+
+
 \hypertarget{15772063917944537781}{}
 
 
@@ -32,13 +76,19 @@
 
 
 \begin{itemize}
-\item All platforms can now use \texttt{@executable\_path} within \texttt{jl\_load\_dynamic\_library()}. This allows executable-relative paths to be embedded within executables on all platforms, not just MacOS, which the syntax is borrowed from. (\href{https://github.com/JuliaLang/julia/issues/35627}{\#35627})
+\item Bootstrapping time has been improved by about 25\% (\href{https://github.com/JuliaLang/julia/issues/41794}{\#41794}).
 
 
-\item Constant propogation now occurs through keyword arguments (\href{https://github.com/JuliaLang/julia/issues/35976}{\#35976})
+\item The LLVM-based compiler has been separated from the run-time library into a new library, \texttt{libjulia-codegen}. It is loaded by default, so normal usage should see no changes. In deployments that do not need the compiler (e.g. system images where all needed code is precompiled), this library (and its LLVM dependency) can simply be excluded (\href{https://github.com/JuliaLang/julia/issues/41936}{\#41936}).
 
 
-\item The precompilation cache is now created atomically (\href{https://github.com/JuliaLang/julia/issues/36416}{\#36416}). Invoking \emph{n} Julia processes simultaneously may create \emph{n} temporary caches.
+\item Conditional type constraint can now be forwarded interprocedurally (i.e. propagated from caller to callee) (\href{https://github.com/JuliaLang/julia/issues/42529}{\#42529}).
+
+
+\item Julia-level SROA (Scalar Replacement of Aggregates) has been improved, i.e. allowing elimination of \texttt{getfield} call with constant global field (\href{https://github.com/JuliaLang/julia/issues/42355}{\#42355}), enabling elimination of mutable struct with uninitialized fields (\href{https://github.com/JuliaLang/julia/issues/43208}{\#43208}), improving performance (\href{https://github.com/JuliaLang/julia/issues/43232}{\#43232}), handling more nested \texttt{getfield} calls (\href{https://github.com/JuliaLang/julia/issues/43239}{\#43239}).
+
+
+\item Abstract callsite can now be inlined or statically resolved as far as the callsite has a single matching method (\href{https://github.com/JuliaLang/julia/issues/43113}{\#43113}).
 
 \end{itemize}
 
@@ -48,6 +98,15 @@
 
 \chapter{Command-line option changes}
 
+
+
+\begin{itemize}
+\item New option \texttt{--strip-metadata} to remove docstrings, source location information, and local variable names when building a system image (\href{https://github.com/JuliaLang/julia/issues/42513}{\#42513}).
+
+
+\item New option \texttt{--strip-ir} to remove the compiler{\textquotesingle}s IR (intermediate representation) of source code when building a system image. The resulting image will only work if \texttt{--compile=all} is used, or if all needed code is precompiled (\href{https://github.com/JuliaLang/julia/issues/42925}{\#42925}).
+
+\end{itemize}
 
 
 \hypertarget{14570500277119829183}{}
@@ -72,16 +131,10 @@
 
 
 \begin{itemize}
-\item New function \texttt{Base.kron!} and corresponding overloads for various matrix types for performing Kronecker product in-place. (\href{https://github.com/JuliaLang/julia/issues/31069}{\#31069}).
+\item \texttt{hardlink(src, dst)} can be used to create hard links. (\href{https://github.com/JuliaLang/julia/issues/41639}{\#41639})
 
 
-\item New function \texttt{Base.Threads.foreach(f, channel::Channel)} for multithreaded \texttt{Channel} consumption. (\href{https://github.com/JuliaLang/julia/issues/34543}{\#34543}).
-
-
-\item \texttt{Iterators.map} is added. It provides another syntax \texttt{Iterators.map(f, iterators...)} for writing \texttt{(f(args...) for args in zip(iterators...))}, i.e. a lazy \texttt{map} (\href{https://github.com/JuliaLang/julia/issues/34352}{\#34352}).
-
-
-\item New function \texttt{sincospi} for simultaneously computing \texttt{sinpi(x)} and \texttt{cospi(x)} more efficiently (\href{https://github.com/JuliaLang/julia/issues/35816}{\#35816}).
+\item \texttt{diskstat(path=pwd())} can be used to return statistics about the disk. (\href{https://github.com/JuliaLang/julia/issues/42248}{\#42248})
 
 \end{itemize}
 
@@ -93,6 +146,18 @@
 
 
 
+\begin{itemize}
+\item \texttt{@test\_throws {\textquotedbl}some message{\textquotedbl} triggers\_error()} can now be used to check whether the displayed error text contains {\textquotedbl}some message{\textquotedbl} regardless of the specific exception type. Regular expressions, lists of strings, and matching functions are also supported. (\href{https://github.com/JuliaLang/julia/issues/41888}{\#41888})
+
+
+\item \texttt{@testset foo()} can now be used to create a test set from a given function. The name of the test set is the name of the called function. The called function can contain \texttt{@test} and other \texttt{@testset} definitions, including to other function calls, while recording all intermediate test results. (\href{https://github.com/JuliaLang/julia/issues/42518}{\#42518})
+
+
+\item Keys with value \texttt{nothing} are now removed from the environment in \texttt{addenv} (\href{https://github.com/JuliaLang/julia/issues/43271}{\#43271}).
+
+\end{itemize}
+
+
 \hypertarget{10359018140604250447}{}
 
 
@@ -101,24 +166,47 @@
 
 
 \begin{itemize}
-\item The \texttt{nextprod} function now accepts tuples and other array types for its first argument (\href{https://github.com/JuliaLang/julia/issues/35791}{\#35791}).
+\item \texttt{range} accepts either \texttt{stop} or \texttt{length} as a sole keyword argument (\href{https://github.com/JuliaLang/julia/issues/39241}{\#39241})
 
 
-\item The function \texttt{isapprox(x,y)} now accepts the \texttt{norm} keyword argument also for numeric (i.e., non-array) arguments \texttt{x} and \texttt{y} (\href{https://github.com/JuliaLang/julia/issues/35883}{\#35883}).
+\item \texttt{precision} and \texttt{setprecision} now accept a \texttt{base} keyword (\href{https://github.com/JuliaLang/julia/issues/42428}{\#42428}).
 
 
-\item \texttt{view}, \texttt{@view}, and \texttt{@views} now work on \texttt{AbstractString}s, returning a \texttt{SubString} when appropriate (\href{https://github.com/JuliaLang/julia/issues/35879}{\#35879}).
+\item \texttt{Iterators.reverse} (and hence \texttt{last}) now supports \texttt{eachline} iterators (\href{https://github.com/JuliaLang/julia/issues/42225}{\#42225}).
 
 
-\item All \texttt{AbstractUnitRange\{<:Integer\}}s now work with \texttt{SubString}, \texttt{view}, \texttt{@view} and \texttt{@views} on strings (\href{https://github.com/JuliaLang/julia/issues/35879}{\#35879}).
+\item The \texttt{length} function on certain ranges of certain specific element types no longer checks for integer overflow in most cases. The new function \texttt{checked\_length} is now available, which will try to use checked arithmetic to error if the result may be wrapping. Or use a package such as SaferIntegers.jl when constructing the range. (\href{https://github.com/JuliaLang/julia/issues/40382}{\#40382})
 
 
-\item \texttt{sum}, \texttt{prod}, \texttt{maximum}, and \texttt{minimum} now support \texttt{init} keyword argument (\href{https://github.com/JuliaLang/julia/issues/36188}{\#36188}, \href{https://github.com/JuliaLang/julia/issues/35839}{\#35839}).
+\item TCP socket objects now expose \texttt{closewrite} functionality and support half-open mode usage (\href{https://github.com/JuliaLang/julia/issues/40783}{\#40783}).
 
 
-\item \texttt{unique(f, itr; seen=Set\{T\}())} now allows you to declare the container type used for keeping track of values returned by \texttt{f} on elements of \texttt{itr} (\href{https://github.com/JuliaLang/julia/issues/36280}{\#36280}).
+\item Intersect returns a result with the eltype of the type-promoted eltypes of the two inputs (\href{https://github.com/JuliaLang/julia/issues/41769}{\#41769}).
+
+
+\item \texttt{Iterators.countfrom} now accepts any type that defines \texttt{+}. (\href{https://github.com/JuliaLang/julia/issues/37747}{\#37747})
 
 \end{itemize}
+
+
+\hypertarget{7540427318979651745}{}
+
+
+\subsection{InteractiveUtils}
+
+
+
+\begin{itemize}
+\item A new macro \texttt{@time\_imports} for reporting any time spent importing packages and their dependencies (\href{https://github.com/JuliaLang/julia/issues/41612}{\#41612})
+
+\end{itemize}
+
+
+\hypertarget{11746884955550476831}{}
+
+
+\subsection{Package Manager}
+
 
 
 \hypertarget{5352389965411431652}{}
@@ -129,11 +217,21 @@
 
 
 \begin{itemize}
-\item New method \texttt{LinearAlgebra.issuccess(::CholeskyPivoted)} for checking whether pivoted Cholesky factorization was successful (\href{https://github.com/JuliaLang/julia/issues/36002}{\#36002}).
+\item The BLAS submodule now supports the level-2 BLAS subroutine \texttt{spr!} (\href{https://github.com/JuliaLang/julia/issues/42830}{\#42830}).
 
 
-\item \texttt{UniformScaling} can now be indexed into using ranges to return dense matrices and vectors (\href{https://github.com/JuliaLang/julia/issues/24359}{\#24359}).
+\item \texttt{cholesky[!]} now supports \texttt{LinearAlgebra.PivotingStrategy} (singleton type) values as its optional \texttt{pivot} argument: the default is \texttt{cholesky(A, NoPivot())} (vs. \texttt{cholesky(A, RowMaximum())}); the former \texttt{Val\{true/false\}}-based calls are deprecated. (\href{https://github.com/JuliaLang/julia/issues/41640}{\#41640})
 
+
+\item The standard library \texttt{LinearAlgebra.jl} is now completely independent of \texttt{SparseArrays.jl}, both in terms of the source code as well as unit testing (\href{https://github.com/JuliaLang/julia/issues/43127}{\#43127}). As a consequence, sparse arrays are no longer (silently) returned by methods from \texttt{LinearAlgebra} applied to \texttt{Base} or \texttt{LinearAlgebra} objects. Specifically, this results in the following breaking changes:
+
+\begin{itemize}
+\item Concatenations involving special {\textquotedbl}sparse{\textquotedbl} matrices (\texttt{*diagonal}) now return dense matrices; As a consequence, the \texttt{D1} and \texttt{D2} fields of \texttt{SVD} objects, constructed upon \texttt{getproperty} calls are now dense matrices.
+
+
+\item 3-arg \texttt{similar(::SpecialSparseMatrix, ::Type, ::Dims)} returns a dense zero matrix. As a consequence, products of bi-, tri- and symmetric tridiagonal matrices with each other result in dense output. Moreover, constructing 3-arg similar matrices of special {\textquotedbl}sparse{\textquotedbl} matrices of (nonstatic) matrices now fails for the lack of \texttt{zero(::Type\{Matrix\{T\}\})}.
+
+\end{itemize}
 \end{itemize}
 
 
@@ -142,6 +240,32 @@
 
 \subsection{Markdown}
 
+
+
+\hypertarget{5039001780758746770}{}
+
+
+\subsection{Printf}
+
+
+
+\begin{itemize}
+\item Now uses \texttt{textwidth} for formatting \texttt{\%s} and \texttt{\%c} widths (\href{https://github.com/JuliaLang/julia/issues/41085}{\#41085}).
+
+\end{itemize}
+
+
+\hypertarget{301476112402699125}{}
+
+
+\subsection{Profile}
+
+
+
+\begin{itemize}
+\item Profiling now records sample metadata including thread and task. \texttt{Profile.print()} has a new \texttt{groupby} kwarg that allows grouping by thread, task, or nested thread/task, task/thread, and \texttt{threads} and \texttt{tasks} kwargs to allow filtering. Further, percent utilization is now reported as a total or per-thread, based on whether the thread is idle or not at each sample. \texttt{Profile.fetch()} by default strips out the new metadata to ensure backwards compatibility with external profiling data consumers, but can be included with the \texttt{include\_meta} kwarg. (\href{https://github.com/JuliaLang/julia/issues/41742}{\#41742})
+
+\end{itemize}
 
 
 \hypertarget{1261002482238112410}{}
@@ -159,35 +283,14 @@
 
 
 \begin{itemize}
-\item The \texttt{AbstractMenu} extension interface of \texttt{REPL.TerminalMenus} has been extensively overhauled. The new interface does not rely on global configuration variables, is more consistent in delegating printing of the navigation/selection markers, and provides improved support for dynamic menus.  These changes are compatible with the previous (deprecated) interface, so are non-breaking.
-
-The new API offers several enhancements:
-
-\begin{itemize}
-\item Menus are configured in their constructors via keyword arguments
+\item \texttt{RadioMenu} now supports optional \texttt{keybindings} to directly select options (\href{https://github.com/JuliaLang/julia/issues/41576}{\#41576}).
 
 
-\item For custom menu types, the new \texttt{Config} and \texttt{MultiSelectConfig} replace the global \texttt{CONFIG} Dict
+\item \texttt{?(x, y} followed by TAB displays all methods that can be called with arguments \texttt{x, y, ...}. (The space at the beginning prevents entering help-mode.) \texttt{MyModule.?(x, y} limits the search to \texttt{MyModule}. TAB requires that at least one argument have a type more specific than \texttt{Any}; use SHIFT-TAB instead of TAB to allow any compatible methods.
 
 
-\item \texttt{request(menu; cursor=1)} allows you to control the initial cursor position in the menu (defaults to first item)
+\item New \texttt{err} global variable in \texttt{Main} set when an expression throws an exception, akin to \texttt{ans}. Typing \texttt{err} reprints the exception information.
 
-
-\item \texttt{MultiSelectMenu} allows you to pass a list of initially-selected items with the \texttt{selected} keyword argument
-
-
-\item \texttt{writeLine} was deprecated to \texttt{writeline}, and \texttt{writeline} methods are not expected to print the cursor indicator. The old \texttt{writeLine} continues to work, and any of its method extensions should print the cursor indicator as before.
-
-
-\item \texttt{printMenu} has been deprecated to \texttt{printmenu}, and it both accepts a state input and returns a state output that controls the number of terminal lines erased when the menu is next refreshed. This plus related changes makes \texttt{printmenu} work properly when the number of menu items might change depending on user choices.
-
-
-\item \texttt{numoptions}, returning the number of items in the menu, has been added as an alternative to implementing \texttt{options}
-
-
-\item \texttt{suppress\_output} (primarily a testing option) has been added as a keyword argument to \texttt{request}, rather than a configuration option
-
-\end{itemize}
 \end{itemize}
 
 
@@ -199,7 +302,7 @@ The new API offers several enhancements:
 
 
 \begin{itemize}
-\item Display large sparse matrices with a Unicode {\textquotedbl}spy{\textquotedbl} plot of their nonzero patterns, and display small sparse matrices by an \texttt{Matrix}-like 2d layout of their contents.
+\item New sparse concatenation functions \texttt{sparse\_hcat}, \texttt{sparse\_vcat}, and \texttt{sparse\_hvcat} return \texttt{SparseMatrixCSC} output independent from the types of the input arguments. They make concatenation behavior available, in which the presence of some special {\textquotedbl}sparse{\textquotedbl} matrix argument resulted in sparse output by multiple dispatch. This is no longer possible after making \texttt{LinearAlgebra.jl} independent from \texttt{SparseArrays.jl} (\href{https://github.com/JuliaLang/julia/issues/43127}{\#43127}).
 
 \end{itemize}
 
@@ -208,6 +311,13 @@ The new API offers several enhancements:
 
 
 \subsection{Dates}
+
+
+
+\hypertarget{14923009348945346248}{}
+
+
+\subsection{Downloads}
 
 
 
@@ -225,6 +335,13 @@ The new API offers several enhancements:
 
 
 
+\hypertarget{15486086682420278394}{}
+
+
+\subsection{Tar}
+
+
+
 \hypertarget{13830325491332105953}{}
 
 
@@ -239,11 +356,45 @@ The new API offers several enhancements:
 
 
 
+\hypertarget{8234966906176515355}{}
+
+
+\subsection{Mmap}
+
+
+
+\hypertarget{10456404236587911968}{}
+
+
+\subsection{DelimitedFiles}
+
+
+
+\hypertarget{10954107756881793102}{}
+
+
+\subsection{Logging}
+
+
+
 \begin{itemize}
-\item Change \texttt{uuid1} and \texttt{uuid4} to use \texttt{Random.RandomDevice()} as default random number generator (\href{https://github.com/JuliaLang/julia/issues/35872}{\#35872}).
+\item The standard log levels \texttt{BelowMinLevel}, \texttt{Debug}, \texttt{Info}, \texttt{Warn}, \texttt{Error}, and \texttt{AboveMaxLevel} are now exported from the Logging stdlib (\href{https://github.com/JuliaLang/julia/issues/40980}{\#40980}).
+
+\end{itemize}
 
 
-\item Added \texttt{parse(::Type\{UUID\}, ::AbstractString)} method
+\hypertarget{1111253146082274876}{}
+
+
+\subsection{Unicode}
+
+
+
+\begin{itemize}
+\item Added function \texttt{isequal\_normalized} to check for Unicode equivalence without explicitly constructing normalized strings (\href{https://github.com/JuliaLang/julia/issues/42493}{\#42493}).
+
+
+\item The \texttt{Unicode.normalize} function now accepts a \texttt{chartransform} keyword that can be used to supply custom character mappings, and a \texttt{Unicode.julia\_chartransform} function is provided to reproduce the mapping used in identifier normalization by the Julia parser (\href{https://github.com/JuliaLang/julia/issues/42561}{\#42561}).
 
 \end{itemize}
 
@@ -266,3 +417,10 @@ The new API offers several enhancements:
 
 
 \chapter{Tooling Improvements}
+
+
+
+\begin{itemize}
+\item \texttt{GC.enable\_logging(true)} can be used to log each garbage collection, with the time it took and the amount of memory that was collected (\href{https://github.com/JuliaLang/julia/issues/43511}{\#43511}).
+
+\end{itemize}

@@ -1,19 +1,21 @@
-\documentclass{book}
+\documentclass[oneside]{memoir}
 \usepackage{./documenter}
 
-% \title{
-%     {\HUGE The Julia Language}\\
-%     {\Large }
-% }
-% \author{The Julia Project}
+\settocdepth{section}
+
+\title{
+    {\HUGE The Julia Language}\\
+    {\Large }
+}
+\author{The Julia Project}
 
 
 \begin{document}
 
 \frontmatter
-% \maketitle
-\input{titlepage/title.tex}
-\cleardoublepage % makes the next page a odd-numbered page
+\maketitle
+% \input{titlepage/title.tex}
+% \cleardoublepage % makes the next page a odd-numbered page
 \tableofcontents
 \mainmatter
 
