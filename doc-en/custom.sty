@@ -1,5 +1,4 @@
 
-
 % page geometry
 \usepackage[
     a4paper,
@@ -35,18 +34,32 @@ contents={
 
 %% TOC setting; need {tocloft} pkg
 \usepackage{tocloft}
+\makeatletter
 % 1. TOC chapter number *auto* width
 % [Table of Contents chapter number width - TeX - LaTeX Stack Exchange](https://tex.stackexchange.com/questions/64115/table-of-contents-chapter-number-width)
-\makeatletter
 \renewcommand{\numberline}[1]{%
   \@cftbsnum #1\@cftasnum~\@cftasnumb%
 }
-\makeatother
 
-% 2. set TOC depth; only show section
-% \chapter = level 0
-% \section = level 1
-% \subsection = level 2
-% ...
-\setcounter{tocdepth}{1}
+% 2. set TOC depth
+%   value: [part, chapter, section, subsection,
+%           subsubsection, paragraph, subparagraph]
+\settocdepth{section}  % show "part+chapter+section" in TOC
+
+% 3. TOC spacing
+%   ref: https://tex.stackexchange.com/questions/60317/toc-spacing-in-memoir
+%   doc: memoir/memman.pdf
+%       - Figure 9.2: Layout of a ToC
+%       - Table 9.3: Value of K in macros for styling entries
+% {part} to {chaper}
+\setlength{\cftbeforepartskip}{1.5em \@plus \p@}
+% {chaper} to {chaper}
+\setlength{\cftbeforechapterskip}{0.0em \@plus \p@}
+% Chapter num to chapter title spacing (Figure 9.2@memman)
+\setlength{\cftchapternumwidth}{2.5em \@plus \p@}
+% indent before section number
+\setlength{\cftsectionindent}{2.5em \@plus \p@}
+% Section num to section title spacing (Figure 9.2@memman)
+% \setlength{\cftsectionnumwidth}{4.0em \@plus \p@}
+\makeatother
 %% TOC setting END
