@@ -1,16 +1,4 @@
-% page geometry
-\usepackage[
-    a4paper,
-    % left and right margin
-    inner=1.2in,
-    outer=1.2in,
-    % top and bottom margin
-    vmargin=1in, 
-]{geometry}
-% page geometry END
-
 % font settings
-
 \usepackage{fontspec, newunicodechar, polyglossia}
 
 \setsansfont{DejaVu Sans}[Scale=MatchLowercase, Ligatures=TeX]
@@ -41,7 +29,9 @@
 %
 
 % listings
-\usepackage{listings, minted}
+% \usepackage{listings, minted}
+\usepackage{listings}
+\usepackage[draft=true]{minted}
 
 \lstset{
     basicstyle = \small\ttfamily,
@@ -78,7 +68,7 @@
 %
 
 % table of contents
-% \maxtocdepth{section}
+% \maxtocdepth{subsection}
 %
 
 % paragraphs
@@ -97,43 +87,3 @@
 \usepackage{graphicx}
 \usepackage[export]{adjustbox}
 %
-
-%% pkg for make title page
-\usepackage[some]{background}
-
-\DeclareFixedFont{\MainHeading}{T1}{phv}{b}{n}{1.5cm}
-\DeclareFixedFont{\SecondaryHeading}{T1}{phv}{b}{n}{0.8cm}
-\backgroundsetup{
-scale=1,
-angle=0,
-opacity=1,
-contents={
-\begin{tikzpicture}[remember picture,overlay]
-  \draw [path picture={
-    \node at (path picture bounding box.center){
-      % remember to adjust bg img height
-      %   when you changed the box size
-      % now: 11cm - 4cm = 7cm
-      \includegraphics[height=7cm]{./titlepage/backsplash}
-  };}] (-0.5\paperwidth,4cm) rectangle (0.5\paperwidth,11cm);
-\end{tikzpicture}
-}}
-%% title page END
-
-%% TOC setting; need {tocloft} pkg
-\usepackage{tocloft}
-% 1. TOC chapter number *auto* width
-% [Table of Contents chapter number width - TeX - LaTeX Stack Exchange](https://tex.stackexchange.com/questions/64115/table-of-contents-chapter-number-width)
-\makeatletter
-\renewcommand{\numberline}[1]{%
-  \@cftbsnum #1\@cftasnum~\@cftasnumb%
-}
-\makeatother
-
-% 2. set TOC depth; only show section
-% \chapter = level 0
-% \section = level 1
-% \subsection = level 2
-% ...
-\setcounter{tocdepth}{1}
-%% TOC setting END

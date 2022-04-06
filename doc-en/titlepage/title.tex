@@ -1,33 +1,31 @@
 
 \newgeometry{left=1cm,right=1cm}
-\begin{titlepage}
-\BgThispage
+% ref: P65 - http://mirrors.ctan.org/macros/latex/contrib/memoir/memman.pdf
+\begin{titlingpage}
+    \BgThispage
 
-%% Main Heading & Secondary Heading
-\vspace*{2cm}\noindent
-\textcolor{white}{ \MainHeading The Julia Language } 
-\\[0.6cm]
-\textcolor{white}{
-    \SecondaryHeading A fresh approach to technical computing.
-}
-\vspace*{3cm}\par\noindent
+    %% Main Heading & Secondary Heading
+    \vspace*{2cm}\noindent
+    \textcolor{white}{ \MainHeading  \DocMainTitle } 
+    \\[0.6cm]
+    \textcolor{white}{
+        \SecondaryHeading A fresh approach to technical computing.
+    }
+    \vspace*{3cm}\par\noindent
 
 
-%% other content: logo, doc name, time
-\begin{center}
+    %% other content: logo, doc name, time
+    \begin{center}
+        % logo
+        \includegraphics[width=0.3\textwidth]{./titlepage/logo} 
+        \\[1.5cm]
 
-% logo
-\includegraphics[width=0.3\textwidth]{./titlepage/logo} 
-\\[1.5cm]
-
-% Title
-{ \SecondaryHeading Julia DEV Documentation} 
-\\[1.5cm]
-{ \huge The Julia Project}
-\\[0.5cm]
-{ \huge \today }
-
-\end{center} 
-
-\end{titlepage}
+        % Title
+        { \SecondaryHeading  \DocVersion} 
+        \\[1.5cm]
+        { \huge  \DocAuthors }
+        \\[0.5cm]
+        { \huge \today }
+    \end{center} 
+\end{titlingpage}
 \restoregeometry

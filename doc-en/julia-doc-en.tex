@@ -1,55 +1,24 @@
+% Useful variables
 \newcommand{\DocMainTitle}{The Julia Language}
-\newcommand{\DocVersion}{dev version}
+\newcommand{\DocVersion}{Julia DEV Documentation}
 \newcommand{\DocAuthors}{The Julia Project}
 
-\documentclass[oneside]{memoir}
-\usepackage{./documenter}
-
-%% TOC settings
-\settocdepth{chapter}
-% -- TOC spacing
-%   ref: https://tex.stackexchange.com/questions/60317/toc-spacing-in-memoir
-\makeatletter
-% {part} to {chaper}
-\setlength{\cftbeforepartskip}{1.5em \@plus \p@}
-% {chaper} to {chaper}
-\setlength{\cftbeforechapterskip}{0.0em \@plus \p@}
-% Chapter num to chapter title
-\setlength{\cftchapternumwidth}{2.5em}
-\makeatother
-
-
-\title{
-    {\HUGE \DocMainTitle}\\
-    {\Large \DocVersion}
-}
-\author{\DocAuthors}
-
-
-\begin{document}
-
-\frontmatter
-\maketitle
-% \input{titlepage/title.tex}
-% \cleardoublepage % makes the next page a odd-numbered page
-\clearpage
-\tableofcontents
-\mainmatter
+% ---- Insert custom preamble
+\input{preamble.tex}
 
 %% ---- Normal Input
-% \input{part/Manual.tex}
-% \input{part/Base.tex}
-% \input{part/StandardLibrary.tex}
-% \input{part/DeveloperDoc.tex}
-% \input{part/ReleaseNotes.tex}
+\input{part/Manual.tex}
+\input{part/Base.tex}
+\input{part/StandardLibrary.tex}
+\input{part/DeveloperDoc.tex}
+\input{part/ReleaseNotes.tex}
 
 %% ---- Test only input
 %% For testing TOC styles
-\input{test_only/Manual.tex}
-\input{test_only/Base.tex}
-\input{test_only/StandardLibrary.tex}
-\input{test_only/DeveloperDoc.tex}
-\input{test_only/ReleaseNotes.tex}
-
+% \input{test_only/Manual.tex}
+% \input{test_only/Base.tex}
+% \input{test_only/StandardLibrary.tex}
+% \input{test_only/DeveloperDoc.tex}
+% \input{test_only/ReleaseNotes.tex}
 
 \end{document}
