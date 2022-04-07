@@ -1,0 +1,183 @@
+
+\documentclass[a4paper]{article}
+% -- math font
+\usepackage{amsmath}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+% 
+\usepackage[draft=true]{minted}
+% \usepackage{minted}
+\usepackage{longtable,booktabs}
+
+% -- select math font
+\setmainfont{DejaVu Sans}
+% \setmathfont{STEP Math}
+% \setmathfont{STIX Two Math Regular}
+\setmathfont{DejaVu Math TeX Gyre}
+\setmonofont{JuliaMono Regular}
+% \setmonofont{DejaVu Sans Mono}
+
+\begin{document}
+
+{\Large Math Symbol 1: minted}
+
+\begin{longtable}{ccl}
+  % \caption{Manually add} \\
+  %% all head
+  \toprule
+  Code point & Char & Unicode name \\
+  \hline \endhead
+  %% all footer
+  \multicolumn{3}{l}{To be continued...} \\ 
+  \midrule \endfoot
+  %% last footer
+  \bottomrule \endlastfoot
+
+  U+22BC & \mintinline{c}{⊼}  & NAND \\ \hline
+  U+22BD & \mintinline{c}{⊽}  & NOR \\ \hline
+  U+22BB & \mintinline{c}{⊻}  & XOR \\ \hline
+  U+22EE & \mintinline{c}{⋮}  & VERTICAL ELLIPSIS \\ \hline
+  U+212F & \mintinline{c}{ℯ}  & SCRIPT SMALL E \\ \hline
+  U+2261 & \mintinline{c}{≡}  & IDENTICAL TO \\ \hline
+  U+03C0 & \mintinline{c}{π}  & GREEK SMALL LETTER PI \\ \hline
+  U+26F5 & \mintinline{c}{⛵}  & SAILBOAT \\ \hline
+  U+1F680 & \mintinline{c}{🚀}  & ROCKET \\ \hline
+  U+0BF0 & \mintinline{c}{௰}  & TAMIL NUMBER TEN \\ \hline
+  U+2135 & \mintinline{c}{ℵ}  & ALEF SYMBOL \\ \hline
+  U+0398 & \mintinline{c}{Θ}  & GREEK CAPITAL LETTER THETA \\ \hline
+  U+2264 & \mintinline{c}{≤}  & LESS-THAN OR EQUAL TO \\ \hline
+  U+03B1 & \mintinline{c}{α}  & GREEK SMALL LETTER ALPHA \\ \hline
+  U+03B2 & \mintinline{c}{β}  & GREEK SMALL LETTER BETA \\ \hline
+  U+29D0 & \mintinline{c}{⧐}  & VERTICAL BAR BESIDE RIGHT TRIANGLE \\ \hline
+  U+2800 & \mintinline{c}{⠀}  & BRAILLE PATTERN BLANK \\ \hline
+  U+2808 & \mintinline{c}{⠈}  & BRAILLE PATTERN DOTS-4 \\ \hline
+  U+2840 & \mintinline{c}{⡀}  & BRAILLE PATTERN DOTS-7 \\ \hline
+  U+2801 & \mintinline{c}{⠁}  & BRAILLE PATTERN DOTS-1 \\ \hline
+  U+2820 & \mintinline{c}{⠠}  & BRAILLE PATTERN DOTS-6 \\ \hline
+
+  \bottomrule
+\end{longtable}
+
+\begin{minted}{julia}
+---- begin ----
+⊼ ⊽ ⊻ ≡ ≤ ⧐
+ℯ π ௰ ℵ Θ α β
+⛵ 🚀
+⋮ ⠀ ⠈ ⡀ ⠁ ⠠
+---- end ----
+\end{minted}
+
+
+
+{\Large Math Symbol 2: texttt}
+
+\begin{longtable}{ccl}
+  % \caption{Manually add} \\
+  %% all head
+  \toprule
+  Code point & Char & Unicode name \\
+  \hline \endhead
+  %% all footer
+  \multicolumn{3}{l}{To be continued...} \\ 
+  \midrule \endfoot
+  %% last footer
+  \bottomrule \endlastfoot
+
+  U+2224 & \mintinline{c}{∤}  & DOES NOT DIVIDE \\ \hline
+  U+214B & \mintinline{c}{⅋}  & TURNED AMPERSAND \\ \hline
+  U+2240 & \mintinline{c}{≀}  & WREATH PRODUCT \\ \hline
+  U+22BC & \mintinline{c}{⊼}  & NAND \\ \hline
+  U+22C7 & \mintinline{c}{⋇}  & DIVISION TIMES \\ \hline
+  U+22C9 & \mintinline{c}{⋉}  & LEFT NORMAL FACTOR SEMIDIRECT PRODUCT \\ \hline
+  U+22CA & \mintinline{c}{⋊}  & RIGHT NORMAL FACTOR SEMIDIRECT PRODUCT \\ \hline
+  U+22CB & \mintinline{c}{⋋}  & LEFT SEMIDIRECT PRODUCT \\ \hline
+  U+22CC & \mintinline{c}{⋌}  & RIGHT SEMIDIRECT PRODUCT \\ \hline
+  U+22D2 & \mintinline{c}{⋒}  & DOUBLE INTERSECTION \\ \hline
+  U+27D1 & \mintinline{c}{⟑}  & AND WITH DOT \\ \hline
+  U+29B8 & \mintinline{c}{⦸}  & CIRCLED REVERSE SOLIDUS \\ \hline
+  U+29BC & \mintinline{c}{⦼}  & CIRCLED ANTICLOCKWISE-ROTATED DIVISION SIGN \\ \hline
+  U+29BE & \mintinline{c}{⦾}  & CIRCLED WHITE BULLET \\ \hline
+  U+29BF & \mintinline{c}{⦿}  & CIRCLED BULLET \\ \hline
+  U+29F6 & \mintinline{c}{⧶}  & SOLIDUS WITH OVERBAR \\ \hline
+  U+29F7 & \mintinline{c}{⧷}  & REVERSE SOLIDUS WITH HORIZONTAL STROKE \\ \hline
+  U+2A07 & \mintinline{c}{⨇}  & TWO LOGICAL AND OPERATOR \\ \hline
+  U+2A30 & \mintinline{c}{⨰}  & MULTIPLICATION SIGN WITH DOT ABOVE \\ \hline
+  U+2A31 & \mintinline{c}{⨱}  & MULTIPLICATION SIGN WITH UNDERBAR \\ \hline
+  U+2A32 & \mintinline{c}{⨲}  & SEMIDIRECT PRODUCT WITH BOTTOM CLOSED \\ \hline
+  U+2A33 & \mintinline{c}{⨳}  & SMASH PRODUCT \\ \hline
+  U+2A34 & \mintinline{c}{⨴}  & MULTIPLICATION SIGN IN LEFT HALF CIRCLE \\ \hline
+  U+2A35 & \mintinline{c}{⨵}  & MULTIPLICATION SIGN IN RIGHT HALF CIRCLE \\ \hline
+  U+2A36 & \mintinline{c}{⨶}  & CIRCLED MULTIPLICATION SIGN WITH CIRCUMFLEX ACCENT \\ \hline
+  U+2A37 & \mintinline{c}{⨷}  & MULTIPLICATION SIGN IN DOUBLE CIRCLE \\ \hline
+  U+2A38 & \mintinline{c}{⨸}  & CIRCLED DIVISION SIGN \\ \hline
+  U+2A3B & \mintinline{c}{⨻}  & MULTIPLICATION SIGN IN TRIANGLE \\ \hline
+  U+2A3C & \mintinline{c}{⨼}  & INTERIOR PRODUCT \\ \hline
+  U+2A3D & \mintinline{c}{⨽}  & RIGHTHAND INTERIOR PRODUCT \\ \hline
+  U+2A40 & \mintinline{c}{⩀}  & INTERSECTION WITH DOT \\ \hline
+  U+2A43 & \mintinline{c}{⩃}  & INTERSECTION WITH OVERBAR \\ \hline
+  U+2A44 & \mintinline{c}{⩄}  & INTERSECTION WITH LOGICAL AND \\ \hline
+  U+2A4B & \mintinline{c}{⩋}  & INTERSECTION BESIDE AND JOINED WITH INTERSECTION \\ \hline
+  U+2A4D & \mintinline{c}{⩍}  & CLOSED INTERSECTION WITH SERIFS \\ \hline
+  U+2A4E & \mintinline{c}{⩎}  & DOUBLE SQUARE INTERSECTION \\ \hline
+  U+2A51 & \mintinline{c}{⩑}  & LOGICAL AND WITH DOT ABOVE \\ \hline
+  U+2A53 & \mintinline{c}{⩓}  & DOUBLE LOGICAL AND \\ \hline
+  U+2A55 & \mintinline{c}{⩕}  & TWO INTERSECTING LOGICAL AND \\ \hline
+ \\ \hline
+ \\ \hline
+  U+2A58 & \mintinline{c}{⩘}  & SLOPING LARGE AND \\ \hline
+  U+2A5A & \mintinline{c}{⩚}  & LOGICAL AND WITH MIDDLE STEM \\ \hline
+  U+2A5C & \mintinline{c}{⩜}  & LOGICAL AND WITH HORIZONTAL DASH \\ \hline
+  U+2A5E & \mintinline{c}{⩞}  & LOGICAL AND WITH DOUBLE OVERBAR \\ \hline
+  U+2A5F & \mintinline{c}{⩟}  & LOGICAL AND WITH UNDERBAR \\ \hline
+  U+2A60 & \mintinline{c}{⩠}  & LOGICAL AND WITH DOUBLE UNDERBAR \\ \hline
+  U+2ADB & \mintinline{c}{⫛}  & TRANSVERSAL INTERSECTION \\ \hline
+  U+2A1D & \mintinline{c}{⨝}  & JOIN \\ \hline
+  U+27D5 & \mintinline{c}{⟕}  & LEFT OUTER JOIN \\ \hline
+  U+27D6 & \mintinline{c}{⟖}  & RIGHT OUTER JOIN \\ \hline
+  U+27D7 & \mintinline{c}{⟗}  & FULL OUTER JOIN \\ \hline
+  U+2214 & \mintinline{c}{∔}  & DOT PLUS \\ \hline
+  U+22BD & \mintinline{c}{⊽}  & NOR \\ \hline
+  U+22D3 & \mintinline{c}{⋓}  & DOUBLE UNION \\ \hline
+  U+2A08 & \mintinline{c}{⨈}  & TWO LOGICAL OR OPERATOR \\ \hline
+  U+2A22 & \mintinline{c}{⨢}  & PLUS SIGN WITH SMALL CIRCLE ABOVE \\ \hline
+  U+2A23 & \mintinline{c}{⨣}  & PLUS SIGN WITH CIRCUMFLEX ACCENT ABOVE \\ \hline
+  U+2A24 & \mintinline{c}{⨤}  & PLUS SIGN WITH TILDE ABOVE \\ \hline
+  U+2A25 & \mintinline{c}{⨥}  & PLUS SIGN WITH DOT BELOW \\ \hline
+  U+2A26 & \mintinline{c}{⨦}  & PLUS SIGN WITH TILDE BELOW \\ \hline
+  U+2A27 & \mintinline{c}{⨧}  & PLUS SIGN WITH SUBSCRIPT TWO \\ \hline
+  U+2A28 & \mintinline{c}{⨨}  & PLUS SIGN WITH BLACK TRIANGLE \\ \hline
+  U+2A29 & \mintinline{c}{⨩}  & MINUS SIGN WITH COMMA ABOVE \\ \hline
+  U+2A2A & \mintinline{c}{⨪}  & MINUS SIGN WITH DOT BELOW \\ \hline
+  U+2A2B & \mintinline{c}{⨫}  & MINUS SIGN WITH FALLING DOTS \\ \hline
+  U+2A2C & \mintinline{c}{⨬}  & MINUS SIGN WITH RISING DOTS \\ \hline
+  U+2A2D & \mintinline{c}{⨭}  & PLUS SIGN IN LEFT HALF CIRCLE \\ \hline
+  U+2A2E & \mintinline{c}{⨮}  & PLUS SIGN IN RIGHT HALF CIRCLE \\ \hline
+  U+2A39 & \mintinline{c}{⨹}  & PLUS SIGN IN TRIANGLE \\ \hline
+  U+2A3A & \mintinline{c}{⨺}  & MINUS SIGN IN TRIANGLE \\ \hline
+  U+2A41 & \mintinline{c}{⩁}  & UNION WITH MINUS SIGN \\ \hline
+  U+2A42 & \mintinline{c}{⩂}  & UNION WITH OVERBAR \\ \hline
+  U+2A45 & \mintinline{c}{⩅}  & UNION WITH LOGICAL OR \\ \hline
+  U+2A4A & \mintinline{c}{⩊}  & UNION BESIDE AND JOINED WITH UNION \\ \hline
+  U+2A4C & \mintinline{c}{⩌}  & CLOSED UNION WITH SERIFS \\ \hline
+  U+2A4F & \mintinline{c}{⩏}  & DOUBLE SQUARE UNION \\ \hline
+  U+2A50 & \mintinline{c}{⩐}  & CLOSED UNION WITH SERIFS AND SMASH PRODUCT \\ \hline
+  U+2A52 & \mintinline{c}{⩒}  & LOGICAL OR WITH DOT ABOVE \\ \hline
+  U+2A54 & \mintinline{c}{⩔}  & DOUBLE LOGICAL OR \\ \hline
+  U+2A56 & \mintinline{c}{⩖}  & TWO INTERSECTING LOGICAL OR \\ \hline
+  U+2A57 & \mintinline{c}{⩗}  & SLOPING LARGE OR \\ \hline
+  U+2A5B & \mintinline{c}{⩛}  & LOGICAL OR WITH MIDDLE STEM \\ \hline
+  U+2A5D & \mintinline{c}{⩝}  & LOGICAL OR WITH HORIZONTAL DASH \\ \hline
+  U+2A61 & \mintinline{c}{⩡}  & SMALL VEE WITH UNDERBAR \\ \hline
+  U+2A62 & \mintinline{c}{⩢}  & LOGICAL OR WITH DOUBLE OVERBAR \\ \hline
+  U+2A63 & \mintinline{c}{⩣}  & LOGICAL OR WITH DOUBLE UNDERBAR \\ \hline
+
+  \bottomrule
+\end{longtable}
+
+Man: Customizable binary operators
+
+\texttt{∤ ⅋ ≀ ⊼ ⋇ ⋉ ⋊ ⋋ ⋌ ⋒ ⟑ ⦸ ⦼ ⦾ ⦿ ⧶ ⧷ ⨇ ⨰ ⨱ ⨲ ⨳ ⨴ ⨵ ⨶ ⨷ ⨸ ⨻ ⨼ ⨽ ⩀ ⩃ ⩄ ⩋ ⩍ ⩎ ⩑ ⩓ ⩕ } 
+
+\texttt{⩘ ⩚ ⩜ ⩞ ⩟ ⩠ ⫛ ⨝ ⟕ ⟖ ⟗ ∔ ⊽ ⋓ ⨈ ⨢ ⨣ ⨤ ⨥ ⨦ ⨧ ⨨ ⨩ ⨪ ⨫ ⨬ ⨭ ⨮ ⨹ ⨺ ⩁ ⩂ ⩅ ⩊ ⩌ ⩏ ⩐ ⩒ ⩔ ⩖ ⩗ ⩛ ⩝ ⩡ ⩢ ⩣ }
+
+\end{document}
