@@ -1,0 +1,528 @@
+\part{Manual}
+  \chapter{Julia 1.8-DEV Documentation}
+    \subsection{Introduction}
+  \chapter{Getting Started}
+    \section{Resources}
+  \chapter{Variables}
+    \section{Allowed Variable Names}
+    \section{Stylistic Conventions}
+  \chapter{Integers and Floating-Point Numbers}
+    \section{Integers}
+    \subsection{Overflow behavior}
+    \subsection{Division errors}
+    \section{Floating-Point Numbers}
+    \subsection{Floating-point zero}
+    \subsection{Special floating-point values}
+    \subsection{Machine epsilon}
+    \subsection{Rounding modes}
+    \subsection{Background and References}
+    \section{Arbitrary Precision Arithmetic}
+    \section{Numeric Literal Coefficients}
+    \subsection{Syntax Conflicts}
+    \section{Literal zero and one}
+  \chapter{Mathematical Operations and Elementary Functions}
+    \section{Arithmetic Operators}
+    \section{Boolean Operators}
+    \section{Bitwise Operators}
+    \section{Updating operators}
+    \section{Vectorized {\textquotedbl}dot{\textquotedbl} operators}
+    \section{Numeric Comparisons}
+    \subsection{Chaining comparisons}
+    \subsection{Elementary Functions}
+    \section{Operator Precedence and Associativity}
+    \section{Numerical Conversions}
+    \subsection{Rounding functions}
+    \subsection{Division functions}
+    \subsection{Sign and absolute value functions}
+    \subsection{Powers, logs and roots}
+    \subsection{Trigonometric and hyperbolic functions}
+    \subsection{Special functions}
+  \chapter{Complex and Rational Numbers}
+    \section{Complex Numbers}
+    \section{Rational Numbers}
+  \chapter{Strings}
+    \section{Characters}
+    \section{String Basics}
+    \section{Unicode and UTF-8}
+    \section{Concatenation}
+    \section{Interpolation}
+    \section{Triple-Quoted String Literals}
+    \section{Common Operations}
+    \section{Non-Standard String Literals}
+    \section{Regular Expressions}
+    \section{Byte Array Literals}
+    \section{Version Number Literals}
+    \section{Raw String Literals}
+  \chapter{Functions}
+    \section{Argument Passing Behavior}
+    \section{Argument-type declarations}
+    \section{The \texttt{return} Keyword}
+    \subsection{Return type}
+    \subsection{Returning nothing}
+    \section{Operators Are Functions}
+    \section{Operators With Special Names}
+    \section{Anonymous Functions}
+    \section{Tuples}
+    \section{Named Tuples}
+    \section{Destructuring Assignment and Multiple Return Values}
+    \section{Property destructuring}
+    \section{Argument destructuring}
+    \section{Varargs Functions}
+    \section{Optional Arguments}
+    \section{Keyword Arguments}
+    \section{Evaluation Scope of Default Values}
+    \section{Do-Block Syntax for Function Arguments}
+    \section{Function composition and piping}
+    \section{Dot Syntax for Vectorizing Functions}
+    \section{Further Reading}
+  \chapter{Control Flow}
+    \section{Compound Expressions}
+    \section{Conditional Evaluation}
+    \section{Short-Circuit Evaluation}
+    \section{Repeated Evaluation: Loops}
+    \section{Exception Handling}
+    \subsection{Built-in \texttt{Exception}s}
+    \subsection{The \texttt{throw} function}
+    \subsection{Errors}
+    \subsection{The \texttt{try/catch} statement}
+    \subsection{\texttt{finally} Clauses}
+    \section{Tasks (aka Coroutines)}
+  \chapter{Scope of Variables}
+    \subsection{Scope constructs}
+    \section{Global Scope}
+    \section{Local Scope}
+    \subsection{Let Blocks}
+    \subsection{Loops and Comprehensions}
+    \section{Constants}
+  \chapter{Types}
+    \section{Type Declarations}
+    \section{Abstract Types}
+    \section{Primitive Types}
+    \section{Composite Types}
+    \section{Mutable Composite Types}
+    \section{Declared Types}
+    \section{Type Unions}
+    \section{Parametric Types}
+    \subsection{Parametric Composite Types}
+    \subsection{Parametric Abstract Types}
+    \subsection{Tuple Types}
+    \subsection{Vararg Tuple Types}
+    \subsection{Named Tuple Types}
+    \subsection{Parametric Primitive Types}
+    \section{UnionAll Types}
+    \section{Singleton types}
+    \section{Types of functions}
+    \section{\texttt{Type\{T\}} type selectors}
+    \section{Type Aliases}
+    \section{Operations on Types}
+    \section{Custom pretty-printing}
+    \section{{\textquotedbl}Value types{\textquotedbl}}
+  \chapter{Methods}
+    \section{Defining Methods}
+    \section{Method Ambiguities}
+    \section{Parametric Methods}
+    \section{Redefining Methods}
+    \section{Design Patterns with Parametric Methods}
+    \subsection{Extracting the type parameter from a super-type}
+    \subsection{Building a similar type with a different type parameter}
+    \subsection{Iterated dispatch}
+    \subsection{Trait-based dispatch}
+    \subsection{Output-type computation}
+    \subsection{Separate convert and kernel logic}
+    \section{Parametrically-constrained Varargs methods}
+    \section{Note on Optional and keyword Arguments}
+    \section{Function-like objects}
+    \section{Empty generic functions}
+    \section{Method design and the avoidance of ambiguities}
+    \subsection{Tuple and NTuple arguments}
+    \subsection{Orthogonalize your design}
+    \subsection{Dispatch on one argument at a time}
+    \subsection{Abstract containers and element types}
+    \subsection{Complex method {\textquotedbl}cascades{\textquotedbl} with default arguments}
+  \chapter{Constructors}
+    \section{Outer Constructor Methods}
+    \section{Inner Constructor Methods}
+    \section{Incomplete Initialization}
+    \section{Parametric Constructors}
+    \section{Case Study: Rational}
+    \section{Outer-only constructors}
+  \chapter{Conversion and Promotion}
+    \section{Conversion}
+    \subsection{When is \texttt{convert} called?}
+    \subsection{Conversion vs. Construction}
+    \subsection{Defining New Conversions}
+    \section{Promotion}
+    \subsection{Defining Promotion Rules}
+    \subsection{Case Study: Rational Promotions}
+  \chapter{Interfaces}
+    \section{Iteration}
+    \section{Indexing}
+    \section{Abstract Arrays}
+    \section{Strided Arrays}
+    \section{Customizing broadcasting}
+    \subsection{Broadcast Styles}
+    \subsection{Selecting an appropriate output array}
+    \subsection{Extending broadcast with custom implementations}
+    \subsection{Extending in-place broadcasting}
+    \subsection{Writing binary broadcasting rules}
+  \chapter{Modules}
+    \section{Namespace management}
+    \subsection{Qualified names}
+    \subsection{Export lists}
+    \subsection{Standalone \texttt{using} and \texttt{import}}
+    \subsection{\texttt{using} and \texttt{import} with specific identifiers, and adding methods}
+    \subsection{Renaming with \texttt{as}}
+    \subsection{Mixing multiple \texttt{using} and \texttt{import} statements}
+    \subsection{Handling name conflicts}
+    \subsection{Default top-level definitions and bare modules}
+    \subsection{Standard modules}
+    \section{Submodules and relative paths}
+    \subsection{Module initialization and precompilation}
+  \chapter{Documentation}
+    \section{Accessing Documentation}
+    \section{Writing Documentation}
+    \section{Functions \& Methods}
+    \section{Advanced Usage}
+    \subsection{Dynamic documentation}
+    \section{Syntax Guide}
+    \subsection{\texttt{\$} and \texttt{{\textbackslash}} characters}
+    \subsection{Functions and Methods}
+    \subsection{Macros}
+    \subsection{Types}
+    \subsection{Modules}
+    \subsection{Global Variables}
+    \subsection{Multiple Objects}
+    \subsection{Macro-generated code}
+  \chapter{Metaprogramming}
+    \section{Program representation}
+    \subsection{Symbols}
+    \section{Expressions and evaluation}
+    \subsection{Quoting}
+    \subsection{Interpolation}
+    \subsection{Splatting interpolation}
+    \subsection{Nested quote}
+    \subsection{QuoteNode}
+    \subsection{Evaluating expressions}
+    \subsection{Functions on \texttt{Expr}essions}
+    \section{Macros}
+    \subsection{Basics}
+    \subsection{Hold up: why macros?}
+    \subsection{Macro invocation}
+    \subsection{Building an advanced macro}
+    \subsection{Hygiene}
+    \subsection{Macros and dispatch}
+    \section{Code Generation}
+    \section{Non-Standard String Literals}
+    \section{Generated functions}
+    \subsection{An advanced example}
+    \subsection{Optionally-generated functions}
+  \chapter{Multi-dimensional Arrays}
+    \section{Basic Functions}
+    \section{Construction and Initialization}
+    \section{Array literals}
+    \subsection{Concatenation}
+    \subsection{Typed array literals}
+    \section{Comprehensions}
+    \section{Generator Expressions}
+    \section{Indexing}
+    \section{Indexed Assignment}
+    \section{Supported index types}
+    \subsection{Cartesian indices}
+    \subsection{Logical indexing}
+    \subsection{Number of indices}
+    \section{Iteration}
+    \section{Array traits}
+    \section{Array and Vectorized Operators and Functions}
+    \section{Broadcasting}
+    \section{Implementation}
+  \chapter{Missing Values}
+    \section{Propagation of Missing Values}
+    \section{Equality and Comparison Operators}
+    \section{Logical operators}
+    \section{Control Flow and Short-Circuiting Operators}
+    \section{Arrays With Missing Values}
+    \section{Skipping Missing Values}
+    \section{Logical Operations on Arrays}
+  \chapter{Networking and Streams}
+    \section{Basic Stream I/O}
+    \section{Text I/O}
+    \section{IO Output Contextual Properties}
+    \section{Working with Files}
+    \section{A simple TCP example}
+    \section{Resolving IP Addresses}
+    \section{Asynchronous I/O}
+    \section{Multicast}
+    \subsection{Receiving IP Multicast Packets}
+    \subsection{Sending IP Multicast Packets}
+    \subsection{IPv6 Example}
+  \chapter{Parallel Computing}
+  \chapter{Asynchronous Programming}
+    \section{Basic \texttt{Task} operations}
+    \section{Communicating with Channels}
+    \subsection{More on Channels}
+    \section{More task operations}
+    \section{Tasks and events}
+  \chapter{Multi-Threading}
+    \section{Starting Julia with multiple threads}
+    \section{Data-race freedom}
+    \section{The \texttt{@threads} Macro}
+    \section{Atomic Operations}
+    \section{Per-field atomics}
+    \section{Side effects and mutable function arguments}
+    \section{@threadcall}
+    \section{Caveats}
+    \section{Safe use of Finalizers}
+  \chapter{Multi-processing and Distributed Computing}
+    \section{Code Availability and Loading Packages}
+    \section{Starting and managing worker processes}
+    \section{Data Movement}
+    \section{Global variables}
+    \section{Parallel Map and Loops}
+    \section{Remote References and AbstractChannels}
+    \section{Channels and RemoteChannels}
+    \subsection{Remote References and Distributed Garbage Collection}
+    \section{Local invocations}
+    \section{Shared Arrays}
+    \subsection{Shared Arrays and Distributed Garbage Collection}
+    \section{ClusterManagers}
+    \subsection{Cluster Managers with Custom Transports}
+    \subsection{Network Requirements for LocalManager and SSHManager}
+    \subsection{Cluster Cookie}
+    \section{Specifying Network Topology (Experimental)}
+    \section{Noteworthy external packages}
+  \chapter{Running External Programs}
+    \section{Interpolation}
+    \section{Quoting}
+    \section{Pipelines}
+    \subsection{Avoiding Deadlock in Pipelines}
+    \subsection{Complex Example}
+    \section{\texttt{Cmd} Objects}
+  \chapter{Calling C and Fortran Code}
+    \section{Creating C-Compatible Julia Function Pointers}
+    \section{Mapping C Types to Julia}
+    \subsection{Automatic Type Conversion}
+    \subsection{Type Correspondences}
+    \subsection{Bits Types}
+    \subsection{Struct Type Correspondences}
+    \subsection{Type Parameters}
+    \subsection{SIMD Values}
+    \subsection{Memory Ownership}
+    \subsection{When to use T, Ptr\{T\} and Ref\{T\}}
+    \section{Mapping C Functions to Julia}
+    \subsection{\texttt{ccall} / \texttt{@cfunction} argument translation guide}
+    \subsection{\texttt{ccall} / \texttt{@cfunction} return type translation guide}
+    \subsection{Passing Pointers for Modifying Inputs}
+    \section{C Wrapper Examples}
+    \section{Fortran Wrapper Example}
+    \section{Garbage Collection Safety}
+    \section{Non-constant Function Specifications}
+    \section{Indirect Calls}
+    \section{Closure cfunctions}
+    \section{Closing a Library}
+    \section{Calling Convention}
+    \section{Accessing Global Variables}
+    \section{Accessing Data through a Pointer}
+    \section{Thread-safety}
+    \section{More About Callbacks}
+    \section{C++}
+  \chapter{Handling Operating System Variation}
+  \chapter{Environment Variables}
+    \section{File locations}
+    \subsection{\texttt{JULIA\_BINDIR}}
+    \subsection{\texttt{JULIA\_PROJECT}}
+    \subsection{\texttt{JULIA\_LOAD\_PATH}}
+    \subsection{\texttt{JULIA\_DEPOT\_PATH}}
+    \subsection{\texttt{JULIA\_HISTORY}}
+    \subsection{\texttt{JULIA\_MAX\_NUM\_PRECOMPILE\_FILES}}
+    \section{Pkg.jl}
+    \subsection{\texttt{JULIA\_CI}}
+    \subsection{\texttt{JULIA\_NUM\_PRECOMPILE\_TASKS}}
+    \subsection{\texttt{JULIA\_PKG\_DEVDIR}}
+    \subsection{\texttt{JULIA\_PKG\_IGNORE\_HASHES}}
+    \subsection{\texttt{JULIA\_PKG\_OFFLINE}}
+    \subsection{\texttt{JULIA\_PKG\_PRECOMPILE\_AUTO}}
+    \subsection{\texttt{JULIA\_PKG\_SERVER}}
+    \subsection{\texttt{JULIA\_PKG\_SERVER\_REGISTRY\_PREFERENCE}}
+    \subsection{\texttt{JULIA\_PKG\_UNPACK\_REGISTRY}}
+    \subsection{\texttt{JULIA\_PKG\_USE\_CLI\_GIT}}
+    \subsection{\texttt{JULIA\_PKGRESOLVE\_ACCURACY}}
+    \section{Network transport}
+    \subsection{\texttt{JULIA\_NO\_VERIFY\_HOSTS} / \texttt{JULIA\_SSL\_NO\_VERIFY\_HOSTS} / \texttt{JULIA\_SSH\_NO\_VERIFY\_HOSTS} / \texttt{JULIA\_ALWAYS\_VERIFY\_HOSTS}}
+    \subsection{\texttt{JULIA\_SSL\_CA\_ROOTS\_PATH}}
+    \section{External applications}
+    \subsection{\texttt{JULIA\_SHELL}}
+    \subsection{\texttt{JULIA\_EDITOR}}
+    \section{Parallelization}
+    \subsection{\texttt{JULIA\_CPU\_THREADS}}
+    \subsection{\texttt{JULIA\_WORKER\_TIMEOUT}}
+    \subsection{\texttt{JULIA\_NUM\_THREADS}}
+    \subsection{\texttt{JULIA\_THREAD\_SLEEP\_THRESHOLD}}
+    \subsection{\texttt{JULIA\_EXCLUSIVE}}
+    \section{REPL formatting}
+    \subsection{\texttt{JULIA\_ERROR\_COLOR}}
+    \subsection{\texttt{JULIA\_WARN\_COLOR}}
+    \subsection{\texttt{JULIA\_INFO\_COLOR}}
+    \subsection{\texttt{JULIA\_INPUT\_COLOR}}
+    \subsection{\texttt{JULIA\_ANSWER\_COLOR}}
+    \section{Debugging and profiling}
+    \subsection{\texttt{JULIA\_DEBUG}}
+    \subsection{\texttt{JULIA\_GC\_ALLOC\_POOL}, \texttt{JULIA\_GC\_ALLOC\_OTHER}, \texttt{JULIA\_GC\_ALLOC\_PRINT}}
+    \subsection{\texttt{JULIA\_GC\_NO\_GENERATIONAL}}
+    \subsection{\texttt{JULIA\_GC\_WAIT\_FOR\_DEBUGGER}}
+    \subsection{\texttt{ENABLE\_JITPROFILING}}
+    \subsection{\texttt{ENABLE\_GDBLISTENER}}
+    \subsection{\texttt{JULIA\_LLVM\_ARGS}}
+  \chapter{Embedding Julia}
+    \section{High-Level Embedding}
+    \subsection{Using julia-config to automatically determine build parameters}
+    \section{High-Level Embedding on Windows with Visual Studio}
+    \section{Converting Types}
+    \section{Calling Julia Functions}
+    \section{Memory Management}
+    \subsection{Updating fields of GC-managed objects}
+    \subsection{Manipulating the Garbage Collector}
+    \section{Working with Arrays}
+    \subsection{Accessing Returned Arrays}
+    \subsection{Multidimensional Arrays}
+    \section{Exceptions}
+    \subsection{Throwing Julia Exceptions}
+  \chapter{Code Loading}
+    \section{Definitions}
+    \section{Federation of packages}
+    \section{Environments}
+    \subsection{Project environments}
+    \subsection{Package directories}
+    \subsection{Environment stacks}
+    \subsection{Package/Environment Preferences}
+    \section{Conclusion}
+  \chapter{Profiling}
+    \section{Basic usage}
+    \section{Accumulation and clearing}
+    \section{Options for controlling the display of profile results}
+    \section{Configuration}
+    \section{Memory allocation analysis}
+    \subsection{\texttt{@time}}
+    \subsection{Line-by-Line Allocation Tracking}
+    \subsection{GC Logging}
+    \section{External Profiling}
+  \chapter{Stack Traces}
+    \section{Viewing a stack trace}
+    \section{Extracting useful information}
+    \section{Error handling}
+    \section{Exception stacks and \texttt{current\_exceptions}}
+    \section{Comparison with \texttt{backtrace}}
+  \chapter{Performance Tips}
+    \section{Performance critical code should be inside a function}
+    \section{Avoid global variables}
+    \section{Measure performance with \texttt{@time} and pay attention to memory allocation}
+    \section{Tools}
+    \section{Avoid containers with abstract type parameters}
+    \section{Type declarations}
+    \subsection{Avoid fields with abstract type}
+    \subsection{Avoid fields with abstract containers}
+    \subsection{Annotate values taken from untyped locations}
+    \subsection{Be aware of when Julia avoids specializing}
+    \section{Break functions into multiple definitions}
+    \section{Write {\textquotedbl}type-stable{\textquotedbl} functions}
+    \section{Avoid changing the type of a variable}
+    \section{Separate kernel functions (aka, function barriers)}
+    \section{Types with values-as-parameters}
+    \section{The dangers of abusing multiple dispatch (aka, more on types with values-as-parameters)}
+    \section{Access arrays in memory order, along columns}
+    \section{Pre-allocating outputs}
+    \section{More dots: Fuse vectorized operations}
+    \section{Consider using views for slices}
+    \section{Copying data is not always bad}
+    \section{Consider StaticArrays.jl for small fixed-size vector/matrix operations}
+    \section{Avoid string interpolation for I/O}
+    \section{Optimize network I/O during parallel execution}
+    \section{Fix deprecation warnings}
+    \section{Tweaks}
+    \section{Performance Annotations}
+    \section{Treat Subnormal Numbers as Zeros}
+    \section{\texttt{@code\_warntype}}
+    \section{Performance of captured variable}
+  \chapter{Workflow Tips}
+    \section{REPL-based workflow}
+    \subsection{A basic editor/REPL workflow}
+    \section{Browser-based workflow}
+    \section{Revise-based workflows}
+  \chapter{Style Guide}
+    \section{Indentation}
+    \section{Write functions, not just scripts}
+    \section{Avoid writing overly-specific types}
+    \section{Handle excess argument diversity in the caller}
+    \section{Append \texttt{!} to names of functions that modify their arguments}
+    \section{Avoid strange type \texttt{Union}s}
+    \section{Avoid elaborate container types}
+    \section{Prefer exported methods over direct field access}
+    \section{Use naming conventions consistent with Julia \texttt{base/}}
+    \section{Write functions with argument ordering similar to Julia Base}
+    \section{Don{\textquotesingle}t overuse try-catch}
+    \section{Don{\textquotesingle}t parenthesize conditions}
+    \section{Don{\textquotesingle}t overuse \texttt{...}}
+    \section{Don{\textquotesingle}t use unnecessary static parameters}
+    \section{Avoid confusion about whether something is an instance or a type}
+    \section{Don{\textquotesingle}t overuse macros}
+    \section{Don{\textquotesingle}t expose unsafe operations at the interface level}
+    \section{Don{\textquotesingle}t overload methods of base container types}
+    \section{Avoid type piracy}
+    \section{Be careful with type equality}
+    \section{Do not write \texttt{x->f(x)}}
+    \section{Avoid using floats for numeric literals in generic code when possible}
+  \chapter{Frequently Asked Questions}
+    \section{General}
+    \subsection{Is Julia named after someone or something?}
+    \subsection{Why don{\textquotesingle}t you compile Matlab/Python/R/… code to Julia?}
+    \section{Public API}
+    \subsection{How does Julia define its public API?}
+    \subsection{There is a useful undocumented function/type/constant. Can I use it?}
+    \subsection{The documentation is not accurate enough. Can I rely on the existing behavior?}
+    \section{Sessions and the REPL}
+    \subsection{How do I delete an object in memory?}
+    \subsection{How can I modify the declaration of a type in my session?}
+    \section{Scripting}
+    \subsection{How do I check if the current file is being run as the main script?}
+    \subsection{How do I catch CTRL-C in a script?}
+    \subsection{How do I pass options to \texttt{julia} using \texttt{\#!/usr/bin/env}?}
+    \subsection{Why doesn{\textquotesingle}t \texttt{run} support \texttt{*} or pipes for scripting external programs?}
+    \section{Functions}
+    \subsection{I passed an argument \texttt{x} to a function, modified it inside that function, but on the outside, the variable \texttt{x} is still unchanged. Why?}
+    \subsection{Can I use \texttt{using} or \texttt{import} inside a function?}
+    \subsection{What does the \texttt{...} operator do?}
+    \subsection{What is the return value of an assignment?}
+    \section{Types, type declarations, and constructors}
+    \subsection{What does {\textquotedbl}type-stable{\textquotedbl} mean?}
+    \subsection{Why does Julia give a \texttt{DomainError} for certain seemingly-sensible operations?}
+    \subsection{How can I constrain or compute type parameters?}
+    \subsection{Why does Julia use native machine integer arithmetic?}
+    \subsection{What are the possible causes of an \texttt{UndefVarError} during remote execution?}
+    \section{Troubleshooting {\textquotedbl}method not matched{\textquotedbl}: parametric type invariance and \texttt{MethodError}s}
+    \subsection{Why doesn{\textquotesingle}t it work to declare \texttt{foo(bar::Vector\{Real\}) = 42} and then call \texttt{foo([1])}?}
+    \subsection{Why does Julia use \texttt{*} for string concatenation? Why not \texttt{+} or something else?}
+    \section{Packages and Modules}
+    \subsection{What is the difference between {\textquotedbl}using{\textquotedbl} and {\textquotedbl}import{\textquotedbl}?}
+    \section{Nothingness and missing values}
+    \subsection{How does {\textquotedbl}null{\textquotedbl}, {\textquotedbl}nothingness{\textquotedbl} or {\textquotedbl}missingness{\textquotedbl} work in Julia?}
+    \section{Memory}
+    \subsection{Why does \texttt{x += y} allocate memory when \texttt{x} and \texttt{y} are arrays?}
+    \section{Asynchronous IO and concurrent synchronous writes}
+    \subsection{Why do concurrent writes to the same stream result in inter-mixed output?}
+    \section{Arrays}
+    \subsection{What are the differences between zero-dimensional arrays and scalars?}
+    \subsection{Why are my Julia benchmarks for linear algebra operations different from other languages?}
+    \section{Computing cluster}
+    \subsection{How do I manage precompilation caches in distributed file systems?}
+    \section{Julia Releases}
+    \subsection{Do I want to use the Stable, LTS, or nightly version of Julia?}
+    \subsection{How can I transfer the list of installed packages after updating my version of Julia?}
+  \chapter{Noteworthy Differences from other Languages}
+    \section{Noteworthy differences from MATLAB}
+    \section{Noteworthy differences from R}
+    \section{Noteworthy differences from Python}
+    \section{Noteworthy differences from C/C++}
+    \section{Noteworthy differences from Common Lisp}
+  \chapter{Unicode Input}
+  \chapter{Command-line Options}
+    \section{Using arguments inside scripts}
+    \section{Command-line switches for Julia}
