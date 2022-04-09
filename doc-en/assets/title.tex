@@ -1,11 +1,13 @@
 
-\newgeometry{left=1cm,right=1cm}
+%% ---- reset page geometry for cover page
+\newgeometry{left=2cm,right=2cm,bottom=3cm}
 % ref: P65 - http://mirrors.ctan.org/macros/latex/contrib/memoir/memman.pdf
 \begin{titlingpage}
+    % set background image
     \BgThispage
+    \vspace*{2cm}\noindent
 
     %% Main Heading & Secondary Heading
-    \vspace*{2cm}\noindent
     \textcolor{white}{ \MainHeading  \DocMainTitle } 
     \\[0.6cm]
     \textcolor{white}{
@@ -13,19 +15,20 @@
     }
     \vspace*{3cm}\par\noindent
 
-
-    %% other content: logo, doc name, time
+    %% Centering other content
     \begin{center}
         % logo
-        \includegraphics[width=0.3\textwidth]{./titlepage/logo} 
+        \includegraphics[width=0.3\textwidth]{./assets/logo} 
         \\[1.5cm]
-
-        % Title
-        { \SecondaryHeading  \DocVersion} 
-        \\[1.5cm]
+        % git tag or doc version
+        { \SecondaryHeading Julia \DocVersion\ Documentation } 
+        \vfill
+        
         { \huge  \DocAuthors }
         \\[0.5cm]
+        % build time
         { \huge \today }
     \end{center} 
 \end{titlingpage}
 \restoregeometry
+%% ---- restore geometry
