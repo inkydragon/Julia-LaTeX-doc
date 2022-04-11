@@ -3,6 +3,8 @@
 
 
 ### CJK
+- [Variables · The Julia Language](https://docs.julialang.org/en/v1/manual/variables/)
+
 ```julia
 # cjkfont
 人人生而自由，在尊严和权利上一律平等。
@@ -37,4 +39,3 @@ TeX patch:
 \setmonofont{JuliaMono Regular}[Scale=MatchLowercase]
 \newcommand\unicodeveebar{ ⊻ }
 ```
-
