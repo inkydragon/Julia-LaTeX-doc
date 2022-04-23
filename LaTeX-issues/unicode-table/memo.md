@@ -1,4 +1,10 @@
 
+## ref
+- [UNICODE_DATA_VERSION · JuliaLang/julia](https://github.com/JuliaLang/julia/blob/master/doc/Makefile#L28)
+- [unicode-input.md Gen · JuliaLang/julia](https://github.com/JuliaLang/julia/blob/master/doc/src/manual/unicode-input.md)
+- [tab substitution in the REPL · JuliaLang/julia](https://github.com/JuliaLang/julia/blob/master/stdlib/REPL/src/latex_symbols.jl)
+
+
 ## Math font
 https://www.ctan.org/topic/font-maths
 https://tug.org/FontCatalogue/mathfonts.html

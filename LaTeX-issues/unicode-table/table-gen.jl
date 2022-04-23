@@ -1,4 +1,8 @@
-import REPL
+## https://github.com/JuliaLang/julia/blob/master/doc/src/manual/unicode-input.md
+#
+# Generate a table containing all LaTeX and Emoji tab completions available in the REPL.
+#
+import REPL, Markdown
 using DelimitedFiles
 const NBSP = '\u00A0'
 
@@ -11,8 +15,7 @@ function tab_completions(symbols...)
 end
 
 function unicode_data()
-    # file = normpath(Sys.BINDIR, "..", "UnicodeData.txt")
-    # http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt
+    # http://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt
     file = normpath(".", "UnicodeData.txt")
     names = Dict{UInt32, String}()
     open(file) do unidata
@@ -28,7 +31,7 @@ end
 
 # Surround combining characters with no-break spaces (i.e '\u00A0'). Follows the same format
 # for how unicode is displayed on the unicode.org website:
-# http://unicode.org/cldr/utility/character.jsp?a=0300
+# https://util.unicode.org/UnicodeJsps/character.jsp?a=0300
 function fix_combining_chars(char)
     cat = Base.Unicode.category_code(char)
     return cat == 6 || cat == 8 ? "$NBSP$char$NBSP" : "$char"
@@ -52,9 +55,22 @@ function table_entries(completions, unicode_dict)
             join(inputs, ", "), join(unicode_names, " + ")
         ])
     end
-    # return Markdown.Table(entries, [:l, :l, :l, :l])
-    entries
+    return entries
 end
+
+table_entries(
+    tab_completions(
+        REPL.REPLCompletions.latex_symbols,
+        REPL.REPLCompletions.emoji_symbols
+    ),
+    unicode_data()
+)
+## ==== unicode-input gen END
+
+
+
+
+## ============================================================================
 
 # copy from `LaTeXWriter.jl` documenter.jl
 const _latexescape_chars = Dict{Char, AbstractString}(
