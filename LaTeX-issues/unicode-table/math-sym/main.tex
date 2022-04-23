@@ -5,17 +5,19 @@
 ]{geometry}
 
 \usepackage{amsmath,unicode-math}
+\newcommand\mainMathFontName{JuliaMono}
 % \newfontface\MathSymFont{DejaVuMathTeXGyre}
-
 % \setmathfont{STEP Math}
-\setmathfont{DejaVu Math TeX Gyre}
+% \setmathfont{DejaVu Math TeX Gyre}
+
+\setmathfont{\mainMathFontName}
 \usepackage{longtable,booktabs}
 \usepackage{caption}
 \captionsetup{justification=raggedright,singlelinecheck=false}
 
 \begin{document}
 
-{\Large STEP Math}
+{\Large \mainMathFontName}
 
 \begin{longtable}{ccll}
   \caption{Manually add} \\
